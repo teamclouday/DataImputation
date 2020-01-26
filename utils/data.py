@@ -3,9 +3,11 @@
 import os
 import zipfile
 import urllib.request
+import numpy as np
+import pandas as pd
 
 # download iris dataset
-def dataset_download_iris(folder):
+def _dataset_download_iris(folder):
     URL_PATH = "https://archive.ics.uci.edu/ml/machine-learning-databases/iris/"
     FILE_NAMES = ["iris.data", "iris.names"]
     if not os.path.exists(folder):
@@ -15,7 +17,7 @@ def dataset_download_iris(folder):
     print("Iris dataset is downloaded")
 
 # download bank dataset
-def dataset_download_bank(folder):
+def _dataset_download_bank(folder):
     URL_PATH = "https://archive.ics.uci.edu/ml/machine-learning-databases/00222/"
     FILE_NAME = "bank.zip"
     if not os.path.exists(folder):
@@ -26,7 +28,7 @@ def dataset_download_bank(folder):
     print("Bank dataset is downloaded")
 
 # download adult dataset
-def dataset_download_adult(folder):
+def _dataset_download_adult(folder):
     URL_PATH = "https://archive.ics.uci.edu/ml/machine-learning-databases/adult/"
     FILE_NAMES = ["adult.data", "adult.names", "adult.test"]
     if not os.path.exists(folder):
@@ -34,7 +36,6 @@ def dataset_download_adult(folder):
     for name in FILE_NAMES:
         urllib.request.urlretrieve(URL_PATH + name, os.path.join(folder, name))
     print("Adult dataset is downloaded")
-
 
 # function that checks for existence of datasets
 def dataset_prepare():
@@ -44,10 +45,59 @@ def dataset_prepare():
         os.path.join("dataset", "adult")
     ]
     load_functions = [
-        dataset_download_iris,
-        dataset_download_bank,
-        dataset_download_adult
+        _dataset_download_iris,
+        _dataset_download_bank,
+        _dataset_download_adult
     ]
     for folder, func in zip(dataset_folders, load_functions):
         if not os.path.exists(folder):
             func(folder)
+
+# create a class object
+def create_adult_dataset():
+    names = [
+        "age",
+        "workclass",
+        "fnlwgt",
+        "education",
+        "education-num",
+        "marital-status",
+        "occupation",
+        "relationship",
+        "race",
+        "sex",
+        "capital-gain",
+        "capital-loss",
+        "hours-per-week",
+        "native-country"
+    ]
+    data = pd.read_csv(os.path.join("dataset", "adult", "adult.data"), header=None)
+    X = data.iloc[:, :-1].copy()
+    X.columns = names
+    y = data.iloc[:, -1].copy()
+    return Dataset("adult", X, y)
+
+def create_bank_dataset():
+    data = pd.read_csv(os.path.join("dataset", "bank", "bank-full.csv"), sep=";")
+    X = data.iloc[:, :-1].copy()
+    y = data.iloc[:, -1].copy()
+    return Dataset("bank", X, y)
+
+def create_iris_dataset():
+    names = [
+        "sepal length",
+        "sepal width",
+        "petal length",
+        "petal width",
+        "class"
+    ]
+    data = pd.read_csv(os.path.join("dataset", "iris", "iris.data"), names=names)
+    X = data.iloc[:, :-1].copy()
+    y = data.iloc[:, -1].copy()
+    return Dataset("iris", X, y)
+
+class Dataset:
+    def __init__(self, name, X, y):
+        self.name = name
+        self.X = X
+        self.y = y
