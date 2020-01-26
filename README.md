@@ -14,4 +14,6 @@ This repo is created to research on different methods of data replacing and gues
 ------
 
 ### Datasets
-1. Classic Iris dataset from UCI Machine Learning Repository  
+1. [Iris Dataset](https://archive.ics.uci.edu/ml/datasets/Iris) (UCI)  
+2. [Bank Dataset](https://archive.ics.uci.edu/ml/datasets/Bank+Marketing) (UCI)  
+3. [Adult Dataset](https://archive.ics.uci.edu/ml/datasets/Adult) (UCI)  

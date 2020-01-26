@@ -1,8 +1,8 @@
 # this file contains functions that prepares dataset
 
 import os
-import urllib
 import zipfile
+import urllib.request
 
 # download iris dataset
 def dataset_download_iris(folder):
@@ -34,3 +34,20 @@ def dataset_download_adult(folder):
     for name in FILE_NAMES:
         urllib.request.urlretrieve(URL_PATH + name, os.path.join(folder, name))
     print("Adult dataset is downloaded")
+
+
+# function that checks for existence of datasets
+def dataset_prepare():
+    dataset_folders = [
+        os.path.join("dataset", "iris"),
+        os.path.join("dataset", "bank"),
+        os.path.join("dataset", "adult")
+    ]
+    load_functions = [
+        dataset_download_iris,
+        dataset_download_bank,
+        dataset_download_adult
+    ]
+    for folder, func in zip(dataset_folders, load_functions):
+        if not os.path.exists(folder):
+            func(folder)
