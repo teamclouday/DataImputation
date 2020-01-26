@@ -17,3 +17,8 @@ This repo is created to research on different methods of data replacing and gues
 1. [Iris Dataset](https://archive.ics.uci.edu/ml/datasets/Iris) (UCI)  
 2. [Bank Dataset](https://archive.ics.uci.edu/ml/datasets/Bank+Marketing) (UCI)  
 3. [Adult Dataset](https://archive.ics.uci.edu/ml/datasets/Adult) (UCI)  
+
+------
+
+### References  
+1. [Missing-data imputation](http://www.stat.columbia.edu/~gelman/arm/missing.pdf)
