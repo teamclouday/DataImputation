@@ -19,7 +19,7 @@ def gen_complete_random(data, random_ratio=0.3):
         print("Warning: gen_complete_random, random missing ratio > 0.5")
     X_data = data.X.copy()
     if len(X_data.shape) != 2:
-        print("Error: gen_complete_random only support dataset with rank of 2")
+        print("Error: gen_complete_random only support dataset with rank of 2\nYour input has rank of {0}".format(len(X_data.shape)))
         sys.exit(1)
     num_rows, num_cols = X_data.shape
     row_rand = np.random.permutation(num_rows)
@@ -34,8 +34,42 @@ def gen_complete_random(data, random_ratio=0.3):
     return data
 
 # missingness at random
-def gen_random(data):
-    pass
+# take a Dataset object as input
+# take random_ratio as input
+# take user-defined random_cols as input
+# Implementation:
+# generate random_cols if not specified
+# calculate the ratio for selecting random rows
+# for each random row
+# for each selected col on that row
+# replace the value of the entry with NaN
+# return the Dataset object
+def gen_random(data, random_ratio=0.3, random_cols=[]):
+    if random_ratio > 0.5:
+        print("Warning: gen_random, random missing ratio > 0.5")
+    X_data = data.X.copy()
+    if len(X_data.shape) != 2:
+        print("Error: gen_random only support dataset with rank of 2\nYour input has rank of {0}".format(len(X_data.shape))
+        sys.exit(1)
+    num_rows, num_cols = X_data.shape
+    if random_cols == []:
+        random_cols = np.random.permutation(num_cols)
+        random_cols = random_cols[:math.floor(num_cols*random_ratio)]
+    ratio_rows = random_ratio ** 2 / (len(random_cols) / num_cols)
+    random_rows = np.random.permutation(num_rows)
+    random_rows = random_rows[:math.floor(num_rows*ratio_rows)]
+    for row in random_rows:
+        for col in random_cols:
+            if type(col) == str:
+                X_data[col][row] = np.nan
+            elif type(col) == int:
+                X_data.iloc[row, col] = np.nan
+            else:
+                print("Error: gen_random, value type ({0}) in random_cols is not recognized".format(type(col)))
+                sys.exit(1)
+    print("gen_random: {0} NaN values have been inserted".format(X_data.isnull().sum().sum()))
+    data.X = X_data
+    return data
 
 # missingness that depends on unobserved predictors
 def gen_unobserved(data):
