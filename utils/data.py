@@ -53,6 +53,17 @@ def dataset_prepare():
         if not os.path.exists(folder):
             func(folder)
 
+# create a dataset for testing
+def create_test_dataset(size=(30, 8)):
+    if len(size) != 2 or size[0] < 1 or size[1] < 1:
+        print("Error: create_test_dataset, wrong values in size")
+        sys.exit(1)
+    names = np.arange(size[1])
+    data = np.random.permutation(size[0]*size[1]).reshape(size[0], size[1]).astype(np.float32)
+    data = pd.DataFrame(data, columns=names)
+    labels = np.arange(size[0], dtype=np.int32)
+    return Dataset("test", data, labels)
+
 # create a class object
 def create_adult_dataset():
     names = [
@@ -101,3 +112,6 @@ class Dataset:
         self.name = name
         self.X = X
         self.y = y
+
+    def copy(self):
+        return Dataset(self.name, self.X.copy(), self.y.copy())
