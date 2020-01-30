@@ -1,4 +1,4 @@
-# this file contains codes for generating missing values in a dataset
+# this file contains functions for generating missing values in a dataset
 
 import sys
 import math
