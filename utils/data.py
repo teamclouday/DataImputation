@@ -5,6 +5,8 @@ import zipfile
 import urllib.request
 import numpy as np
 import pandas as pd
+from pandas.api.types import is_numeric_dtype
+from sklearn.preprocessing import LabelEncoder
 
 # download iris dataset
 def _dataset_download_iris(folder):
@@ -108,10 +110,28 @@ def create_iris_dataset():
     return Dataset("iris", X, y)
 
 class Dataset:
-    def __init__(self, name, X, y):
+    def __init__(self, name, X, y, auto_convert=True, types=None):
         self.name = name
         self.X = X
         self.y = y
+        if auto_convert:
+            self._convert_categories()
+        self.types = X.dtypes
+        if types is not None:
+            self.types = types
+
+    def _convert_categories(self):
+        columns = self.X.columns
+        columns_for_convert = []
+        for col in columns:
+            if not is_numeric_dtype(self.X[col]):
+                columns_for_convert.append(col)
+        self.encoders = {}
+        for col in columns_for_convert:
+            encoder = LabelEncoder()
+            encoder.fit(self.X[col])
+            self.X[col] = encoder.transform(self.X[col])
+            self.encoders[col] = encoder
 
     def copy(self):
-        return Dataset(self.name, self.X.copy(), self.y.copy())
+        return Dataset(self.name, self.X.copy(), self.y.copy(), auto_convert=False, types=self.types)
