@@ -23,7 +23,7 @@ def complete_by_mean_col(data):
 # complete missing entries using value from previous row
 def complete_by_nearby_row(data):
     data = data.copy()
-    data.X = data.X.fillna(method="ffill").astype(data.types)
+    data.X = data.X.fillna(method="ffill")
     data.X = data.X.fillna(method="bfill").astype(data.types)
     return data
 
