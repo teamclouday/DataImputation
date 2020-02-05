@@ -51,6 +51,6 @@ def printBar():
 
 if __name__ == "__main__":
     dataset_prepare()
-    machine = TestMachine(create_adult_dataset, gen_complete_random)
+    machine = TestMachine(create_iris_dataset, gen_complete_random)
     machine.run()
-    machine.plot(save_file_name="adult.png")
+    machine.plot(save_file_name="iris.png")
