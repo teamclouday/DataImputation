@@ -28,3 +28,9 @@ def SVM(data, cv):
     svm = SVC()
     score = cross_val_score(svm, data.X, data.y, cv=cv)
     return score.mean()
+
+# Method 5: Random Forest
+def Forest(data, cv):
+    forest = RandomForestClassifier()
+    score = cross_val_score(forest, data.X, data.y, cv=cv)
+    return score.mean()

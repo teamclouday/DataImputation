@@ -19,13 +19,13 @@ class TestMachine:
                            complete_by_mean_col,
                            complete_by_nearby_row,
                            complete_by_similar_row] if complete_func == [] else complete_func
-        self.models = [KNN, SGD, DecisionTree, SVM] if model_func == [] else model_func
+        self.models = [KNN, SGD, DecisionTree, SVM, Forest] if model_func == [] else model_func
         self.predictor_cv = predictor_cv
     
     def run(self):
         scores = []
         for model in self.models:
-            scores.append(["Original", model.__name__, model(self.original_data, self.predictor_cv)])
+            scores.append(["original", model.__name__, model(self.original_data, self.predictor_cv)])
         for completer in self.completers:
             completed_data = completer(self.missing_data)
             for model in self.models:
@@ -34,24 +34,26 @@ class TestMachine:
         self.scores = pd.DataFrame(data=scores, columns=["Completer Functions", "Models", "Scores"], index=None)
         print(self.scores.to_string())
 
-    def plot_compare_models(self, size=(12, 8), save_file_name=None):
+    def plot_compare_models(self, size=(12, 6), save_file_name=None):
         plt.figure(figsize=size)
         plt.title("Model comparison on [{0}] with [{1}]".format(self.data_func_name, self.random_func_name))
         ax = sns.barplot(x=self.scores["Completer Functions"], y=self.scores["Scores"], hue="Models", data=self.scores, palette="magma")
         for p in ax.patches:
             ax.annotate(format(p.get_height(), ".3f"), (p.get_x() + p.get_width() / 2, p.get_height()), ha="center", va="center", xytext=(0, 10), textcoords="offset points")
         plt.ylim([0.0, 1.5])
+        plt.tight_layout()
         if save_file_name is not None:
             plt.savefig(save_file_name)
         plt.show()
     
-    def plot_compare_completers(self, size=(12, 8), save_file_name=None):
+    def plot_compare_completers(self, size=(12, 6), save_file_name=None):
         plt.figure(figsize=size)
         plt.title("Completer comparison on [{0}] with [{1}]".format(self.data_func_name, self.random_func_name))
         ax = sns.barplot(x=self.scores["Models"], y=self.scores["Scores"], hue="Completer Functions", data=self.scores, palette="magma")
         for p in ax.patches:
             ax.annotate(format(p.get_height(), ".3f"), (p.get_x() + p.get_width() / 2, p.get_height()), ha="center", va="center", xytext=(0, 10), textcoords="offset points")
         plt.ylim([0.0, 1.5])
+        plt.tight_layout()
         if save_file_name is not None:
             plt.savefig(save_file_name)
         plt.show()
