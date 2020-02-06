@@ -14,7 +14,9 @@ from utils.data import *
 # then for each of these rows, select random cols based on random_ratio
 # replace these entries with value of NaN
 # return the converted dataset object
-def gen_complete_random(data, random_ratio=0.2):
+def gen_complete_random(data, random_ratio=0.2, print_time=False):
+    if print_time:
+        tt = time.process_time()
     if random_ratio > 0.5:
         print("Warning: gen_complete_random, random missing ratio > 0.5")
     X_data = data.X.copy()
@@ -33,6 +35,8 @@ def gen_complete_random(data, random_ratio=0.2):
     print("gen_complete_random: {0} NaN values have been inserted".format(X_data.isnull().sum().sum()))
     data = data.copy()
     data.X = X_data
+    if print_time:
+        print("Performance Monitor: ({:.4f}s) ".format(time.process_time() - tt) + inspect.stack()[0][3])
     return data
 
 # missingness at random
@@ -46,7 +50,9 @@ def gen_complete_random(data, random_ratio=0.2):
 # for each selected col on that row
 # replace the value of the entry with NaN
 # return the Dataset object
-def gen_random(data, random_ratio=0.2, random_cols=[]):
+def gen_random(data, random_ratio=0.2, random_cols=[], print_time=False):
+    if print_time:
+        tt = time.process_time()
     if random_ratio > 0.5:
         print("Warning: gen_random, random missing ratio > 0.5")
     X_data = data.X.copy()
@@ -67,6 +73,8 @@ def gen_random(data, random_ratio=0.2, random_cols=[]):
     print("gen_random: {0} NaN values have been inserted".format(X_data.isnull().sum().sum()))
     data = data.copy()
     data.X = X_data
+    if print_time:
+        print("Performance Monitor: ({:.4f}s) ".format(time.process_time() - tt) + inspect.stack()[0][3])
     return data
 
 # missingness that depends on unobserved predictors

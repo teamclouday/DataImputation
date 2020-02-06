@@ -1,6 +1,8 @@
 # this file contains functions that prepares dataset
 
 import os
+import time
+import inspect
 import zipfile
 import urllib.request
 import numpy as np
@@ -56,7 +58,9 @@ def dataset_prepare():
             func(folder)
 
 # create a dataset for testing
-def create_test_dataset(size=(30, 8)):
+def create_test_dataset(size=(30, 8), print_time=False):
+    if print_time:
+        tt = time.process_time()
     if len(size) != 2 or size[0] < 1 or size[1] < 1:
         print("Error: create_test_dataset, wrong values in size")
         sys.exit(1)
@@ -64,10 +68,14 @@ def create_test_dataset(size=(30, 8)):
     data = np.random.permutation(size[0]*size[1]).reshape(size[0], size[1]).astype(np.float32)
     data = pd.DataFrame(data, columns=names)
     labels = np.arange(size[0], dtype=np.int32)
+    if print_time:
+        print("Performance Monitor: ({:.4f}s) ".format(time.process_time() - tt) + inspect.stack()[0][3])
     return Dataset("test", data, labels)
 
 # create a class object
-def create_adult_dataset():
+def create_adult_dataset(print_time=False):
+    if print_time:
+        tt = time.process_time()
     names = [
         "age",
         "workclass",
@@ -88,15 +96,23 @@ def create_adult_dataset():
     X = data.iloc[:, :-1].copy()
     X.columns = names
     y = data.iloc[:, -1].copy()
+    if print_time:
+        print("Performance Monitor: ({:.4f}s) ".format(time.process_time() - tt) + inspect.stack()[0][3])
     return Dataset("adult", X, y)
 
-def create_bank_dataset():
+def create_bank_dataset(print_time=False):
+    if print_time:
+        tt = time.process_time()
     data = pd.read_csv(os.path.join("dataset", "bank", "bank-full.csv"), sep=";")
     X = data.iloc[:, :-1].copy()
     y = data.iloc[:, -1].copy()
+    if print_time:
+        print("Performance Monitor: ({:.4f}s) ".format(time.process_time() - tt) + inspect.stack()[0][3])
     return Dataset("bank", X, y)
 
-def create_iris_dataset():
+def create_iris_dataset(print_time=False):
+    if print_time:
+        tt = time.process_time()
     names = [
         "sepal length",
         "sepal width",
@@ -107,6 +123,8 @@ def create_iris_dataset():
     data = pd.read_csv(os.path.join("dataset", "iris", "iris.data"), names=names)
     X = data.iloc[:, :-1].copy()
     y = data.iloc[:, -1].copy()
+    if print_time:
+        print("Performance Monitor: ({:.4f}s) ".format(time.process_time() - tt) + inspect.stack()[0][3])
     return Dataset("iris", X, y)
 
 class Dataset:

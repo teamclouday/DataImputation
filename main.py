@@ -10,26 +10,28 @@ import matplotlib.pyplot as plt
 import seaborn as sns
 
 class TestMachine:
-    def __init__(self, data_func, random_func, predictor_cv=5, complete_func=[], model_func=[]):
+    def __init__(self, data_func, random_func, predictor_cv=5, complete_func=[], model_func=[], record_time=False):
         self.data_func_name = data_func.__name__
         self.random_func_name = random_func.__name__
-        self.original_data = data_func()
-        self.missing_data = random_func(self.original_data)
+        self.record_time = record_time
+        self.original_data = data_func(print_time=self.record_time)
+        self.missing_data = random_func(self.original_data, print_time=self.record_time)
         self.completers = [complete_by_value,
                            complete_by_mean_col,
                            complete_by_nearby_row,
-                           complete_by_similar_row] if complete_func == [] else complete_func
+                           complete_by_similar_row
+                           ] if complete_func == [] else complete_func
         self.models = [KNN, SGD, DecisionTree, SVM, Forest] if model_func == [] else model_func
         self.predictor_cv = predictor_cv
     
     def run(self):
         scores = []
         for model in self.models:
-            scores.append(["original", model.__name__, model(self.original_data, self.predictor_cv)])
+            scores.append(["original", model.__name__, model(self.original_data, self.predictor_cv, self.record_time)])
         for completer in self.completers:
-            completed_data = completer(self.missing_data)
+            completed_data = completer(self.missing_data, print_time=self.record_time)
             for model in self.models:
-                scores.append([completer.__name__, model.__name__, model(completed_data, self.predictor_cv)])
+                scores.append([completer.__name__, model.__name__, model(completed_data, self.predictor_cv, self.record_time)])
         print("All tests complete")
         self.scores = pd.DataFrame(data=scores, columns=["Completer Functions", "Models", "Scores"], index=None)
         print(self.scores.to_string())
@@ -65,7 +67,7 @@ def printBar():
 
 if __name__ == "__main__":
     dataset_prepare()
-    machine = TestMachine(create_iris_dataset, gen_complete_random, predictor_cv=10)
+    machine = TestMachine(create_iris_dataset, gen_complete_random, predictor_cv=10, record_time=True)
     machine.run()
     machine.plot_compare_models(save_file_name="iris1.png")
     machine.plot_compare_completers(save_file_name="iris2.png")
