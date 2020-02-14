@@ -9,6 +9,7 @@ import numpy as np
 import pandas as pd
 from pandas.api.types import is_numeric_dtype
 from sklearn.preprocessing import LabelEncoder
+from sklearn.metrics import pairwise
 
 # download iris dataset
 def _dataset_download_iris(folder):

@@ -16,9 +16,10 @@ class TestMachine:
         self.record_time = record_time
         self.original_data = data_func(print_time=self.record_time)
         self.missing_data = random_func(self.original_data, print_time=self.record_time)
-        self.completers = [complete_by_value,
-                           complete_by_mean_col,
-                           complete_by_nearby_row,
+        self.completers = [
+                        #    complete_by_value,
+                        #    complete_by_mean_col,
+                        #    complete_by_nearby_row,
                            complete_by_similar_row
                            ] if complete_func == [] else complete_func
         self.models = [KNN, SGD, DecisionTree, SVM, Forest] if model_func == [] else model_func
@@ -67,7 +68,11 @@ def printBar():
 
 if __name__ == "__main__":
     dataset_prepare()
-    machine = TestMachine(create_iris_dataset, gen_complete_random, predictor_cv=10, record_time=True)
+    # machine = TestMachine(create_iris_dataset, gen_complete_random, predictor_cv=10, record_time=True)
+    # machine.run()
+    # machine.plot_compare_models(save_file_name="iris1.png")
+    # machine.plot_compare_completers(save_file_name="iris2.png")
+    machine = TestMachine(create_bank_dataset, gen_complete_random, predictor_cv=10, record_time=True)
     machine.run()
-    machine.plot_compare_models(save_file_name="iris1.png")
-    machine.plot_compare_completers(save_file_name="iris2.png")
+    machine.plot_compare_models(save_file_name="bank1.png")
+    machine.plot_compare_completers(save_file_name="bank2.png")

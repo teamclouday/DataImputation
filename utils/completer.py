@@ -61,10 +61,11 @@ def complete_by_similar_row(data, print_time=False):
             matrix[i][j] = sim
             matrix[j][i] = sim
     # fill in nan values
+    isnull_matrix = data.X.isnull()
     for col_name in data.X.columns:
         for i in range(len(data.X)):
-            if data.X.isnull()[col_name][i]:
-                possible_rows = {a:x for (a,x) in enumerate(matrix[i]) if x > 0 and not data.X.isnull()[col_name][a]}
+            if isnull_matrix[col_name][i]:
+                possible_rows = {a:x for (a,x) in enumerate(matrix[i]) if x > 0 and not isnull_matrix[col_name][a]}
                 possible_rows = sorted(possible_rows.items(), key=lambda x: x[1])
                 if len(possible_rows) <= 0: possible_rows = [(0,0)]
                 new_data.X[col_name][i] = data.X[col_name][possible_rows[0][0]]
