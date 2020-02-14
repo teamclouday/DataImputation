@@ -1,6 +1,5 @@
 # This file contains functions that complete dataset with missing entries
 
-import sys
 import pandas as pd
 import numpy as np
 from utils.data import *

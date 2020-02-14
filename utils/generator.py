@@ -1,6 +1,5 @@
 # this file contains functions for generating missing values in a dataset
 
-import sys
 import math
 import numpy as np
 import pandas as pd
