@@ -45,35 +45,52 @@ def complete_by_nearby_row(data, print_time=False):
 def complete_by_similar_row(data, print_time=False):
     if print_time:
         tt = time.process_time()
-    new_data = data.copy()
-    # compute similarity matrix
-    matrix = np.zeros((len(data.X), len(data.X)))
-    for i in range(len(data.X)-1):
-        for j in range(i+1, len(data.X)):
-            sim = 0
-            count = 0
-            for col_name in data.X.columns:
-                if not data.X.isnull()[col_name][i] and not data.X.isnull()[col_name][j]:
-                    sim += (data.X[col_name][i] - data.X[col_name][j])**2 # (x-y)^2
-                    count += 1
-            sim = sim ** 0.5
-            sim /= count
-            matrix[i][j] = sim
-            matrix[j][i] = sim
-    # fill in nan values
-    isnull_matrix = data.X.isnull()
-    for col_name in data.X.columns:
-        for i in range(len(data.X)):
-            if isnull_matrix[col_name][i]:
-                possible_rows = {a:x for (a,x) in enumerate(matrix[i]) if x > 0 and not isnull_matrix[col_name][a]}
-                possible_rows = sorted(possible_rows.items(), key=lambda x: x[1])
-                if len(possible_rows) <= 0: possible_rows = [(0,0)]
-                new_data.X[col_name][i] = data.X[col_name][possible_rows[0][0]]
+    data = data.copy()
+    # isnull_matrix = data.X.isnull()
+    # # compute similarity matrix
+    # matrix = np.zeros((len(data.X), len(data.X)))
+    # data_X = data.X.to_numpy()
+    # for i in range(len(data_X)-1):
+    #     for j in range(i+1, len(data_X)):
+    #         print(i, j)
+    #         sim = 0
+    #         count = 0
+    #         # for col_name in data.X.columns:
+    #         #     if not isnull_matrix[col_name][i] and not isnull_matrix[col_name][j]:
+    #         #         sim += (data.X[col_name][i] - data.X[col_name][j])**2 # (x-y)^2
+    #         #         count += 1
+    #         sim = sim ** 0.5
+    #         sim /= count
+    #         matrix[i][j] = sim
+    #         matrix[j][i] = sim
+    # # fill in nan values
+    # for col_name in data.X.columns:
+    #     for i in range(len(data.X)):
+    #         if isnull_matrix[col_name][i]:
+    #             possible_rows = {a:x for (a,x) in enumerate(matrix[i]) if x > 0 and not isnull_matrix[col_name][a]}
+    #             possible_rows = sorted(possible_rows.items(), key=lambda x: x[1])
+    #             if len(possible_rows) <= 0: possible_rows = [(0,0)]
+    #             new_data.X[col_name][i] = data.X[col_name][possible_rows[0][0]]
+
+    imputer = KNNImputer(n_neighbors=5, weights="uniform") # by default use euclidean distance
+    data.X = imputer.fit_transform(data.X)
+
     if print_time:
         print("Performance Monitor: ({:.4f}s) ".format(time.process_time() - tt) + inspect.stack()[0][3])
-    return new_data
+    return data
 
 # Method 5
+# fill with the most frequent value in that column
+def complete_by_most_freq(data, print_time=False):
+    if print_time:
+        tt = time.process_time()
+    data = data.copy()
+    data.X.fillna(data.X.mode().iloc[0], inplace=True)
+    if print_time:
+        print("Performance Monitor: ({:.4f}s) ".format(time.process_time() - tt) + inspect.stack()[0][3])
+    return data
+
+# Method 6
 # train a regression model and predict the target missing value
 def complete_by_model(data, print_time=False):
     if print_time:

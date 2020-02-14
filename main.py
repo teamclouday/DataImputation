@@ -8,6 +8,7 @@ from utils.predictor import *
 from utils.model_header import *
 import matplotlib.pyplot as plt
 import seaborn as sns
+import pickle
 
 class TestMachine:
     def __init__(self, data_func, random_func, predictor_cv=5, complete_func=[], model_func=[], record_time=False):
@@ -17,12 +18,19 @@ class TestMachine:
         self.original_data = data_func(print_time=self.record_time)
         self.missing_data = random_func(self.original_data, print_time=self.record_time)
         self.completers = [
-                        #    complete_by_value,
-                        #    complete_by_mean_col,
-                        #    complete_by_nearby_row,
-                           complete_by_similar_row
+                           complete_by_value,
+                           complete_by_mean_col,
+                           complete_by_nearby_row,
+                           complete_by_similar_row,
+                           complete_by_most_freq
                            ] if complete_func == [] else complete_func
-        self.models = [KNN, SGD, DecisionTree, SVM, Forest] if model_func == [] else model_func
+        self.models = [
+                        KNN,
+                        SGD,
+                        DecisionTree,
+                        SVM,
+                        Forest
+                        ] if model_func == [] else model_func
         self.predictor_cv = predictor_cv
     
     def run(self):

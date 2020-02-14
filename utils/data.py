@@ -1,7 +1,9 @@
 # this file contains functions that prepares dataset
 
 import os
+import sys
 import time
+import tqdm
 import inspect
 import zipfile
 import urllib.request
@@ -9,7 +11,7 @@ import numpy as np
 import pandas as pd
 from pandas.api.types import is_numeric_dtype
 from sklearn.preprocessing import LabelEncoder
-from sklearn.metrics import pairwise
+from sklearn.impute import KNNImputer
 
 # download iris dataset
 def _dataset_download_iris(folder):
