@@ -57,8 +57,11 @@ class TestMachine:
         self.scores = pd.DataFrame(data=scores, columns=["Completer Functions", "Models", "Scores"], index=None)
         print(self.scores.to_string())
 
-    def plot_compare_models(self, size=(12, 6), save_file_name=None):
-        plt.figure(figsize=size)
+    def plot_compare_models(self, size=None, save_file_name=None):
+        if size is None:
+            plt.figure(figsize=self._calc_figsize())
+        else:
+            plt.figure(figsize=size)
         plt.title("Model comparison on [{0}] with [{1}]".format(self.data_func_name, self.random_func_name))
         ax = sns.barplot(x=self.scores["Completer Functions"], y=self.scores["Scores"], hue="Models", data=self.scores, palette="magma")
         for p in ax.patches:
@@ -69,8 +72,11 @@ class TestMachine:
             plt.savefig(save_file_name)
         plt.show()
     
-    def plot_compare_completers(self, size=(12, 6), save_file_name=None):
-        plt.figure(figsize=size)
+    def plot_compare_completers(self, size=None, save_file_name=None):
+        if size is None:
+            plt.figure(figsize=self._calc_figsize())
+        else:
+            plt.figure(figsize=size)
         plt.title("Completer comparison on [{0}] with [{1}]".format(self.data_func_name, self.random_func_name))
         ax = sns.barplot(x=self.scores["Models"], y=self.scores["Scores"], hue="Completer Functions", data=self.scores, palette="magma")
         for p in ax.patches:
@@ -80,3 +86,8 @@ class TestMachine:
         if save_file_name is not None:
             plt.savefig(save_file_name)
         plt.show()
+
+    def _calc_figsize(self):
+        Y = 5 + (max(len(self.completers), len(self.models)) + 1) / 2
+        X = (len(self.completers) * len(self.models) + 1.8*(max(len(self.completers), len(self.models)) - 1)) / 2
+        return (X, Y)
