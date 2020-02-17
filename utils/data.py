@@ -152,6 +152,10 @@ class Dataset:
             encoder.fit(self.X[col])
             self.X[col] = encoder.transform(self.X[col])
             self.encoders[col] = encoder
-
+        # convert for y values also
+        encoder = LabelEncoder()
+        encoder.fit(self.y)
+        self.y = encoder.transform(self.y)
+        
     def copy(self):
         return Dataset(self.name, self.X.copy(), self.y.copy(), auto_convert=False, types=self.types)
