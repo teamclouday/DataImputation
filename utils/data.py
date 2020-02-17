@@ -3,7 +3,6 @@
 import os
 import sys
 import time
-import tqdm
 import inspect
 import zipfile
 import urllib.request
