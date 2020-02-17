@@ -21,4 +21,5 @@ This repo is created to research on different methods of data replacing and gues
 ------
 
 ### References  
-1. [Missing-data imputation](http://www.stat.columbia.edu/~gelman/arm/missing.pdf)
+1. [Missing-data imputation](http://www.stat.columbia.edu/~gelman/arm/missing.pdf)  
+2. [Multiple Imputation in Stata](https://stats.idre.ucla.edu/stata/seminars/mi_in_stata_pt1_new/)
