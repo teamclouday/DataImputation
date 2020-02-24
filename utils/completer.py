@@ -96,7 +96,7 @@ def complete_by_multi(data, print_time=False, num_outputs=5):
         tt = time.process_time()
     data_new = []
     imputer = IterativeImputer(max_iter=10) # do not set random state here
-    for _ in num_outputs:
+    for _ in range(num_outputs):
         data_copy = data.copy()
         data_copy.X = imputer.fit_transform(data_copy.X)
         data_new.append(data_copy)
