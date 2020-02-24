@@ -90,11 +90,16 @@ def complete_by_most_freq(data, print_time=False):
     return data
 
 # Method 6
-# train a regression model and predict the target missing value
-def complete_by_model(data, print_time=False):
+# multiple imputation
+def complete_by_multi(data, print_time=False, num_outputs=5):
     if print_time:
         tt = time.process_time()
-
+    data_new = []
+    imputer = IterativeImputer(max_iter=10) # do not set random state here
+    for _ in num_outputs:
+        data_copy = data.copy()
+        data_copy.X = imputer.fit_transform(data_copy.X)
+        data_new.append(data_copy)
     if print_time:
         print("Performance Monitor: ({:.4f}s) ".format(time.process_time() - tt) + inspect.stack()[0][3])
-    pass
+    return data_new

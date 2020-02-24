@@ -10,7 +10,8 @@ import numpy as np
 import pandas as pd
 from pandas.api.types import is_numeric_dtype
 from sklearn.preprocessing import LabelEncoder
-from sklearn.impute import KNNImputer
+from sklearn.experimental import enable_iterative_imputer
+from sklearn.impute import KNNImputer, IterativeImputer
 
 # download iris dataset
 def _dataset_download_iris(folder):

@@ -12,5 +12,3 @@ if __name__ == "__main__":
     # machine.run()
     # machine.plot_compare_models(save_file_name="bank1.png")
     # machine.plot_compare_completers(save_file_name="bank2.png")
-    drug = create_drug_dataset()
-    print(drug.X.head(10))

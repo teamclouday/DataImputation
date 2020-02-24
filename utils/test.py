@@ -28,7 +28,8 @@ class TestMachine:
                            complete_by_mean_col,
                            complete_by_nearby_row,
                            complete_by_similar_row,
-                           complete_by_most_freq
+                           complete_by_most_freq,
+                           complete_by_multi
                            ] if complete_func == [] else complete_func
         self.models = [
                         KNN,
@@ -47,12 +48,15 @@ class TestMachine:
             if type(self.missing_data) is list:
                 completed_data = [completer(x, print_time=self.record_time) for x in self.missing_data]
                 for model in self.models:
-                    model_score = [model(cc, self.predictor_cv, self.record_time) for cc in completed_data]
+                    model_score = [model(cc, self.predictor_cv, self.record_time) for cc in completed_data] if type(completed_data[0]) is not list \
+                            else [np.mean([model(m, self.predictor_cv, self.record_time) for m in cc]) for cc in completed_data]
                     scores.append([completer.__name__, model.__name__, sum(model_score)/len(model_score)])
             else:
                 completed_data = completer(self.missing_data, print_time=self.record_time)
                 for model in self.models:
-                    scores.append([completer.__name__, model.__name__, model(completed_data, self.predictor_cv, self.record_time)])
+                    model_score = model(completed_data, self.predictor_cv, self.record_time) if type(completed_data) is not list \
+                        else np.mean([model(cc, self.predictor_cv, self.record_time) for cc in completed_data])
+                    scores.append([completer.__name__, model.__name__, model_score])
         print("All tests complete")
         self.scores = pd.DataFrame(data=scores, columns=["Completer Functions", "Models", "Scores"], index=None)
         print(self.scores.to_string())
