@@ -232,7 +232,7 @@ def create_drug_dataset(print_time=False, target_drug="Heroin"):
     return Dataset("drug_"+target_drug, X, y, convert_all=True)
 
 class Dataset:
-    def __init__(self, name, X, y, auto_convert=True, types=None, convert_all=False):
+    def __init__(self, name, X, y, auto_convert=True, types=None, convert_all=False, protected_features=None):
         self.name = name
         self.X = X
         self.y = y
@@ -242,6 +242,7 @@ class Dataset:
         self.types = X.dtypes
         if types is not None:
             self.types = types
+        self.protected = protected_features
 
     def _convert_categories(self):
         columns = self.X.columns
@@ -264,4 +265,4 @@ class Dataset:
         self.y = encoder.transform(self.y)
         
     def copy(self):
-        return Dataset(self.name, self.X.copy(), self.y.copy(), auto_convert=False, types=self.types)
+        return Dataset(self.name, self.X.copy(), self.y.copy(), auto_convert=False, types=self.types, protected_features=self.protected)
