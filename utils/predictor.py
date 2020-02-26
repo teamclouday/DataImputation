@@ -55,7 +55,7 @@ def DecisionTree(data, cv, print_time=False, grid_search=False, n_jobs=1):
         params = {
             "criterion": ["gini", "entropy"],
             "max_depth": [None, 5, 10, 100],
-            "min_samples_split": [1, 2, 5],
+            "min_samples_split": [2, 5, 10],
             "max_leaf_nodes": [None, 100, 500, 1000]
         }
         grid = GridSearchCV(tree, param_grid=params, scoring="accuracy", n_jobs=n_jobs, cv=cv)
@@ -97,7 +97,7 @@ def Forest(data, cv, print_time=False, grid_search=False, n_jobs=1):
             "n_estimators": [50, 100, 200, 800],
             "criterion": ["gini", "entropy"],
             "max_depth": [None, 5, 10, 100],
-            "min_samples_split": [1, 2, 5],
+            "min_samples_split": [2, 5, 10],
             "max_leaf_nodes": [None, 100, 500, 1000]
         }
         grid = GridSearchCV(forest, param_grid=params, scoring="accuracy", cv=cv, n_jobs=n_jobs)
