@@ -6,51 +6,105 @@ from utils.data import *
 from utils.model_header import *  
 
 # Method 1: K-Nearest Neighbor
-def KNN(data, cv, print_time=False):
+def KNN(data, cv, print_time=False, grid_search=False, n_jobs=1):
     if print_time:
         tt = time.process_time()
     knn = KNeighborsClassifier()
-    score = cross_val_score(knn, data.X, data.y, cv=cv)
+    if grid_search:
+        params = {
+            "n_neighbors": [2, 5, 8],
+            "p": [1, 2],
+            "algorithm": ["ball_tree", "kd_tree", "brute"]
+        }
+        grid = GridSearchCV(knn, param_grid=params, scoring="accuracy", cv=cv, n_jobs=n_jobs)
+        grid.fit(data.X, data.y)
+        score = grid.best_score_
+    else:
+        score = cross_val_score(knn, data.X, data.y, cv=cv, scoring="accuracy", n_jobs=n_jobs).mean()
     if print_time:
         print("Performance Monitor: ({:.4f}s) ".format(time.process_time() - tt) + inspect.stack()[0][3])
-    return score.mean()
+    return score
 
 # Method 2: Stochastic Gradient Descent
-def SGD(data, cv, print_time=False):
+def SGD(data, cv, print_time=False, grid_search=False, n_jobs=1):
     if print_time:
         tt = time.process_time()
     sgd = SGDClassifier()
-    score = cross_val_score(sgd, data.X, data.y, cv=cv)
+    if grid_search:
+        params = {
+            "alpha": [0.00005, 0.0001, 0.001, 0.01],
+            "max_iter": [200, 500, 1000, 4000],
+            "learning_rate": ["optimal", "invscaling", "adaptive"]
+        }
+        grid = GridSearchCV(sgd, param_grid=params, scoring="accuracy", cv=cv, n_jobs=n_jobs)
+        grid.fit(data.X, data.y)
+        score = grid.best_score_
+    else:
+        score = cross_val_score(sgd, data.X, data.y, cv=cv, scoring="accuracy", n_jobs=n_jobs).mean()
     if print_time:
         print("Performance Monitor: ({:.4f}s) ".format(time.process_time() - tt) + inspect.stack()[0][3])
-    return score.mean()
+    return score
 
 # Method 3: Decision Tree
-def DecisionTree(data, cv, print_time=False):
+def DecisionTree(data, cv, print_time=False, grid_search=False, n_jobs=1):
     if print_time:
         tt = time.process_time()
     tree = DecisionTreeClassifier()
-    score = cross_val_score(tree, data.X, data.y, cv=cv)
+    if grid_search:
+        params = {
+            "criterion": ["gini", "entropy"],
+            "max_depth": [None, 5, 10, 100],
+            "min_samples_split": [1, 2, 5],
+            "max_leaf_nodes": [None, 100, 500, 1000]
+        }
+        grid = GridSearchCV(tree, param_grid=params, scoring="accuracy", n_jobs=n_jobs, cv=cv)
+        grid.fit(data.X, data.y)
+        score = grid.best_score_
+    else:
+        score = cross_val_score(tree, data.X, data.y, cv=cv, scoring="accuracy", n_jobs=n_jobs).mean()
     if print_time:
         print("Performance Monitor: ({:.4f}s) ".format(time.process_time() - tt) + inspect.stack()[0][3])
-    return score.mean()
+    return score
 
 # Method 4: SVM
-def SVM(data, cv, print_time=False):
+def SVM(data, cv, print_time=False, grid_search=False, n_jobs=1):
     if print_time:
         tt = time.process_time()
     svm = SVC()
-    score = cross_val_score(svm, data.X, data.y, cv=cv)
+    if grid_search:
+        params = {
+            "C": [0.01, 0.1, 1.0, 5.0],
+            "tol": [1e-4, 1e-3, 1e-2],
+            "max_iter": [-1, 100, 500, 1000],
+            "kernel": ["poly", "rbf", "sigmoid"]
+        }
+        grid = GridSearchCV(svm, param_grid=params, scoring="accuracy", cv=cv, n_jobs=n_jobs)
+        grid.fit(data.X, data.y)
+        score = grid.best_score_
+    else:
+        score = cross_val_score(svm, data.X, data.y, cv=cv, scoring="accuracy", n_jobs=n_jobs).mean()
     if print_time:
         print("Performance Monitor: ({:.4f}s) ".format(time.process_time() - tt) + inspect.stack()[0][3])
-    return score.mean()
+    return score
 
 # Method 5: Random Forest
-def Forest(data, cv, print_time=False):
+def Forest(data, cv, print_time=False, grid_search=False, n_jobs=1):
     if print_time:
         tt = time.process_time()
     forest = RandomForestClassifier()
-    score = cross_val_score(forest, data.X, data.y, cv=cv)
+    if grid_search:
+        params = {
+            "n_estimators": [50, 100, 200, 800],
+            "criterion": ["gini", "entropy"],
+            "max_depth": [None, 5, 10, 100],
+            "min_samples_split": [1, 2, 5],
+            "max_leaf_nodes": [None, 100, 500, 1000]
+        }
+        grid = GridSearchCV(forest, param_grid=params, scoring="accuracy", cv=cv, n_jobs=n_jobs)
+        grid.fit(data.X, data.y)
+        score = grid.best_score_
+    else:
+        score = cross_val_score(forest, data.X, data.y, cv=cv, scoring="accuracy", n_jobs=n_jobs).mean()
     if print_time:
         print("Performance Monitor: ({:.4f}s) ".format(time.process_time() - tt) + inspect.stack()[0][3])
-    return score.mean()
+    return score

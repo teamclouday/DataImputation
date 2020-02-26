@@ -95,3 +95,33 @@ class TestMachine:
         Y = 5 + (max(len(self.completers), len(self.models)) + 1) / 2
         X = (len(self.completers) * len(self.models) + 1.8*(max(len(self.completers), len(self.models)) - 1)) / 2
         return (X, Y)
+
+class BiasDatasetTest:
+    def __init__(self, dataset_func=[], models=[],
+                 predictor_cv=5, record_time=False):
+        self.predictor_cv = predictor_cv
+        self.record_time = record_time
+        self.dataset_func = [
+            create_adult_dataset,
+            create_bank_dataset,
+            create_heart_dataset,
+            create_drug_dataset
+        ] if dataset_func == [] else dataset_func
+        self._gen_data()
+        self.models = [
+            KNN,
+            SGD,
+            DecisionTree,
+            SVM,
+            Forest
+        ] if models == [] else models
+
+    def _gen_data(self):
+        self._log_message("Start loading datasets")
+        data = []
+        for func in self.dataset_func:
+            data.append(func(print_time=self.record_time))
+        self._log_message("All datasets loaded")
+
+    def _log_message(self, message):
+        print("BiasDatasetTest: {}".format(message))
