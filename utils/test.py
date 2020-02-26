@@ -12,17 +12,20 @@ class TestMachine:
     def __init__(self, data_func, random_func,
                  predictor_cv=5, random_gen=1,
                  complete_func=[], model_func=[],
-                 record_time=False):
+                 record_time=False, n_jobs=1,
+                 grid_search=False):
         self.data_func_name = data_func.__name__
         self.random_func_name = random_func.__name__
         self.record_time = record_time
         self.original_data = data_func(print_time=self.record_time)
+        self._log_message("Dataset loaded")
         assert random_gen >= 1 # make sure at least one
         if random_gen > 1:
             print("You're using random generation > 1: {}".format(random_gen))
             self.missing_data = [random_func(self.original_data, print_time=self.record_time) for _ in range(random_gen)]
         else:
             self.missing_data = random_func(self.original_data, print_time=self.record_time)
+        self._log_message("Missing values generated")
         self.completers = [
                            complete_by_value,
                            complete_by_mean_col,
@@ -39,26 +42,33 @@ class TestMachine:
                         Forest
                         ] if model_func == [] else model_func
         self.predictor_cv = predictor_cv
+        self.n_jobs = n_jobs
+        self.grid_search = grid_search
     
     def run(self):
         scores = []
+        self._log_message("Run on original dataset")
         for model in self.models:
-            scores.append(["original", model.__name__, model(self.original_data, self.predictor_cv, self.record_time)])
+            scores.append(["original", model.__name__, model(self.original_data, self.predictor_cv, self.record_time, self.grid_search, self.n_jobs)])
+        self._log_message("Original dataset scores collected")
         for completer in self.completers:
+            self._log_message("Run on missing dataset")
             if type(self.missing_data) is list:
                 completed_data = [completer(x, print_time=self.record_time) for x in self.missing_data]
                 for model in self.models:
-                    model_score = [model(cc, self.predictor_cv, self.record_time) for cc in completed_data] if type(completed_data[0]) is not list \
-                            else [np.mean([model(m, self.predictor_cv, self.record_time) for m in cc]) for cc in completed_data]
+                    model_score = [model(cc, self.predictor_cv, self.record_time, self.grid_search, self.n_jobs) for cc in completed_data] if type(completed_data[0]) is not list \
+                            else [np.mean([model(m, self.predictor_cv, self.record_time, self.grid_search, self.n_jobs) for m in cc]) for cc in completed_data]
                     scores.append([completer.__name__, model.__name__, sum(model_score)/len(model_score)])
             else:
                 completed_data = completer(self.missing_data, print_time=self.record_time)
                 for model in self.models:
-                    model_score = model(completed_data, self.predictor_cv, self.record_time) if type(completed_data) is not list \
-                        else np.mean([model(cc, self.predictor_cv, self.record_time) for cc in completed_data])
+                    model_score = model(completed_data, self.predictor_cv, self.record_time, self.grid_search, self.n_jobs) if type(completed_data) is not list \
+                        else np.mean([model(cc, self.predictor_cv, self.record_time, self.grid_search, self.n_jobs) for cc in completed_data])
                     scores.append([completer.__name__, model.__name__, model_score])
+            self._log_message("Scores collected")
         print("All tests complete")
         self.scores = pd.DataFrame(data=scores, columns=["Completer Functions", "Models", "Scores"], index=None)
+        self._log_message("Score dataframe generated")
         print(self.scores.to_string())
 
     def plot_compare_models(self, size=None, save_file_name=None):
@@ -95,6 +105,9 @@ class TestMachine:
         Y = 5 + (max(len(self.completers), len(self.models)) + 1) / 2
         X = (len(self.completers) * len(self.models) + 1.8*(max(len(self.completers), len(self.models)) - 1)) / 2
         return (X, Y)
+
+    def _log_message(self, message):
+        print("TestMachine: {}".format(message))
 
 class BiasDatasetTest:
     def __init__(self, dataset_func=[], models=[],
