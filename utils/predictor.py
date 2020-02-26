@@ -33,8 +33,9 @@ def SGD(data, cv, print_time=False, grid_search=False, n_jobs=1):
     if grid_search:
         params = {
             "alpha": [0.00005, 0.0001, 0.001, 0.01],
-            "max_iter": [200, 500, 1000, 4000],
-            "learning_rate": ["optimal", "invscaling", "adaptive"]
+            "max_iter": [500, 1000, 4000],
+            "learning_rate": ["optimal", "invscaling", "adaptive"],
+            "eta0": [0.0001, 0.001, 0.01, 0.1]
         }
         grid = GridSearchCV(sgd, param_grid=params, scoring="accuracy", cv=cv, n_jobs=n_jobs)
         grid.fit(data.X, data.y)
@@ -75,7 +76,6 @@ def SVM(data, cv, print_time=False, grid_search=False, n_jobs=1):
         params = {
             "C": [0.01, 0.1, 1.0, 5.0],
             "tol": [1e-4, 1e-3, 1e-2],
-            "max_iter": [-1, 100, 500, 1000],
             "kernel": ["poly", "rbf", "sigmoid"]
         }
         grid = GridSearchCV(svm, param_grid=params, scoring="accuracy", cv=cv, n_jobs=n_jobs)
