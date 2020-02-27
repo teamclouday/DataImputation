@@ -3,7 +3,7 @@
 import numpy as np
 import pandas as pd
 from utils.data import *
-from utils.model_header import *  
+from utils.model_header import *
 
 # Method 1: K-Nearest Neighbor
 def KNN(data, cv, print_time=False, grid_search=False, n_jobs=1, return_model=False):
