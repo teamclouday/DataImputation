@@ -6,7 +6,7 @@ from utils.data import *
 from utils.model_header import *  
 
 # Method 1: K-Nearest Neighbor
-def KNN(data, cv, print_time=False, grid_search=False, n_jobs=1):
+def KNN(data, cv, print_time=False, grid_search=False, n_jobs=1, return_model=False):
     if print_time:
         tt = time.process_time()
     knn = KNeighborsClassifier()
@@ -20,13 +20,19 @@ def KNN(data, cv, print_time=False, grid_search=False, n_jobs=1):
         grid.fit(data.X, data.y)
         score = grid.best_score_
     else:
-        score = cross_val_score(knn, data.X, data.y, cv=cv, scoring="accuracy", n_jobs=n_jobs).mean()
+        scores = cross_validate(knn, data.X, data.y, cv=cv, scoring="accuracy", n_jobs=n_jobs, return_estimator=True)
+        score = sum(scores["test_score"]) / len(scores["test_score"])
     if print_time:
         print("Performance Monitor: ({:.4f}s) ".format(time.process_time() - tt) + inspect.stack()[0][3])
+    if return_model:
+        if grid_search:
+            return [score, grid.best_estimator_]
+        else:
+            return [score, scores["estimator"]]
     return score
 
 # Method 2: Stochastic Gradient Descent
-def SGD(data, cv, print_time=False, grid_search=False, n_jobs=1):
+def SGD(data, cv, print_time=False, grid_search=False, n_jobs=1, return_model=False):
     if print_time:
         tt = time.process_time()
     sgd = SGDClassifier()
@@ -41,13 +47,19 @@ def SGD(data, cv, print_time=False, grid_search=False, n_jobs=1):
         grid.fit(data.X, data.y)
         score = grid.best_score_
     else:
-        score = cross_val_score(sgd, data.X, data.y, cv=cv, scoring="accuracy", n_jobs=n_jobs).mean()
+        scores = cross_validate(sgd, data.X, data.y, cv=cv, scoring="accuracy", n_jobs=n_jobs, return_estimator=True)
+        score = sum(scores["test_score"]) / len(scores["test_score"])
     if print_time:
         print("Performance Monitor: ({:.4f}s) ".format(time.process_time() - tt) + inspect.stack()[0][3])
+    if return_model:
+        if grid_search:
+            return [score, grid.best_estimator_]
+        else:
+            return [score, scores["estimator"]]
     return score
 
 # Method 3: Decision Tree
-def DecisionTree(data, cv, print_time=False, grid_search=False, n_jobs=1):
+def DecisionTree(data, cv, print_time=False, grid_search=False, n_jobs=1, return_model=False):
     if print_time:
         tt = time.process_time()
     tree = DecisionTreeClassifier()
@@ -62,13 +74,19 @@ def DecisionTree(data, cv, print_time=False, grid_search=False, n_jobs=1):
         grid.fit(data.X, data.y)
         score = grid.best_score_
     else:
-        score = cross_val_score(tree, data.X, data.y, cv=cv, scoring="accuracy", n_jobs=n_jobs).mean()
+        scores = cross_validate(tree, data.X, data.y, cv=cv, scoring="accuracy", n_jobs=n_jobs, return_estimator=True)
+        score = sum(scores["test_score"]) / len(scores["test_score"])
     if print_time:
         print("Performance Monitor: ({:.4f}s) ".format(time.process_time() - tt) + inspect.stack()[0][3])
+    if return_model:
+        if grid_search:
+            return [score, grid.best_estimator_]
+        else:
+            return [score, scores["estimator"]]
     return score
 
 # Method 4: SVM
-def SVM(data, cv, print_time=False, grid_search=False, n_jobs=1):
+def SVM(data, cv, print_time=False, grid_search=False, n_jobs=1, return_model=False):
     if print_time:
         tt = time.process_time()
     svm = SVC()
@@ -82,13 +100,19 @@ def SVM(data, cv, print_time=False, grid_search=False, n_jobs=1):
         grid.fit(data.X, data.y)
         score = grid.best_score_
     else:
-        score = cross_val_score(svm, data.X, data.y, cv=cv, scoring="accuracy", n_jobs=n_jobs).mean()
+        scores = cross_validate(svm, data.X, data.y, cv=cv, scoring="accuracy", n_jobs=n_jobs, return_estimator=True)
+        score = sum(scores["test_score"]) / len(scores["test_score"])
     if print_time:
         print("Performance Monitor: ({:.4f}s) ".format(time.process_time() - tt) + inspect.stack()[0][3])
+    if return_model:
+        if grid_search:
+            return [score, grid.best_estimator_]
+        else:
+            return [score, scores["estimator"]]
     return score
 
 # Method 5: Random Forest
-def Forest(data, cv, print_time=False, grid_search=False, n_jobs=1):
+def Forest(data, cv, print_time=False, grid_search=False, n_jobs=1, return_model=False):
     if print_time:
         tt = time.process_time()
     forest = RandomForestClassifier()
@@ -104,7 +128,13 @@ def Forest(data, cv, print_time=False, grid_search=False, n_jobs=1):
         grid.fit(data.X, data.y)
         score = grid.best_score_
     else:
-        score = cross_val_score(forest, data.X, data.y, cv=cv, scoring="accuracy", n_jobs=n_jobs).mean()
+        scores = cross_validate(forest, data.X, data.y, cv=cv, scoring="accuracy", n_jobs=n_jobs, return_estimator=True)
+        score = sum(scores["test_score"]) / len(scores["test_score"])
     if print_time:
         print("Performance Monitor: ({:.4f}s) ".format(time.process_time() - tt) + inspect.stack()[0][3])
+    if return_model:
+        if grid_search:
+            return [score, grid.best_estimator_]
+        else:
+            return [score, scores["estimator"]]
     return score
