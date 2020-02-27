@@ -139,7 +139,7 @@ class BiasDatasetTest:
         self.data = data
         self._log_message("All datasets loaded")
 
-    def plot_confusion_mat(self, savefig=True):
+    def plot_confusion_mat(self, savefig=False):
         size = self._calc_confusion_size()
         for dd in self.data:
             self._log_message("Now working on {} data".format(dd.name))
@@ -152,6 +152,8 @@ class BiasDatasetTest:
                     _, estimator = self.models[j + i*size[2]](dd, self.predictor_cv, print_time=self.record_time, grid_search=self.grid_search, n_jobs=-1, return_model=True)
                     ax[i, j].set_title(self.models[j + i*size[2]].__name__)
                     plot_confusion_matrix(estimator, dd.X, dd.y, cmap=plt.cm.Blues, ax=ax[i, j])
+            [axi.set_axis_off() for axi in ax.ravel()]
+            f.suptitle("Confusion matrixes for {} data".format(dd.name))
             self._log_message("Confusion graph generated for {} data".format(dd.name))
             if savefig:
                 plt.savefig(dd.name + "_cm.png")

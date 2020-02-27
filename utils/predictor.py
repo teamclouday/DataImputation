@@ -26,9 +26,9 @@ def KNN(data, cv, print_time=False, grid_search=False, n_jobs=1, return_model=Fa
         print("Performance Monitor: ({:.4f}s) ".format(time.process_time() - tt) + inspect.stack()[0][3])
     if return_model:
         if grid_search:
-            return [score, grid.best_estimator_]
+            return (score, grid.best_estimator_)
         else:
-            return [score, scores["estimator"]]
+            return (score, scores["estimator"][0])
     return score
 
 # Method 2: Stochastic Gradient Descent
@@ -53,9 +53,9 @@ def SGD(data, cv, print_time=False, grid_search=False, n_jobs=1, return_model=Fa
         print("Performance Monitor: ({:.4f}s) ".format(time.process_time() - tt) + inspect.stack()[0][3])
     if return_model:
         if grid_search:
-            return [score, grid.best_estimator_]
+            return (score, grid.best_estimator_)
         else:
-            return [score, scores["estimator"]]
+            return (score, scores["estimator"][0])
     return score
 
 # Method 3: Decision Tree
@@ -80,9 +80,9 @@ def DecisionTree(data, cv, print_time=False, grid_search=False, n_jobs=1, return
         print("Performance Monitor: ({:.4f}s) ".format(time.process_time() - tt) + inspect.stack()[0][3])
     if return_model:
         if grid_search:
-            return [score, grid.best_estimator_]
+            return (score, grid.best_estimator_)
         else:
-            return [score, scores["estimator"]]
+            return (score, scores["estimator"][0])
     return score
 
 # Method 4: SVM
@@ -106,9 +106,9 @@ def SVM(data, cv, print_time=False, grid_search=False, n_jobs=1, return_model=Fa
         print("Performance Monitor: ({:.4f}s) ".format(time.process_time() - tt) + inspect.stack()[0][3])
     if return_model:
         if grid_search:
-            return [score, grid.best_estimator_]
+            return (score, grid.best_estimator_)
         else:
-            return [score, scores["estimator"]]
+            return (score, scores["estimator"][0])
     return score
 
 # Method 5: Random Forest
@@ -134,7 +134,7 @@ def Forest(data, cv, print_time=False, grid_search=False, n_jobs=1, return_model
         print("Performance Monitor: ({:.4f}s) ".format(time.process_time() - tt) + inspect.stack()[0][3])
     if return_model:
         if grid_search:
-            return [score, grid.best_estimator_]
+            return (score, grid.best_estimator_)
         else:
-            return [score, scores["estimator"]]
+            return (score, scores["estimator"][0])
     return score
