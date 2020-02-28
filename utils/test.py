@@ -83,7 +83,7 @@ class TestMachine:
         plt.ylim([0.0, 1.5])
         plt.tight_layout()
         if save_file_name is not None:
-            plt.savefig(save_file_name)
+            plt.savefig(os.path.join("img", "TestMachine", save_file_name))
         plt.show()
     
     def plot_compare_completers(self, size=None, save_file_name=None):
@@ -98,7 +98,7 @@ class TestMachine:
         plt.ylim([0.0, 1.5])
         plt.tight_layout()
         if save_file_name is not None:
-            plt.savefig(save_file_name)
+            plt.savefig(os.path.join("img", "TestMachine", save_file_name))
         plt.show()
 
     def _calc_figsize(self):
@@ -168,7 +168,7 @@ class BiasDatasetTest:
             plt.subplots_adjust(top=0.88)
             self._log_message("Confusion graph generated for {} data".format(dd.name))
             if savefig:
-                plt.savefig(dd.name + "_cm.png")
+                plt.savefig(os.path.join("img", "BiasDatasetTest", dd.name + "_cm.png"))
             plt.show()
 
     def _calc_confusion_size(self):
