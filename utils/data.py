@@ -9,6 +9,7 @@ import zipfile
 import urllib.request
 import numpy as np
 import pandas as pd
+from functools import partial
 from pandas.api.types import is_numeric_dtype
 from sklearn.preprocessing import LabelEncoder
 from sklearn.experimental import enable_iterative_imputer
@@ -229,18 +230,22 @@ def create_drug_dataset(print_time=False, target_drug="Heroin"):
     data = pd.read_csv(os.path.join("dataset", "drug", "drug_consumption.data"), names=names)
     X = data.iloc[:, :-len(labels)].copy()
     y = data.iloc[:, -(labels[target_drug])].copy()
+    y.replace(["CL0", "CL1"], "NonUser", inplace=True)
+    y.replace(["CL2", "CL3", "CL4", "CL5", "CL6"], "User", inplace=True)
     if print_time:
         print("Performance Monitor: ({:.4f}s) ".format(time.process_time() - tt) + inspect.stack()[0][3])
     return Dataset("drug_"+target_drug, X, y, convert_all=True)
 
 class Dataset:
-    def __init__(self, name, X, y, auto_convert=True, types=None, convert_all=False, protected_features=None):
+    def __init__(self, name, X, y, auto_convert=True, types=None, convert_all=False, protected_features=None, inherit_encoder=None):
         self.name = name
         self.X = X
         self.y = y
         self.convert_all = convert_all
         if auto_convert:
-            self._convert_categories()
+            self.encoder = self._convert_categories()
+        if inherit_encoder is not None:
+            self.encoder = inherit_encoder
         self.types = X.dtypes
         if types is not None:
             self.types = types
@@ -265,6 +270,7 @@ class Dataset:
         encoder = LabelEncoder()
         encoder.fit(self.y)
         self.y = encoder.transform(self.y)
+        return encoder
         
     def copy(self):
-        return Dataset(self.name, self.X.copy(), self.y.copy(), auto_convert=False, types=self.types, protected_features=self.protected)
+        return Dataset(self.name, self.X.copy(), self.y.copy(), auto_convert=False, types=self.types, protected_features=self.protected, inherit_encoder=self.encoder)

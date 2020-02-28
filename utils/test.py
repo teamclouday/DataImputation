@@ -7,7 +7,6 @@ from utils.predictor import *
 from utils.model_header import *
 import matplotlib.pyplot as plt
 import seaborn as sns
-from sklearn.metrics import plot_confusion_matrix
 
 class TestMachine:
     def __init__(self, data_func, random_func,
@@ -112,14 +111,16 @@ class TestMachine:
 
 class BiasDatasetTest:
     def __init__(self, dataset_func=[], models=[],
-                 predictor_cv=5, record_time=False, search_best_model=True):
+                 predictor_cv=5, record_time=False,
+                 search_best_model=True, n_jobs=1):
         self.predictor_cv = predictor_cv
         self.record_time = record_time
         self.grid_search = search_best_model
+        self.n_jobs = n_jobs
         self.dataset_func = [
+            # create_heart_dataset,
             create_adult_dataset,
             create_bank_dataset,
-            create_heart_dataset,
             create_drug_dataset
         ] if dataset_func == [] else dataset_func
         self._gen_data()
@@ -127,7 +128,7 @@ class BiasDatasetTest:
             KNN,
             SGD,
             DecisionTree,
-            SVM,
+            # SVM,
             Forest
         ] if models == [] else models
 
@@ -143,17 +144,28 @@ class BiasDatasetTest:
         size = self._calc_confusion_size()
         for dd in self.data:
             self._log_message("Now working on {} data".format(dd.name))
-            self._log_message("Now training best models")
+            self._log_message("Now training {} models".format("best" if self.grid_search else "normal"))
             f, ax = plt.subplots(size[3], size[2], figsize=(size[0], size[1]))
             for i in range(size[3]):
                 for j in range(size[2]):
                     if (j + i*size[2]) >= len(self.models):
-                        break
-                    _, estimator = self.models[j + i*size[2]](dd, self.predictor_cv, print_time=self.record_time, grid_search=self.grid_search, n_jobs=-1, return_model=True)
+                        ax[i, j].axis("off")
+                        continue
+                    _, estimator = self.models[j + i*size[2]](dd, self.predictor_cv, print_time=self.record_time, grid_search=self.grid_search, n_jobs=self.n_jobs, return_model=True)
                     ax[i, j].set_title(self.models[j + i*size[2]].__name__)
-                    plot_confusion_matrix(estimator, dd.X, dd.y, cmap=plt.cm.Blues, ax=ax[i, j])
-            [axi.set_axis_off() for axi in ax.ravel()]
+                    y_true = dd.y
+                    y_pred = estimator.predict(dd.X)
+                    conf_mat = confusion_matrix(y_true, y_pred)
+                    class_names = dd.encoder.inverse_transform(np.arange(len(np.unique(y_true))))
+                    df_cm = pd.DataFrame(conf_mat, index=class_names, columns=class_names)
+                    heatmap = sns.heatmap(df_cm, annot=True, ax=ax[i, j], fmt="d", cmap=plt.cm.Blues)
+                    heatmap.yaxis.set_ticklabels(heatmap.yaxis.get_ticklabels(), rotation=0, ha='right', fontsize=10)
+                    heatmap.xaxis.set_ticklabels(heatmap.xaxis.get_ticklabels(), rotation=45, ha='right', fontsize=10)
+                    ax[i, j].set_xlabel("Predicted Label")
+                    ax[i, j].set_ylabel("True Label")
             f.suptitle("Confusion matrixes for {} data".format(dd.name))
+            plt.tight_layout()
+            plt.subplots_adjust(top=0.88)
             self._log_message("Confusion graph generated for {} data".format(dd.name))
             if savefig:
                 plt.savefig(dd.name + "_cm.png")
