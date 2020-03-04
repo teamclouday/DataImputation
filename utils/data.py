@@ -149,23 +149,25 @@ def create_adult_dataset(print_time=False):
         "hours-per-week",
         "native-country"
     ]
+    protected_features = ["education", "martial-status", "race", "sex"]
     data = pd.read_csv(os.path.join("dataset", "adult", "adult.data"), header=None)
     X = data.iloc[:, :-1].copy()
     X.columns = names
     y = data.iloc[:, -1].copy()
     if print_time:
         print("Performance Monitor: ({:.4f}s) ".format(time.process_time() - tt) + inspect.stack()[0][3])
-    return Dataset("adult", X, y)
+    return Dataset("adult", X, y, protected_features=protected_features)
 
 def create_bank_dataset(print_time=False):
     if print_time:
         tt = time.process_time()
+    protected_features = ["martial", "education"]
     data = pd.read_csv(os.path.join("dataset", "bank", "bank-full.csv"), sep=";")
     X = data.iloc[:, :-1].copy()
     y = data.iloc[:, -1].copy()
     if print_time:
         print("Performance Monitor: ({:.4f}s) ".format(time.process_time() - tt) + inspect.stack()[0][3])
-    return Dataset("bank", X, y)
+    return Dataset("bank", X, y, protected_features=protected_features)
 
 def create_iris_dataset(print_time=False):
     if print_time:
@@ -208,7 +210,9 @@ def create_heart_dataset(print_time=False):
     y = data.iloc[:, -1].copy()
     if print_time:
         print("Performance Monitor: ({:.4f}s) ".format(time.process_time() - tt) + inspect.stack()[0][3])
-    return Dataset("heart", X, y)
+    # return Dataset("heart", X, y)
+    raise Exception("Heart dataset cannot be used")
+    return None
 
 def create_drug_dataset(print_time=False, target_drug="Heroin"):
     if print_time:
@@ -232,9 +236,10 @@ def create_drug_dataset(print_time=False, target_drug="Heroin"):
     y = data.iloc[:, -(labels[target_drug])].copy()
     y.replace(["CL0", "CL1"], "NonUser", inplace=True)
     y.replace(["CL2", "CL3", "CL4", "CL5", "CL6"], "User", inplace=True)
+    protected_features = ["Gender", "Education", "Ethnicity"]
     if print_time:
         print("Performance Monitor: ({:.4f}s) ".format(time.process_time() - tt) + inspect.stack()[0][3])
-    return Dataset("drug_"+target_drug, X, y, convert_all=True)
+    return Dataset("drug_"+target_drug, X, y, convert_all=True, protected_features=protected_features)
 
 class Dataset:
     def __init__(self, name, X, y, auto_convert=True, types=None, convert_all=False, protected_features=None, inherit_encoder=None):
@@ -249,6 +254,7 @@ class Dataset:
         self.types = X.dtypes
         if types is not None:
             self.types = types
+        assert protected_features in X.columns()
         self.protected = protected_features
 
     def _convert_categories(self):

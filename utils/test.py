@@ -137,6 +137,7 @@ class BiasDatasetTest:
         data = []
         for func in self.dataset_func:
             data.append(func(print_time=self.record_time))
+            assert data[-1].protected is not None
         self.data = data
         self._log_message("All datasets loaded")
 
