@@ -241,6 +241,14 @@ def create_drug_dataset(print_time=False, target_drug="Heroin"):
         print("Performance Monitor: ({:.4f}s) ".format(time.process_time() - tt) + inspect.stack()[0][3])
     return Dataset("drug_"+target_drug, X, y, convert_all=True, protected_features=protected_features)
 
+def create_compas_dataset(print_time=False):
+    if print_time:
+        tt = time.process_time()
+
+        
+    if print_time:
+        print("Performance Monitor: ({:.4f}s) ".format(time.process_time() - tt) + inspect.stack()[0][3])
+
 class Dataset:
     def __init__(self, name, X, y, auto_convert=True, types=None, convert_all=False, protected_features=None, encoders=None):
         self.name = name

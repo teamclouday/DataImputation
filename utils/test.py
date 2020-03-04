@@ -191,7 +191,6 @@ class BiasDatasetTest:
                 size = self._calc_confusion_size_protected(num_features=len(unique_features))
                 f, ax = plt.subplots(size[3], size[2], figsize=(size[0], size[1]))
                 y_true = dd.y
-                class_names = dd.encoder.inverse_transform(np.arange(len(np.unique(y_true))))
                 for j in range(size[2]):
                     _, estimator = self.models[j](dd, self.predictor_cv, print_time=self.record_time, grid_search=self.grid_search, n_jobs=self.n_jobs, return_model=True)
                     y_pred = estimator.predict(dd.X)
@@ -200,7 +199,8 @@ class BiasDatasetTest:
                         index_selected = dd.X.index[dd.X[feature] == unique_features[i]].tolist()
                         y_true_selected = np.array(y_true)[index_selected]
                         y_pred_selected = np.array(y_pred)[index_selected]
-                        conf_mat = confusion_matrix(y_true_selected, y_pred_selected)
+                        conf_mat = confusion_matrix(y_true_selected, y_pred_selected, labels=np.unique(y_true_selected))
+                        class_names = dd.encoder.inverse_transform(np.unique(y_true_selected))
                         df_cm = pd.DataFrame(conf_mat, index=class_names, columns=class_names)
                         heatmap = sns.heatmap(df_cm, annot=True, ax=ax[i, j], fmt="d", cmap=plt.cm.Blues)
                         heatmap.yaxis.set_ticklabels(heatmap.yaxis.get_ticklabels(), rotation=0, ha='right', fontsize=10)
@@ -210,9 +210,9 @@ class BiasDatasetTest:
                             ax[i, j].set_ylabel("True Label ({})".format(unique_features_names[i]))
                         else:
                             ax[i, j].set_ylabel("True Label")
-                f.suptitle("Confusion matrixes for {} data ({})".format(dd.name, feature))
+                f.suptitle("Confusion matrixes for {} data ({})".format(dd.name, feature), size=20)
                 plt.tight_layout()
-                plt.subplots_adjust(top=0.5)
+                plt.subplots_adjust(top=(1-3/size[1]))
                 self._log_message("Confusion graph generated for {} data, protected feature: {}".format(dd.name, feature))
                 if savefig:
                     plt.savefig(os.path.join("img", "BiasDatasetTest", dd.name + "_" + feature + "_cm.png"))
