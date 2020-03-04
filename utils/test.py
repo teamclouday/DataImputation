@@ -44,6 +44,8 @@ class TestMachine:
         self.predictor_cv = predictor_cv
         self.n_jobs = n_jobs
         self.grid_search = grid_search
+        if not os.path.exists(os.path.join("img", "TestMachine")):
+            os.makedirs(os.path.join("img", "TestMachine"))
     
     def run(self):
         scores = []
@@ -131,6 +133,8 @@ class BiasDatasetTest:
             # SVM,
             Forest
         ] if models == [] else models
+        if not os.path.exists(os.path.join("img", "BiasDatasetTest")):
+            os.makedirs(os.path.join("img", "BiasDatasetTest"))
 
     def _gen_data(self):
         self._log_message("Start loading datasets")
@@ -172,9 +176,61 @@ class BiasDatasetTest:
                 plt.savefig(os.path.join("img", "BiasDatasetTest", dd.name + "_cm.png"))
             plt.show()
 
+    def plot_confusion_mat_protected(self, savefig=False):
+        for dd in self.data:
+            assert dd.protected is not None
+            self._log_message("Now working on {} data, protected features: {}".format(dd.name, dd.protected))
+            self._log_message("Now training {} models".format("best" if self.grid_search else "normal"))
+            for feature in dd.protected:
+                unique_features = dd.X[feature].unique()
+                unique_features_names = dd.encoders[feature].inverse_transform(unique_features)
+                self._log_message("Now working on {} with {} unique values: {}".format(feature, len(unique_features), unique_features_names))
+                if len(unique_features) > 20:
+                    print("ERROR: [plot_confusion_mat_protected] feature {} have > 20 unique values ({})\nFailed to plot".format(feature, len(unique_features)))
+                    return
+                size = self._calc_confusion_size_protected(num_features=len(unique_features))
+                f, ax = plt.subplots(size[3], size[2], figsize=(size[0], size[1]))
+                y_true = dd.y
+                class_names = dd.encoder.inverse_transform(np.arange(len(np.unique(y_true))))
+                for j in range(size[2]):
+                    _, estimator = self.models[j](dd, self.predictor_cv, print_time=self.record_time, grid_search=self.grid_search, n_jobs=self.n_jobs, return_model=True)
+                    y_pred = estimator.predict(dd.X)
+                    for i in range(size[3]):
+                        ax[i, j].set_title(self.models[j].__name__)
+                        index_selected = dd.X.index[dd.X[feature] == unique_features[i]].tolist()
+                        y_true_selected = np.array(y_true)[index_selected]
+                        y_pred_selected = np.array(y_pred)[index_selected]
+                        conf_mat = confusion_matrix(y_true_selected, y_pred_selected)
+                        df_cm = pd.DataFrame(conf_mat, index=class_names, columns=class_names)
+                        heatmap = sns.heatmap(df_cm, annot=True, ax=ax[i, j], fmt="d", cmap=plt.cm.Blues)
+                        heatmap.yaxis.set_ticklabels(heatmap.yaxis.get_ticklabels(), rotation=0, ha='right', fontsize=10)
+                        heatmap.xaxis.set_ticklabels(heatmap.xaxis.get_ticklabels(), rotation=45, ha='right', fontsize=10)
+                        ax[i, j].set_xlabel("Predicted Label")
+                        if j == 0:
+                            ax[i, j].set_ylabel("True Label ({})".format(unique_features_names[i]))
+                        else:
+                            ax[i, j].set_ylabel("True Label")
+                f.suptitle("Confusion matrixes for {} data ({})".format(dd.name, feature))
+                plt.tight_layout()
+                plt.subplots_adjust(top=0.5)
+                self._log_message("Confusion graph generated for {} data, protected feature: {}".format(dd.name, feature))
+                if savefig:
+                    plt.savefig(os.path.join("img", "BiasDatasetTest", dd.name + "_" + feature + "_cm.png"))
+                plt.show()
+
     def _calc_confusion_size(self):
         width_unit = math.ceil(len(self.models) ** 0.5)
         height_unit = math.ceil(len(self.models) / width_unit)
+        graph_width = 5
+        graph_height = 5
+        return (width_unit * graph_width, height_unit * graph_height, width_unit, height_unit)
+
+    def _calc_confusion_size_protected(self, num_features=None):
+        if num_features is None:
+            return self._calc_confusion_size()
+        assert num_features >= 1
+        width_unit = len(self.models)
+        height_unit = num_features
         graph_width = 5
         graph_height = 5
         return (width_unit * graph_width, height_unit * graph_height, width_unit, height_unit)

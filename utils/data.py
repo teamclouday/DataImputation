@@ -149,7 +149,7 @@ def create_adult_dataset(print_time=False):
         "hours-per-week",
         "native-country"
     ]
-    protected_features = ["education", "martial-status", "race", "sex"]
+    protected_features = ["education", "marital-status", "race", "sex"]
     data = pd.read_csv(os.path.join("dataset", "adult", "adult.data"), header=None)
     X = data.iloc[:, :-1].copy()
     X.columns = names
@@ -161,7 +161,7 @@ def create_adult_dataset(print_time=False):
 def create_bank_dataset(print_time=False):
     if print_time:
         tt = time.process_time()
-    protected_features = ["martial", "education"]
+    protected_features = ["marital", "education"]
     data = pd.read_csv(os.path.join("dataset", "bank", "bank-full.csv"), sep=";")
     X = data.iloc[:, :-1].copy()
     y = data.iloc[:, -1].copy()
@@ -242,19 +242,21 @@ def create_drug_dataset(print_time=False, target_drug="Heroin"):
     return Dataset("drug_"+target_drug, X, y, convert_all=True, protected_features=protected_features)
 
 class Dataset:
-    def __init__(self, name, X, y, auto_convert=True, types=None, convert_all=False, protected_features=None, inherit_encoder=None):
+    def __init__(self, name, X, y, auto_convert=True, types=None, convert_all=False, protected_features=None, encoders=None):
         self.name = name
         self.X = X
         self.y = y
         self.convert_all = convert_all
         if auto_convert:
             self.encoder = self._convert_categories()
-        if inherit_encoder is not None:
-            self.encoder = inherit_encoder
+        if encoders is not None:
+            self.encoder = encoders[1]
+            self.encoders = encoders[0]
         self.types = X.dtypes
         if types is not None:
             self.types = types
-        assert protected_features in X.columns()
+        # print(self.X.columns.tolist(), protected_features)
+        assert len(protected_features) == len([x for x in protected_features if x in self.X.columns.tolist()])
         self.protected = protected_features
 
     def _convert_categories(self):
@@ -279,4 +281,4 @@ class Dataset:
         return encoder
         
     def copy(self):
-        return Dataset(self.name, self.X.copy(), self.y.copy(), auto_convert=False, types=self.types, protected_features=self.protected, inherit_encoder=self.encoder)
+        return Dataset(self.name, self.X.copy(), self.y.copy(), auto_convert=False, types=self.types, protected_features=self.protected, encoders=[self.encoders, self.encoder])
