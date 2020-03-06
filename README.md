@@ -20,7 +20,7 @@ Specifically, this research is trying to find out how the missing data would mak
 2. [Bank Dataset](https://archive.ics.uci.edu/ml/datasets/Bank+Marketing) (UCI)  
 3. [Adult Dataset](https://archive.ics.uci.edu/ml/datasets/Adult) (UCI)  
 4. [Compas Dataset](https://github.com/propublica/compas-analysis/)  
-5. [Heart Disease Dataset](https://archive.ics.uci.edu/ml/datasets/Heart+Disease) (UCI)  
+5. [Heart Disease Dataset](https://archive.ics.uci.edu/ml/datasets/Heart+Disease) (UCI) (No Longer Used)  
 6. [Drug Consumption Dataset](https://archive.ics.uci.edu/ml/datasets/Drug+consumption+%28quantified%29) (UCI)  
 
 ------
