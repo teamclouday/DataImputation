@@ -49,7 +49,7 @@ def _dataset_download_adult(folder):
 # download compas dataset
 def _dataset_download_compas(folder):
     URL_PATH = "https://raw.githubusercontent.com/propublica/compas-analysis/master/"
-    FILE_NAMES = ["compas-scores-two-years.csv", "compas-scores-two-years-violent.csv", "compas-scores.csv", "cox-parsed.csv", "cox-violent-parsed.csv"]
+    FILE_NAMES = ["compas-scores-two-years.csv", "compas-scores-two-years-violent.csv", "compas-scores.csv", "cox-parsed.csv", "cox-violent-parsed.csv", "compas.db"]
     if not os.path.exists(folder):
         os.makedirs(folder)
     for name in FILE_NAMES:
