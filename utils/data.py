@@ -4,6 +4,7 @@ import os
 import sys
 import time
 import math
+import sqlite3
 import inspect
 import zipfile
 import urllib.request
@@ -54,6 +55,12 @@ def _dataset_download_compas(folder):
         os.makedirs(folder)
     for name in FILE_NAMES:
         urllib.request.urlretrieve(URL_PATH + name, os.path.join(folder, name))
+    conn = sqlite3.connect(os.path.join("dataset", "compas", "compas.db"))
+    table_names = ["casearrest", "compas", "people", "summary", "charge", "jailhistory", "prisonhistory"]
+    for name in table_names:
+        df = pd.read_sql_query("SELECT * FROM " + name, conn)
+        df.to_csv(os.path.join("dataset", "compas", "compas.db." + name + ".csv"), index=False)
+    conn.close()
     print("Compas dataset is downloaded")
 
 # download heart dataset
