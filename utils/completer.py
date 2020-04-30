@@ -10,7 +10,10 @@ def complete_by_value(data, value=0, print_time=False):
     if print_time:
         tt = time.process_time()
     data = data.copy()
-    data.X = data.X.fillna(value).astype(data.types)
+    data_protected = data.X[data.protected].copy()
+    data_unprotected = data.X.drop(columns=data.protected).copy()
+    data_unprotected = data_unprotected.fillna(value).astype(data.types.drop(data.protected))
+    data.X = pd.concat([data_unprotected, data_protected], axis=1)
     if print_time:
         print("Performance Monitor: ({:.4f}s) ".format(time.process_time() - tt) + inspect.stack()[0][3])
     return data
@@ -21,7 +24,10 @@ def complete_by_mean_col(data, print_time=False):
     if print_time:
         tt = time.process_time()
     data = data.copy()
-    data.X = data.X.fillna(data.X.mean()).astype(data.types)
+    data_protected = data.X[data.protected].copy()
+    data_unprotected = data.X.drop(columns=data.protected).copy()
+    data_unprotected = data_unprotected.fillna(data_unprotected.mean()).astype(data.types.drop(data.protected))
+    data.X = pd.concat([data_unprotected, data_protected], axis=1)
     if print_time:
         print("Performance Monitor: ({:.4f}s) ".format(time.process_time() - tt) + inspect.stack()[0][3])
     return data
@@ -33,8 +39,11 @@ def complete_by_nearby_row(data, print_time=False):
     if print_time:
         tt = time.process_time()
     data = data.copy()
-    data.X = data.X.fillna(method="ffill")
-    data.X = data.X.fillna(method="bfill").astype(data.types)
+    data_protected = data.X[data.protected].copy()
+    data_unprotected = data.X.drop(columns=data.protected).copy()
+    data_unprotected = data_unprotected.fillna(method="ffill")
+    data_unprotected = data_unprotected.fillna(method="bfill").astype(data.types.drop(data.protected))
+    data.X = pd.concat([data_unprotected, data_protected], axis=1)
     if print_time:
         print("Performance Monitor: ({:.4f}s) ".format(time.process_time() - tt) + inspect.stack()[0][3])
     return data
@@ -45,6 +54,8 @@ def complete_by_similar_row(data, print_time=False):
     if print_time:
         tt = time.process_time()
     data = data.copy()
+    data_protected = data.X[data.protected].copy()
+    data_unprotected = data.X.drop(columns=data.protected).copy()
     # isnull_matrix = data.X.isnull()
     # # compute similarity matrix
     # matrix = np.zeros((len(data.X), len(data.X)))
@@ -72,7 +83,8 @@ def complete_by_similar_row(data, print_time=False):
     #             new_data.X[col_name][i] = data.X[col_name][possible_rows[0][0]]
 
     imputer = KNNImputer(n_neighbors=5, weights="uniform") # by default use euclidean distance
-    data.X = imputer.fit_transform(data.X)
+    data_unprotected = pd.DataFrame(imputer.fit_transform(data_unprotected), columns=data_unprotected.columns)
+    data.X = pd.concat([data_unprotected, data_protected], axis=1)
 
     if print_time:
         print("Performance Monitor: ({:.4f}s) ".format(time.process_time() - tt) + inspect.stack()[0][3])
@@ -84,7 +96,10 @@ def complete_by_most_freq(data, print_time=False):
     if print_time:
         tt = time.process_time()
     data = data.copy()
-    data.X.fillna(data.X.mode().iloc[0], inplace=True)
+    data_protected = data.X[data.protected].copy()
+    data_unprotected = data.X.drop(columns=data.protected).copy()
+    data_unprotected.fillna(data_unprotected.mode().iloc[0], inplace=True)
+    data.X = pd.concat([data_unprotected, data_protected], axis=1)
     if print_time:
         print("Performance Monitor: ({:.4f}s) ".format(time.process_time() - tt) + inspect.stack()[0][3])
     return data
@@ -98,7 +113,10 @@ def complete_by_multi(data, print_time=False, num_outputs=5):
     imputer = IterativeImputer(max_iter=100) # do not set random state here
     for _ in range(num_outputs):
         data_copy = data.copy()
-        data_copy.X = imputer.fit_transform(data_copy.X)
+        data_protected = data_copy.X[data_copy.protected].copy()
+        data_unprotected = data_copy.X.drop(columns=data_copy.protected).copy()
+        data_unprotected = imputer.fit_transform(data_unprotected)
+        data_copy.X = pd.concat([data_unprotected, data_protected], axis=1)
         data_new.append(data_copy)
     if print_time:
         print("Performance Monitor: ({:.4f}s) ".format(time.process_time() - tt) + inspect.stack()[0][3])

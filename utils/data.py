@@ -251,17 +251,43 @@ def create_drug_dataset(print_time=False, target_drug="Heroin"):
 def create_compas_dataset(print_time=False):
     if print_time:
         tt = time.process_time()
-
-        
+    data = pd.read_csv(os.path.join("dataset", "compas", "compas-scores.csv"))
+    data = data[(data['days_b_screening_arrest'].isnull()) | (data['days_b_screening_arrest'] <= 30)]
+    data = data[(data['days_b_screening_arrest'].isnull()) | (data['days_b_screening_arrest'] >= -30)] # select within 30 days
+    data = data[data['is_recid'] != -1]
+    data = data[data['c_charge_degree'] != 'O']
+    data.reset_index(drop=True, inplace=True)
+    X = data[["age",
+              "age_cat",
+              "c_charge_degree",
+              "priors_count",
+              "juv_misd_count",
+              "juv_fel_count",
+              "juv_other_count",
+              "c_charge_desc",
+              "days_b_screening_arrest",
+              "sex",
+              "race"]].copy()
+    X["length_of_stay"] = pd.to_datetime(data["c_jail_out"]) - pd.to_datetime(data["c_jail_in"])
+    X["length_of_stay"] = X["length_of_stay"] / pd.Timedelta(hours=1)
+    y = data[["is_recid"]].copy().to_numpy().ravel()
+    protected_features = ["race", "sex"]
     if print_time:
         print("Performance Monitor: ({:.4f}s) ".format(time.process_time() - tt) + inspect.stack()[0][3])
+    return Dataset("compas", X, y, protected_features=protected_features)
 
 class Dataset:
     def __init__(self, name, X, y, auto_convert=True, types=None, convert_all=False, protected_features=None, encoders=None):
         self.name = name
         self.X = X
+        if self.X.drop(protected_features, axis=1).isnull().sum().sum() > 0:
+            self.has_nan = True
+        else:
+            self.has_nan = False
         self.y = y
         self.convert_all = convert_all
+        assert len(protected_features) == len([x for x in protected_features if x in self.X.columns.tolist()])
+        self.protected = protected_features
         if auto_convert:
             self.encoder = self._convert_categories()
         if encoders is not None:
@@ -270,24 +296,24 @@ class Dataset:
         self.types = X.dtypes
         if types is not None:
             self.types = types
-        # print(self.X.columns.tolist(), protected_features)
-        assert len(protected_features) == len([x for x in protected_features if x in self.X.columns.tolist()])
-        self.protected = protected_features
 
     def _convert_categories(self):
         columns = self.X.columns
         columns_for_convert = []
         if not self.convert_all:
             for col in columns:
+                if col in self.protected:
+                    continue
                 if not is_numeric_dtype(self.X[col]):
                     columns_for_convert.append(col)
         else:
             columns_for_convert = columns
         self.encoders = {}
+        # credit: https://stackoverflow.com/questions/54444260/labelencoder-that-keeps-missing-values-as-nan
         for col in columns_for_convert:
             encoder = LabelEncoder()
-            encoder.fit(self.X[col])
-            self.X[col] = encoder.transform(self.X[col])
+            series = self.X[col]
+            self.X[col] = pd.Series(encoder.fit_transform(series[series.notnull()]), index=series[series.notnull()].index) # keep nan, convert convert others
             self.encoders[col] = encoder
         # convert for y values also
         encoder = LabelEncoder()
