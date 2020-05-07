@@ -105,17 +105,17 @@ def complete_by_most_freq(data, print_time=False):
     return data
 
 # Method 6
-# multiple imputation
+# multivariate imputation
 def complete_by_multi(data, print_time=False, num_outputs=5):
     if print_time:
         tt = time.process_time()
     data_new = []
-    imputer = IterativeImputer(max_iter=100) # do not set random state here
-    for _ in range(num_outputs):
+    imputer = IterativeImputer(max_iter=50, sample_posterior=True)
+    for i in range(num_outputs):
         data_copy = data.copy()
         data_protected = data_copy.X[data_copy.protected].copy()
         data_unprotected = data_copy.X.drop(columns=data_copy.protected).copy()
-        data_unprotected = imputer.fit_transform(data_unprotected)
+        data_unprotected = pd.DataFrame(imputer.fit_transform(data_unprotected), columns=data_unprotected.columns)
         data_copy.X = pd.concat([data_unprotected, data_protected], axis=1)
         data_new.append(data_copy)
     if print_time:
