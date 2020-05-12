@@ -29,3 +29,5 @@ Specifically, this research is trying to find out how the missing data would mak
 1. [Missing-data imputation](http://www.stat.columbia.edu/~gelman/arm/missing.pdf)  
 2. [Multiple Imputation in Stata](https://stats.idre.ucla.edu/stata/seminars/mi_in_stata_pt1_new/)  
 3. [COMPAS Recidivism Risk Score Data and Analysis](https://www.propublica.org/datastore/dataset/compas-recidivism-risk-score-data-and-analysis)  
+4. [Responsibily](https://docs.responsibly.ai/index.html)  
+5. [Fairness Measures](http://www.fairness-measures.org/)  
