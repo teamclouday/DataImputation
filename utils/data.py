@@ -289,6 +289,8 @@ class Dataset:
         if protected_features:
             assert len(protected_features) == len([x for x in protected_features if x in self.X.columns.tolist()])
         self.protected = protected_features
+        self.encoder = None
+        self.encoders = None
         if auto_convert:
             self.encoder = self._convert_categories()
         if encoders is not None:

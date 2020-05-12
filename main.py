@@ -16,5 +16,5 @@ if __name__ == "__main__":
     # for label in drugs:
     #     machine = BiasDatasetTest(dataset_func=[partial(create_drug_dataset, target_drug=label)], record_time=True, search_best_model=False, predictor_cv=5)
     #     machine.plot_confusion_mat(savefig=True)
-    machine = BiasDatasetTest(record_time=True, search_best_model=False)
-    machine.plot_confusion_mat_protected(savefig=True)
+    #machine = BiasDatasetTest(record_time=True, search_best_model=False)
+    #machine.plot_confusion_mat_protected(savefig=True)
