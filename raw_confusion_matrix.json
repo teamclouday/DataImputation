@@ -1,1 +1,1535 @@
-{"Original": {"KNN": [{"African-American": [169, 107, 98, 80], "Caucasian": [170, 63, 61, 38]}, {"African-American": [183, 94, 93, 89], "Caucasian": [190, 56, 48, 31]}, {"African-American": [190, 106, 86, 92], "Caucasian": [164, 71, 43, 45]}, {"African-American": [177, 93, 110, 80], "Caucasian": [167, 65, 62, 33]}, {"African-American": [184, 98, 104, 94], "Caucasian": [164, 73, 66, 37]}, {"African-American": [188, 88, 109, 82], "Caucasian": [153, 71, 58, 41]}, {"African-American": [157, 110, 119, 88], "Caucasian": [158, 60, 71, 34]}, {"African-American": [181, 107, 75, 93], "Caucasian": [172, 57, 56, 46]}, {"African-American": [172, 103, 104, 105], "Caucasian": [159, 77, 49, 26]}, {"African-American": [171, 101, 99, 91], "Caucasian": [152, 79, 50, 35]}], "LinearSVC": [{"African-American": [170, 106, 46, 132], "Caucasian": [190, 43, 55, 44]}, {"African-American": [159, 118, 51, 131], "Caucasian": [193, 53, 39, 40]}, {"African-American": [172, 124, 47, 131], "Caucasian": [194, 41, 45, 43]}, {"African-American": [154, 116, 61, 129], "Caucasian": [192, 40, 51, 44]}, {"African-American": [168, 114, 65, 133], "Caucasian": [186, 51, 58, 45]}, {"African-American": [170, 106, 62, 129], "Caucasian": [165, 59, 62, 37]}, {"African-American": [157, 110, 55, 152], "Caucasian": [160, 58, 53, 52]}, {"African-American": [166, 122, 39, 129], "Caucasian": [176, 53, 50, 52]}, {"African-American": [146, 129, 46, 163], "Caucasian": [177, 59, 41, 34]}, {"African-American": [143, 129, 51, 139], "Caucasian": [188, 43, 48, 37]}], "SVC": [{"African-American": [152, 124, 41, 137], "Caucasian": [153, 80, 48, 51]}, {"African-American": [152, 125, 59, 123], "Caucasian": [164, 82, 37, 42]}, {"African-American": [146, 150, 45, 133], "Caucasian": [159, 76, 35, 53]}, {"African-American": [130, 140, 59, 131], "Caucasian": [159, 73, 44, 51]}, {"African-American": [151, 131, 72, 126], "Caucasian": [145, 92, 38, 65]}, {"African-American": [149, 127, 63, 128], "Caucasian": [144, 80, 42, 57]}, {"African-American": [137, 130, 69, 138], "Caucasian": [140, 78, 52, 53]}, {"African-American": [148, 140, 50, 118], "Caucasian": [164, 65, 47, 55]}, {"African-American": [143, 132, 55, 154], "Caucasian": [161, 75, 32, 43]}, {"African-American": [136, 136, 53, 137], "Caucasian": [142, 89, 41, 44]}], "Forest": [{"African-American": [198, 78, 62, 116], "Caucasian": [208, 25, 60, 39]}, {"African-American": [214, 63, 82, 100], "Caucasian": [209, 37, 49, 30]}, {"African-American": [214, 82, 71, 107], "Caucasian": [212, 23, 54, 34]}, {"African-American": [192, 78, 76, 114], "Caucasian": [199, 33, 54, 41]}, {"African-American": [208, 74, 86, 112], "Caucasian": [199, 38, 69, 34]}, {"African-American": [202, 74, 86, 105], "Caucasian": [188, 36, 65, 34]}, {"African-American": [196, 71, 88, 119], "Caucasian": [189, 29, 67, 38]}, {"African-American": [214, 74, 58, 110], "Caucasian": [196, 33, 55, 47]}, {"African-American": [191, 84, 81, 128], "Caucasian": [203, 33, 56, 19]}, {"African-American": [186, 86, 78, 112], "Caucasian": [203, 28, 56, 29]}], "LogReg": [{"African-American": [166, 110, 40, 138], "Caucasian": [182, 51, 54, 45]}, {"African-American": [176, 101, 57, 125], "Caucasian": [199, 47, 39, 40]}, {"African-American": [179, 117, 48, 130], "Caucasian": [196, 39, 47, 41]}, {"African-American": [156, 114, 64, 126], "Caucasian": [191, 41, 52, 43]}, {"African-American": [183, 99, 69, 129], "Caucasian": [190, 47, 56, 47]}, {"African-American": [173, 103, 66, 125], "Caucasian": [167, 57, 62, 37]}, {"African-American": [160, 107, 59, 148], "Caucasian": [165, 53, 56, 49]}, {"African-American": [174, 114, 42, 126], "Caucasian": [181, 48, 49, 53]}, {"African-American": [154, 121, 52, 157], "Caucasian": [180, 56, 41, 34]}, {"African-American": [154, 118, 58, 132], "Caucasian": [189, 42, 50, 35]}], "Tree": [{"African-American": [202, 74, 65, 113], "Caucasian": [212, 21, 61, 38]}, {"African-American": [201, 76, 84, 98], "Caucasian": [213, 33, 49, 30]}, {"African-American": [204, 92, 67, 111], "Caucasian": [200, 35, 58, 30]}, {"African-American": [172, 98, 77, 113], "Caucasian": [195, 37, 57, 38]}, {"African-American": [181, 101, 78, 120], "Caucasian": [180, 57, 61, 42]}, {"African-American": [204, 72, 91, 100], "Caucasian": [188, 36, 64, 35]}, {"African-American": [195, 72, 96, 111], "Caucasian": [188, 30, 75, 30]}, {"African-American": [192, 96, 58, 110], "Caucasian": [187, 42, 56, 46]}, {"African-American": [177, 98, 87, 122], "Caucasian": [204, 32, 51, 24]}, {"African-American": [205, 67, 93, 97], "Caucasian": [209, 22, 57, 28]}], "MLP": [{"African-American": [120, 156, 21, 157], "Caucasian": [159, 74, 40, 59]}, {"African-American": [195, 82, 69, 113], "Caucasian": [196, 50, 39, 40]}, {"African-American": [170, 126, 49, 129], "Caucasian": [182, 53, 48, 40]}, {"African-American": [101, 169, 37, 153], "Caucasian": [152, 80, 36, 59]}, {"African-American": [170, 112, 66, 132], "Caucasian": [181, 56, 48, 55]}, {"African-American": [172, 104, 74, 117], "Caucasian": [166, 58, 55, 44]}, {"African-American": [154, 113, 56, 151], "Caucasian": [156, 62, 55, 50]}, {"African-American": [185, 103, 39, 129], "Caucasian": [181, 48, 46, 56]}, {"African-American": [155, 120, 55, 154], "Caucasian": [178, 58, 45, 30]}, {"African-American": [113, 159, 30, 160], "Caucasian": [144, 87, 25, 60]}]}, "Fill by Mean (Original)": {"KNN": [{"African-American": [178, 122, 95, 85], "Caucasian": [182, 63, 61, 38]}, {"African-American": [198, 100, 97, 92], "Caucasian": [186, 62, 49, 33]}, {"African-American": [198, 118, 79, 102], "Caucasian": [172, 70, 49, 42]}, {"African-American": [185, 106, 108, 82], "Caucasian": [174, 75, 58, 33]}, {"African-American": [186, 121, 99, 99], "Caucasian": [165, 79, 65, 39]}, {"African-American": [190, 105, 111, 88], "Caucasian": [158, 77, 58, 41]}, {"African-American": [163, 123, 120, 93], "Caucasian": [157, 70, 71, 34]}, {"African-American": [190, 119, 79, 88], "Caucasian": [176, 66, 57, 47]}, {"African-American": [191, 102, 112, 100], "Caucasian": [172, 78, 47, 28]}, {"African-American": [183, 109, 105, 90], "Caucasian": [161, 83, 51, 34]}], "LinearSVC": [{"African-American": [177, 123, 37, 143], "Caucasian": [189, 56, 56, 43]}, {"African-American": [179, 119, 53, 136], "Caucasian": [194, 54, 42, 40]}, {"African-American": [184, 132, 50, 131], "Caucasian": [200, 42, 46, 45]}, {"African-American": [160, 131, 60, 130], "Caucasian": [198, 51, 48, 43]}, {"African-American": [178, 129, 64, 134], "Caucasian": [193, 51, 61, 43]}, {"African-American": [183, 112, 64, 135], "Caucasian": [176, 59, 63, 36]}, {"African-American": [164, 122, 54, 159], "Caucasian": [163, 64, 56, 49]}, {"African-American": [174, 135, 39, 128], "Caucasian": [185, 57, 51, 53]}, {"African-American": [155, 138, 54, 158], "Caucasian": [189, 61, 42, 33]}, {"African-American": [159, 133, 49, 146], "Caucasian": [195, 49, 48, 37]}], "SVC": [{"African-American": [140, 160, 35, 145], "Caucasian": [135, 110, 40, 59]}, {"African-American": [129, 169, 49, 140], "Caucasian": [149, 99, 33, 49]}, {"African-American": [142, 174, 34, 147], "Caucasian": [144, 98, 32, 59]}, {"African-American": [114, 177, 51, 139], "Caucasian": [153, 96, 41, 50]}, {"African-American": [133, 174, 49, 149], "Caucasian": [136, 108, 33, 71]}, {"African-American": [118, 177, 40, 159], "Caucasian": [129, 106, 38, 61]}, {"African-American": [119, 167, 63, 150], "Caucasian": [136, 91, 39, 66]}, {"African-American": [114, 195, 38, 129], "Caucasian": [139, 103, 38, 66]}, {"African-American": [116, 177, 45, 167], "Caucasian": [154, 96, 24, 51]}, {"African-American": [128, 164, 33, 162], "Caucasian": [142, 102, 37, 48]}], "Forest": [{"African-American": [212, 88, 58, 122], "Caucasian": [223, 22, 57, 42]}, {"African-American": [223, 75, 82, 107], "Caucasian": [217, 31, 54, 28]}, {"African-American": [226, 90, 75, 106], "Caucasian": [216, 26, 59, 32]}, {"African-American": [200, 91, 81, 109], "Caucasian": [217, 32, 52, 39]}, {"African-American": [229, 78, 91, 107], "Caucasian": [205, 39, 69, 35]}, {"African-American": [216, 79, 89, 110], "Caucasian": [199, 36, 65, 34]}, {"African-American": [217, 69, 87, 126], "Caucasian": [195, 32, 64, 41]}, {"African-American": [234, 75, 64, 103], "Caucasian": [208, 34, 59, 45]}, {"African-American": [202, 91, 83, 129], "Caucasian": [214, 36, 55, 20]}, {"African-American": [213, 79, 85, 110], "Caucasian": [212, 32, 57, 28]}], "LogReg": [{"African-American": [180, 120, 41, 139], "Caucasian": [188, 57, 52, 47]}, {"African-American": [184, 114, 54, 135], "Caucasian": [198, 50, 40, 42]}, {"African-American": [202, 114, 51, 130], "Caucasian": [207, 35, 51, 40]}, {"African-American": [168, 123, 62, 128], "Caucasian": [202, 47, 49, 42]}, {"African-American": [178, 129, 63, 135], "Caucasian": [192, 52, 60, 44]}, {"African-American": [189, 106, 68, 131], "Caucasian": [178, 57, 62, 37]}, {"African-American": [166, 120, 57, 156], "Caucasian": [166, 61, 55, 50]}, {"African-American": [183, 126, 42, 125], "Caucasian": [187, 55, 57, 47]}, {"African-American": [156, 137, 50, 162], "Caucasian": [186, 64, 40, 35]}, {"African-American": [166, 126, 56, 139], "Caucasian": [198, 46, 49, 36]}], "Tree": [{"African-American": [231, 69, 69, 111], "Caucasian": [218, 27, 65, 34]}, {"African-American": [222, 76, 86, 103], "Caucasian": [210, 38, 49, 33]}, {"African-American": [222, 94, 73, 108], "Caucasian": [213, 29, 61, 30]}, {"African-American": [184, 107, 78, 112], "Caucasian": [214, 35, 52, 39]}, {"African-American": [222, 85, 90, 108], "Caucasian": [208, 36, 72, 32]}, {"African-American": [226, 69, 97, 102], "Caucasian": [200, 35, 64, 35]}, {"African-American": [215, 71, 89, 124], "Caucasian": [197, 30, 71, 34]}, {"African-American": [233, 76, 63, 104], "Caucasian": [214, 28, 63, 41]}, {"African-American": [192, 101, 88, 124], "Caucasian": [207, 43, 56, 19]}, {"African-American": [200, 92, 84, 111], "Caucasian": [203, 41, 57, 28]}], "MLP": [{"African-American": [177, 123, 41, 139], "Caucasian": [200, 45, 53, 46]}, {"African-American": [160, 138, 43, 146], "Caucasian": [171, 77, 38, 44]}, {"African-American": [200, 116, 60, 121], "Caucasian": [203, 39, 53, 38]}, {"African-American": [101, 190, 38, 152], "Caucasian": [154, 95, 37, 54]}, {"African-American": [176, 131, 54, 144], "Caucasian": [179, 65, 53, 51]}, {"African-American": [162, 133, 54, 145], "Caucasian": [164, 71, 46, 53]}, {"African-American": [141, 145, 51, 162], "Caucasian": [161, 66, 41, 64]}, {"African-American": [191, 118, 42, 125], "Caucasian": [190, 52, 50, 54]}, {"African-American": [158, 135, 56, 156], "Caucasian": [190, 60, 46, 29]}, {"African-American": [157, 135, 46, 149], "Caucasian": [183, 61, 38, 47]}]}, "Fill by Similar (Original)": {"KNN": [{"African-American": [194, 106, 99, 81], "Caucasian": [183, 62, 62, 37]}, {"African-American": [204, 94, 99, 90], "Caucasian": [190, 58, 50, 32]}, {"African-American": [203, 113, 88, 93], "Caucasian": [171, 71, 48, 43]}, {"African-American": [196, 95, 110, 80], "Caucasian": [177, 72, 58, 33]}, {"African-American": [195, 112, 105, 93], "Caucasian": [171, 73, 66, 38]}, {"African-American": [198, 97, 112, 87], "Caucasian": [159, 76, 61, 38]}, {"African-American": [167, 119, 119, 94], "Caucasian": [163, 64, 70, 35]}, {"African-American": [192, 117, 82, 85], "Caucasian": [178, 64, 56, 48]}, {"African-American": [183, 110, 115, 97], "Caucasian": [168, 82, 44, 31]}, {"African-American": [188, 104, 103, 92], "Caucasian": [164, 80, 54, 31]}], "LinearSVC": [{"African-American": [181, 119, 41, 139], "Caucasian": [192, 53, 56, 43]}, {"African-American": [179, 119, 56, 133], "Caucasian": [200, 48, 43, 39]}, {"African-American": [187, 129, 50, 131], "Caucasian": [199, 43, 47, 44]}, {"African-American": [159, 132, 60, 130], "Caucasian": [198, 51, 48, 43]}, {"African-American": [177, 130, 65, 133], "Caucasian": [190, 54, 61, 43]}, {"African-American": [183, 112, 63, 136], "Caucasian": [176, 59, 64, 35]}, {"African-American": [167, 119, 59, 154], "Caucasian": [165, 62, 55, 50]}, {"African-American": [176, 133, 39, 128], "Caucasian": [185, 57, 51, 53]}, {"African-American": [153, 140, 53, 159], "Caucasian": [188, 62, 41, 34]}, {"African-American": [164, 128, 53, 142], "Caucasian": [198, 46, 48, 37]}], "SVC": [{"African-American": [152, 148, 35, 145], "Caucasian": [147, 98, 47, 52]}, {"African-American": [148, 150, 52, 137], "Caucasian": [161, 87, 35, 47]}, {"African-American": [149, 167, 38, 143], "Caucasian": [156, 86, 34, 57]}, {"African-American": [118, 173, 57, 133], "Caucasian": [157, 92, 43, 48]}, {"African-American": [148, 159, 63, 135], "Caucasian": [140, 104, 34, 70]}, {"African-American": [137, 158, 59, 140], "Caucasian": [140, 95, 41, 58]}, {"African-American": [134, 152, 68, 145], "Caucasian": [144, 83, 48, 57]}, {"African-American": [134, 175, 44, 123], "Caucasian": [154, 88, 42, 62]}, {"African-American": [143, 150, 58, 154], "Caucasian": [159, 91, 34, 41]}, {"African-American": [133, 159, 40, 155], "Caucasian": [148, 96, 41, 44]}], "Forest": [{"African-American": [219, 81, 60, 120], "Caucasian": [226, 19, 59, 40]}, {"African-American": [230, 68, 90, 99], "Caucasian": [215, 33, 54, 28]}, {"African-American": [237, 79, 75, 106], "Caucasian": [217, 25, 60, 31]}, {"African-American": [211, 80, 85, 105], "Caucasian": [218, 31, 54, 37]}, {"African-American": [232, 75, 93, 105], "Caucasian": [212, 32, 72, 32]}, {"African-American": [212, 83, 93, 106], "Caucasian": [199, 36, 69, 30]}, {"African-American": [214, 72, 90, 123], "Caucasian": [195, 32, 66, 39]}, {"African-American": [233, 76, 63, 104], "Caucasian": [207, 35, 58, 46]}, {"African-American": [202, 91, 81, 131], "Caucasian": [212, 38, 55, 20]}, {"African-American": [210, 82, 88, 107], "Caucasian": [215, 29, 62, 23]}], "LogReg": [{"African-American": [186, 114, 41, 139], "Caucasian": [195, 50, 55, 44]}, {"African-American": [183, 115, 52, 137], "Caucasian": [198, 50, 40, 42]}, {"African-American": [194, 122, 51, 130], "Caucasian": [203, 39, 49, 42]}, {"African-American": [169, 122, 63, 127], "Caucasian": [203, 46, 50, 41]}, {"African-American": [181, 126, 65, 133], "Caucasian": [192, 52, 59, 45]}, {"African-American": [181, 114, 64, 135], "Caucasian": [175, 60, 63, 36]}, {"African-American": [171, 115, 63, 150], "Caucasian": [170, 57, 57, 48]}, {"African-American": [185, 124, 42, 125], "Caucasian": [188, 54, 52, 52]}, {"African-American": [159, 134, 58, 154], "Caucasian": [189, 61, 40, 35]}, {"African-American": [167, 125, 55, 140], "Caucasian": [198, 46, 49, 36]}], "Tree": [{"African-American": [228, 72, 62, 118], "Caucasian": [220, 25, 67, 32]}, {"African-American": [228, 70, 83, 106], "Caucasian": [214, 34, 52, 30]}, {"African-American": [227, 89, 73, 108], "Caucasian": [210, 32, 60, 31]}, {"African-American": [204, 87, 85, 105], "Caucasian": [216, 33, 59, 32]}, {"African-American": [223, 84, 86, 112], "Caucasian": [205, 39, 73, 31]}, {"African-American": [219, 76, 95, 104], "Caucasian": [205, 30, 65, 34]}, {"African-American": [211, 75, 101, 112], "Caucasian": [196, 31, 76, 29]}, {"African-American": [225, 84, 72, 95], "Caucasian": [210, 32, 70, 34]}, {"African-American": [185, 108, 84, 128], "Caucasian": [201, 49, 50, 25]}, {"African-American": [202, 90, 86, 109], "Caucasian": [212, 32, 60, 25]}], "MLP": [{"African-American": [183, 117, 37, 143], "Caucasian": [188, 57, 49, 50]}, {"African-American": [198, 100, 65, 124], "Caucasian": [190, 58, 45, 37]}, {"African-American": [143, 173, 34, 147], "Caucasian": [171, 71, 34, 57]}, {"African-American": [157, 134, 63, 127], "Caucasian": [196, 53, 44, 47]}, {"African-American": [161, 146, 50, 148], "Caucasian": [165, 79, 50, 54]}, {"African-American": [172, 123, 62, 137], "Caucasian": [167, 68, 51, 48]}, {"African-American": [167, 119, 61, 152], "Caucasian": [179, 48, 48, 57]}, {"African-American": [181, 128, 40, 127], "Caucasian": [179, 63, 43, 61]}, {"African-American": [181, 112, 79, 133], "Caucasian": [201, 49, 48, 27]}, {"African-American": [154, 138, 49, 146], "Caucasian": [176, 68, 37, 48]}]}, "Fill by Multiple Imputation (Original)": {"KNN": [{"African-American": [189, 111, 100, 80], "Caucasian": [179, 66, 62, 37]}, {"African-American": [200, 98, 93, 96], "Caucasian": [190, 58, 49, 33]}, {"African-American": [203, 113, 84, 97], "Caucasian": [173, 69, 45, 46]}, {"African-American": [193, 98, 102, 88], "Caucasian": [178, 71, 58, 33]}, {"African-American": [205, 102, 103, 95], "Caucasian": [167, 77, 65, 39]}, {"African-American": [200, 95, 115, 84], "Caucasian": [161, 74, 62, 37]}, {"African-American": [171, 115, 130, 83], "Caucasian": [162, 65, 70, 35]}, {"African-American": [198, 111, 76, 91], "Caucasian": [179, 63, 58, 46]}, {"African-American": [188, 105, 108, 104], "Caucasian": [170, 80, 49, 26]}, {"African-American": [186, 106, 105, 90], "Caucasian": [165, 79, 51, 34]}], "LinearSVC": [{"African-American": [181, 119, 38, 142], "Caucasian": [193, 52, 55, 44]}, {"African-American": [179, 119, 52, 137], "Caucasian": [195, 53, 42, 40]}, {"African-American": [189, 127, 53, 128], "Caucasian": [203, 39, 48, 43]}, {"African-American": [160, 131, 63, 127], "Caucasian": [200, 49, 48, 43]}, {"African-American": [186, 121, 67, 131], "Caucasian": [194, 50, 60, 44]}, {"African-American": [185, 110, 66, 133], "Caucasian": [180, 55, 63, 36]}, {"African-American": [165, 121, 54, 159], "Caucasian": [162, 65, 54, 51]}, {"African-American": [180, 129, 41, 126], "Caucasian": [187, 55, 54, 50]}, {"African-American": [154, 139, 52, 160], "Caucasian": [188, 62, 41, 34]}, {"African-American": [166, 126, 56, 139], "Caucasian": [196, 48, 48, 37]}], "SVC": [{"African-American": [165, 135, 42, 138], "Caucasian": [139, 106, 42, 57]}, {"African-American": [139, 159, 47, 142], "Caucasian": [150, 98, 31, 51]}, {"African-American": [154, 162, 46, 135], "Caucasian": [157, 85, 36, 55]}, {"African-American": [125, 166, 55, 135], "Caucasian": [159, 90, 40, 51]}, {"African-American": [154, 153, 65, 133], "Caucasian": [146, 98, 32, 72]}, {"African-American": [151, 144, 68, 131], "Caucasian": [142, 93, 39, 60]}, {"African-American": [129, 157, 68, 145], "Caucasian": [138, 89, 44, 61]}, {"African-American": [139, 170, 39, 128], "Caucasian": [149, 93, 41, 63]}, {"African-American": [142, 151, 52, 160], "Caucasian": [157, 93, 26, 49]}, {"African-American": [131, 161, 33, 162], "Caucasian": [144, 100, 36, 49]}], "Forest": [{"African-American": [217, 83, 58, 122], "Caucasian": [223, 22, 61, 38]}, {"African-American": [238, 60, 87, 102], "Caucasian": [213, 35, 53, 29]}, {"African-American": [234, 82, 76, 105], "Caucasian": [215, 27, 57, 34]}, {"African-American": [212, 79, 86, 104], "Caucasian": [216, 33, 54, 37]}, {"African-American": [228, 79, 93, 105], "Caucasian": [211, 33, 68, 36]}, {"African-American": [215, 80, 96, 103], "Caucasian": [203, 32, 66, 33]}, {"African-American": [216, 70, 93, 120], "Caucasian": [194, 33, 68, 37]}, {"African-American": [232, 77, 61, 106], "Caucasian": [209, 33, 59, 45]}, {"African-American": [207, 86, 83, 129], "Caucasian": [212, 38, 54, 21]}, {"African-American": [215, 77, 86, 109], "Caucasian": [217, 27, 58, 27]}], "LogReg": [{"African-American": [177, 123, 38, 142], "Caucasian": [189, 56, 52, 47]}, {"African-American": [182, 116, 62, 127], "Caucasian": [200, 48, 43, 39]}, {"African-American": [192, 124, 60, 121], "Caucasian": [201, 41, 47, 44]}, {"African-American": [155, 136, 58, 132], "Caucasian": [196, 53, 47, 44]}, {"African-American": [186, 121, 66, 132], "Caucasian": [194, 50, 60, 44]}, {"African-American": [187, 108, 68, 131], "Caucasian": [180, 55, 61, 38]}, {"African-American": [174, 112, 61, 152], "Caucasian": [173, 54, 57, 48]}, {"African-American": [183, 126, 41, 126], "Caucasian": [187, 55, 51, 53]}, {"African-American": [152, 141, 51, 161], "Caucasian": [185, 65, 41, 34]}, {"African-American": [175, 117, 59, 136], "Caucasian": [199, 45, 48, 37]}], "Tree": [{"African-American": [207, 93, 50, 130], "Caucasian": [213, 32, 61, 38]}, {"African-American": [230, 68, 89, 100], "Caucasian": [212, 36, 54, 28]}, {"African-American": [216, 100, 76, 105], "Caucasian": [208, 34, 55, 36]}, {"African-American": [212, 79, 91, 99], "Caucasian": [212, 37, 59, 32]}, {"African-American": [224, 83, 99, 99], "Caucasian": [206, 38, 70, 34]}, {"African-American": [217, 78, 98, 101], "Caucasian": [206, 29, 70, 29]}, {"African-American": [217, 69, 102, 111], "Caucasian": [202, 25, 73, 32]}, {"African-American": [214, 95, 64, 103], "Caucasian": [204, 38, 58, 46]}, {"African-American": [193, 100, 93, 119], "Caucasian": [211, 39, 56, 19]}, {"African-American": [209, 83, 91, 104], "Caucasian": [215, 29, 60, 25]}], "MLP": [{"African-American": [204, 96, 46, 134], "Caucasian": [201, 44, 50, 49]}, {"African-American": [183, 115, 48, 141], "Caucasian": [188, 60, 40, 42]}, {"African-American": [144, 172, 41, 140], "Caucasian": [174, 68, 40, 51]}, {"African-American": [115, 176, 41, 149], "Caucasian": [169, 80, 38, 53]}, {"African-American": [196, 111, 70, 128], "Caucasian": [191, 53, 61, 43]}, {"African-American": [185, 110, 67, 132], "Caucasian": [176, 59, 54, 45]}, {"African-American": [165, 121, 59, 154], "Caucasian": [168, 59, 49, 56]}, {"African-American": [138, 171, 24, 143], "Caucasian": [153, 89, 34, 70]}, {"African-American": [166, 127, 63, 149], "Caucasian": [186, 64, 43, 32]}, {"African-American": [185, 107, 61, 134], "Caucasian": [196, 48, 46, 39]}]}, "Fill by Mean (Simulated)": {"KNN": [{"African-American": [114, 101, 75, 73], "Caucasian": [117, 69, 43, 38]}, {"African-American": [149, 88, 69, 85], "Caucasian": [137, 57, 36, 25]}, {"African-American": [153, 78, 84, 59], "Caucasian": [139, 49, 40, 36]}, {"African-American": [136, 86, 87, 68], "Caucasian": [131, 57, 63, 14]}, {"African-American": [132, 90, 89, 71], "Caucasian": [123, 81, 43, 41]}, {"African-American": [142, 85, 81, 73], "Caucasian": [116, 66, 42, 37]}, {"African-American": [121, 98, 99, 71], "Caucasian": [120, 58, 56, 30]}, {"African-American": [154, 80, 64, 69], "Caucasian": [130, 52, 54, 29]}, {"African-American": [127, 102, 95, 78], "Caucasian": [123, 67, 33, 19]}, {"African-American": [129, 84, 75, 82], "Caucasian": [123, 60, 47, 23]}], "LinearSVC": [{"African-American": [138, 77, 41, 107], "Caucasian": [151, 35, 43, 38]}, {"African-American": [148, 89, 53, 101], "Caucasian": [147, 47, 34, 27]}, {"African-American": [134, 97, 45, 98], "Caucasian": [159, 29, 40, 36]}, {"African-American": [132, 90, 54, 101], "Caucasian": [144, 44, 44, 33]}, {"African-American": [135, 87, 65, 95], "Caucasian": [161, 43, 45, 39]}, {"African-American": [141, 86, 55, 99], "Caucasian": [134, 48, 47, 32]}, {"African-American": [129, 90, 59, 111], "Caucasian": [134, 44, 52, 34]}, {"African-American": [145, 89, 41, 92], "Caucasian": [150, 32, 42, 41]}, {"African-American": [120, 109, 48, 125], "Caucasian": [143, 47, 26, 26]}, {"African-American": [112, 101, 49, 108], "Caucasian": [142, 41, 42, 28]}], "SVC": [{"African-American": [99, 116, 28, 120], "Caucasian": [105, 81, 32, 49]}, {"African-American": [126, 111, 49, 105], "Caucasian": [121, 73, 30, 31]}, {"African-American": [125, 106, 40, 103], "Caucasian": [120, 68, 34, 42]}, {"African-American": [109, 113, 55, 100], "Caucasian": [117, 71, 38, 39]}, {"African-American": [103, 119, 62, 98], "Caucasian": [115, 89, 27, 57]}, {"African-American": [105, 122, 43, 111], "Caucasian": [101, 81, 35, 44]}, {"African-American": [104, 115, 65, 105], "Caucasian": [108, 70, 42, 44]}, {"African-American": [89, 145, 44, 89], "Caucasian": [109, 73, 25, 58]}, {"African-American": [106, 123, 50, 123], "Caucasian": [124, 66, 20, 32]}, {"African-American": [97, 116, 46, 111], "Caucasian": [103, 80, 34, 36]}], "Forest": [{"African-American": [123, 92, 36, 112], "Caucasian": [131, 55, 33, 48]}, {"African-American": [128, 109, 50, 104], "Caucasian": [120, 74, 29, 32]}, {"African-American": [121, 110, 47, 96], "Caucasian": [117, 71, 38, 38]}, {"African-American": [121, 101, 49, 106], "Caucasian": [118, 70, 41, 36]}, {"African-American": [110, 112, 54, 106], "Caucasian": [113, 91, 40, 44]}, {"African-American": [130, 97, 55, 99], "Caucasian": [124, 58, 40, 39]}, {"African-American": [105, 114, 62, 108], "Caucasian": [100, 78, 42, 44]}, {"African-American": [130, 104, 36, 97], "Caucasian": [127, 55, 30, 53]}, {"African-American": [113, 116, 56, 117], "Caucasian": [125, 65, 29, 23]}, {"African-American": [118, 95, 54, 103], "Caucasian": [106, 77, 43, 27]}], "LogReg": [{"African-American": [137, 78, 42, 106], "Caucasian": [147, 39, 42, 39]}, {"African-American": [161, 76, 62, 92], "Caucasian": [153, 41, 35, 26]}, {"African-American": [137, 94, 44, 99], "Caucasian": [160, 28, 42, 34]}, {"African-American": [135, 87, 57, 98], "Caucasian": [143, 45, 47, 30]}, {"African-American": [140, 82, 64, 96], "Caucasian": [163, 41, 46, 38]}, {"African-American": [148, 79, 60, 94], "Caucasian": [138, 44, 48, 31]}, {"African-American": [129, 90, 57, 113], "Caucasian": [133, 45, 51, 35]}, {"African-American": [147, 87, 43, 90], "Caucasian": [147, 35, 43, 40]}, {"African-American": [131, 98, 55, 118], "Caucasian": [147, 43, 27, 25]}, {"African-American": [128, 85, 55, 102], "Caucasian": [147, 36, 41, 29]}], "Tree": [{"African-American": [128, 87, 44, 104], "Caucasian": [133, 53, 37, 44]}, {"African-American": [166, 71, 61, 93], "Caucasian": [141, 53, 37, 24]}, {"African-American": [128, 103, 48, 95], "Caucasian": [137, 51, 42, 34]}, {"African-American": [147, 75, 70, 85], "Caucasian": [135, 53, 48, 29]}, {"African-American": [135, 87, 61, 99], "Caucasian": [134, 70, 37, 47]}, {"African-American": [138, 89, 65, 89], "Caucasian": [126, 56, 45, 34]}, {"African-American": [110, 109, 65, 105], "Caucasian": [118, 60, 47, 39]}, {"African-American": [150, 84, 59, 74], "Caucasian": [147, 35, 45, 38]}, {"African-American": [119, 110, 55, 118], "Caucasian": [138, 52, 26, 26]}, {"African-American": [132, 81, 53, 104], "Caucasian": [127, 56, 42, 28]}], "MLP": [{"African-American": [74, 141, 15, 133], "Caucasian": [90, 96, 22, 59]}, {"African-American": [103, 134, 27, 127], "Caucasian": [112, 82, 24, 37]}, {"African-American": [158, 73, 61, 82], "Caucasian": [154, 34, 42, 34]}, {"African-American": [102, 120, 47, 108], "Caucasian": [122, 66, 36, 41]}, {"African-American": [147, 75, 68, 92], "Caucasian": [168, 36, 47, 37]}, {"African-American": [104, 123, 33, 121], "Caucasian": [104, 78, 32, 47]}, {"African-American": [144, 75, 74, 96], "Caucasian": [140, 38, 62, 24]}, {"African-American": [70, 164, 18, 115], "Caucasian": [100, 82, 21, 62]}, {"African-American": [110, 119, 44, 129], "Caucasian": [133, 57, 26, 26]}, {"African-American": [124, 89, 43, 114], "Caucasian": [130, 53, 36, 34]}]}, "Fill by Similar (Simulated)": {"KNN": [{"African-American": [131, 84, 83, 65], "Caucasian": [133, 53, 49, 32]}, {"African-American": [152, 85, 74, 80], "Caucasian": [144, 50, 34, 27]}, {"African-American": [158, 73, 79, 64], "Caucasian": [137, 51, 43, 33]}, {"African-American": [137, 85, 84, 71], "Caucasian": [135, 53, 56, 21]}, {"African-American": [145, 77, 93, 67], "Caucasian": [148, 56, 50, 34]}, {"African-American": [156, 71, 91, 63], "Caucasian": [120, 62, 48, 31]}, {"African-American": [130, 89, 106, 64], "Caucasian": [120, 58, 56, 30]}, {"African-American": [152, 82, 60, 73], "Caucasian": [132, 50, 51, 32]}, {"African-American": [134, 95, 92, 81], "Caucasian": [126, 64, 34, 18]}, {"African-American": [139, 74, 89, 68], "Caucasian": [117, 66, 45, 25]}], "LinearSVC": [{"African-American": [127, 88, 32, 116], "Caucasian": [144, 42, 40, 41]}, {"African-American": [145, 92, 63, 91], "Caucasian": [152, 42, 32, 29]}, {"African-American": [132, 99, 44, 99], "Caucasian": [153, 35, 43, 33]}, {"African-American": [122, 100, 56, 99], "Caucasian": [142, 46, 39, 38]}, {"African-American": [135, 87, 63, 97], "Caucasian": [160, 44, 46, 38]}, {"African-American": [143, 84, 52, 102], "Caucasian": [135, 47, 51, 28]}, {"African-American": [129, 90, 56, 114], "Caucasian": [130, 48, 47, 39]}, {"African-American": [142, 92, 36, 97], "Caucasian": [141, 41, 41, 42]}, {"African-American": [116, 113, 43, 130], "Caucasian": [137, 53, 24, 28]}, {"African-American": [119, 94, 49, 108], "Caucasian": [146, 37, 41, 29]}], "SVC": [{"African-American": [119, 96, 33, 115], "Caucasian": [112, 74, 31, 50]}, {"African-American": [120, 117, 50, 104], "Caucasian": [119, 75, 30, 31]}, {"African-American": [107, 124, 27, 116], "Caucasian": [113, 75, 29, 47]}, {"African-American": [100, 122, 52, 103], "Caucasian": [110, 78, 35, 42]}, {"African-American": [109, 113, 58, 102], "Caucasian": [116, 88, 34, 50]}, {"African-American": [129, 98, 59, 95], "Caucasian": [118, 64, 41, 38]}, {"African-American": [104, 115, 60, 110], "Caucasian": [102, 76, 46, 40]}, {"African-American": [111, 123, 49, 84], "Caucasian": [127, 55, 33, 50]}, {"African-American": [110, 119, 49, 124], "Caucasian": [124, 66, 20, 32]}, {"African-American": [93, 120, 37, 120], "Caucasian": [98, 85, 32, 38]}], "Forest": [{"African-American": [157, 58, 45, 103], "Caucasian": [164, 22, 50, 31]}, {"African-American": [164, 73, 68, 86], "Caucasian": [159, 35, 38, 23]}, {"African-American": [153, 78, 53, 90], "Caucasian": [162, 26, 48, 28]}, {"African-American": [141, 81, 69, 86], "Caucasian": [140, 48, 47, 30]}, {"African-American": [149, 73, 78, 82], "Caucasian": [175, 29, 54, 30]}, {"African-American": [153, 74, 69, 85], "Caucasian": [153, 29, 57, 22]}, {"African-American": [151, 68, 83, 87], "Caucasian": [144, 34, 64, 22]}, {"African-American": [161, 73, 49, 84], "Caucasian": [151, 31, 45, 38]}, {"African-American": [154, 75, 75, 98], "Caucasian": [156, 34, 34, 18]}, {"African-American": [144, 69, 76, 81], "Caucasian": [146, 37, 47, 23]}], "LogReg": [{"African-American": [135, 80, 42, 106], "Caucasian": [147, 39, 43, 38]}, {"African-American": [153, 84, 66, 88], "Caucasian": [155, 39, 34, 27]}, {"African-American": [143, 88, 42, 101], "Caucasian": [155, 33, 43, 33]}, {"African-American": [132, 90, 53, 102], "Caucasian": [141, 47, 41, 36]}, {"African-American": [141, 81, 69, 91], "Caucasian": [162, 42, 47, 37]}, {"African-American": [150, 77, 55, 99], "Caucasian": [137, 45, 51, 28]}, {"African-American": [136, 83, 59, 111], "Caucasian": [132, 46, 49, 37]}, {"African-American": [152, 82, 38, 95], "Caucasian": [143, 39, 44, 39]}, {"African-American": [124, 105, 51, 122], "Caucasian": [139, 51, 25, 27]}, {"African-American": [128, 85, 52, 105], "Caucasian": [151, 32, 41, 29]}], "Tree": [{"African-American": [129, 86, 41, 107], "Caucasian": [149, 37, 40, 41]}, {"African-American": [165, 72, 75, 79], "Caucasian": [147, 47, 40, 21]}, {"African-American": [141, 90, 56, 87], "Caucasian": [149, 39, 47, 29]}, {"African-American": [113, 109, 62, 93], "Caucasian": [129, 59, 40, 37]}, {"African-American": [163, 59, 84, 76], "Caucasian": [175, 29, 60, 24]}, {"African-American": [157, 70, 68, 86], "Caucasian": [146, 36, 54, 25]}, {"African-American": [144, 75, 97, 73], "Caucasian": [140, 38, 58, 28]}, {"African-American": [143, 91, 44, 89], "Caucasian": [141, 41, 42, 41]}, {"African-American": [145, 84, 68, 105], "Caucasian": [152, 38, 30, 22]}, {"African-American": [148, 65, 76, 81], "Caucasian": [143, 40, 45, 25]}], "MLP": [{"African-American": [118, 97, 22, 126], "Caucasian": [134, 52, 34, 47]}, {"African-American": [134, 103, 45, 109], "Caucasian": [135, 59, 32, 29]}, {"African-American": [132, 99, 44, 99], "Caucasian": [140, 48, 40, 36]}, {"African-American": [118, 104, 56, 99], "Caucasian": [126, 62, 36, 41]}, {"African-American": [129, 93, 60, 100], "Caucasian": [154, 50, 44, 40]}, {"African-American": [118, 109, 41, 113], "Caucasian": [121, 61, 37, 42]}, {"African-American": [111, 108, 51, 119], "Caucasian": [118, 60, 48, 38]}, {"African-American": [88, 146, 17, 116], "Caucasian": [108, 74, 23, 60]}, {"African-American": [92, 137, 30, 143], "Caucasian": [118, 72, 20, 32]}, {"African-American": [87, 126, 23, 134], "Caucasian": [99, 84, 23, 47]}]}, "Fill by Multiple Imputation (Simulated)": {"KNN": [{"African-American": [138, 77, 80, 68], "Caucasian": [124, 62, 45, 36]}, {"African-American": [161, 76, 82, 72], "Caucasian": [144, 50, 35, 26]}, {"African-American": [138, 93, 89, 54], "Caucasian": [127, 61, 40, 36]}, {"African-American": [133, 89, 90, 65], "Caucasian": [139, 49, 57, 20]}, {"African-American": [140, 82, 94, 66], "Caucasian": [134, 70, 51, 33]}, {"African-American": [149, 78, 94, 60], "Caucasian": [117, 65, 39, 40]}, {"African-American": [127, 92, 98, 72], "Caucasian": [116, 62, 57, 29]}, {"African-American": [149, 85, 68, 65], "Caucasian": [133, 49, 57, 26]}, {"African-American": [140, 89, 97, 76], "Caucasian": [127, 63, 34, 18]}, {"African-American": [123, 90, 92, 65], "Caucasian": [115, 68, 44, 26]}], "LinearSVC": [{"African-American": [132, 83, 48, 100], "Caucasian": [142, 44, 42, 39]}, {"African-American": [143, 94, 62, 92], "Caucasian": [144, 50, 36, 25]}, {"African-American": [128, 103, 43, 100], "Caucasian": [147, 41, 40, 36]}, {"African-American": [131, 91, 47, 108], "Caucasian": [139, 49, 41, 36]}, {"African-American": [132, 90, 59, 101], "Caucasian": [150, 54, 44, 40]}, {"African-American": [137, 90, 54, 100], "Caucasian": [132, 50, 48, 31]}, {"African-American": [133, 86, 62, 108], "Caucasian": [132, 46, 55, 31]}, {"African-American": [133, 101, 42, 91], "Caucasian": [143, 39, 35, 48]}, {"African-American": [128, 101, 45, 128], "Caucasian": [139, 51, 26, 26]}, {"African-American": [118, 95, 51, 106], "Caucasian": [142, 41, 40, 30]}], "SVC": [{"African-American": [118, 97, 40, 108], "Caucasian": [107, 79, 29, 52]}, {"African-American": [136, 101, 56, 98], "Caucasian": [119, 75, 31, 30]}, {"African-American": [117, 114, 41, 102], "Caucasian": [118, 70, 31, 45]}, {"African-American": [116, 106, 63, 92], "Caucasian": [119, 69, 40, 37]}, {"African-American": [103, 119, 63, 97], "Caucasian": [112, 92, 27, 57]}, {"African-American": [119, 108, 59, 95], "Caucasian": [124, 58, 40, 39]}, {"African-American": [103, 116, 67, 103], "Caucasian": [103, 75, 39, 47]}, {"African-American": [102, 132, 41, 92], "Caucasian": [104, 78, 28, 55]}, {"African-American": [106, 123, 51, 122], "Caucasian": [116, 74, 18, 34]}, {"African-American": [98, 115, 46, 111], "Caucasian": [107, 76, 34, 36]}], "Forest": [{"African-American": [146, 69, 52, 96], "Caucasian": [152, 34, 41, 40]}, {"African-American": [164, 73, 66, 88], "Caucasian": [150, 44, 35, 26]}, {"African-American": [149, 82, 53, 90], "Caucasian": [151, 37, 52, 24]}, {"African-American": [143, 79, 72, 83], "Caucasian": [141, 47, 45, 32]}, {"African-American": [150, 72, 70, 90], "Caucasian": [161, 43, 47, 37]}, {"African-American": [156, 71, 65, 89], "Caucasian": [150, 32, 53, 26]}, {"African-American": [141, 78, 77, 93], "Caucasian": [132, 46, 59, 27]}, {"African-American": [158, 76, 47, 86], "Caucasian": [149, 33, 40, 43]}, {"African-American": [150, 79, 64, 109], "Caucasian": [151, 39, 34, 18]}, {"African-American": [141, 72, 70, 87], "Caucasian": [149, 34, 46, 24]}], "LogReg": [{"African-American": [130, 85, 45, 103], "Caucasian": [143, 43, 38, 43]}, {"African-American": [142, 95, 60, 94], "Caucasian": [146, 48, 35, 26]}, {"African-American": [136, 95, 48, 95], "Caucasian": [148, 40, 43, 33]}, {"African-American": [137, 85, 53, 102], "Caucasian": [142, 46, 39, 38]}, {"African-American": [138, 84, 64, 96], "Caucasian": [154, 50, 45, 39]}, {"African-American": [147, 80, 53, 101], "Caucasian": [132, 50, 48, 31]}, {"African-American": [135, 84, 60, 110], "Caucasian": [134, 44, 53, 33]}, {"African-American": [132, 102, 36, 97], "Caucasian": [138, 44, 40, 43]}, {"African-American": [136, 93, 50, 123], "Caucasian": [141, 49, 27, 25]}, {"African-American": [124, 89, 57, 100], "Caucasian": [146, 37, 42, 28]}], "Tree": [{"African-American": [147, 68, 57, 91], "Caucasian": [147, 39, 38, 43]}, {"African-American": [172, 65, 68, 86], "Caucasian": [150, 44, 38, 23]}, {"African-American": [130, 101, 54, 89], "Caucasian": [140, 48, 45, 31]}, {"African-American": [132, 90, 70, 85], "Caucasian": [131, 57, 43, 34]}, {"African-American": [149, 73, 83, 77], "Caucasian": [160, 44, 53, 31]}, {"African-American": [151, 76, 64, 90], "Caucasian": [140, 42, 52, 27]}, {"African-American": [136, 83, 90, 80], "Caucasian": [133, 45, 55, 31]}, {"African-American": [146, 88, 43, 90], "Caucasian": [131, 51, 32, 51]}, {"African-American": [139, 90, 65, 108], "Caucasian": [143, 47, 31, 21]}, {"African-American": [131, 82, 68, 89], "Caucasian": [138, 45, 43, 27]}], "MLP": [{"African-American": [72, 143, 16, 132], "Caucasian": [95, 91, 21, 60]}, {"African-American": [148, 89, 51, 103], "Caucasian": [143, 51, 32, 29]}, {"African-American": [132, 99, 43, 100], "Caucasian": [149, 39, 35, 41]}, {"African-American": [104, 118, 39, 116], "Caucasian": [127, 61, 32, 45]}, {"African-American": [106, 116, 43, 117], "Caucasian": [115, 89, 29, 55]}, {"African-American": [124, 103, 46, 108], "Caucasian": [116, 66, 37, 42]}, {"African-American": [143, 76, 67, 103], "Caucasian": [135, 43, 59, 27]}, {"African-American": [102, 132, 24, 109], "Caucasian": [113, 69, 24, 59]}, {"African-American": [158, 71, 63, 110], "Caucasian": [148, 42, 34, 18]}, {"African-American": [120, 93, 51, 106], "Caucasian": [129, 54, 38, 32]}]}}
+{
+    "Original": {
+        "KNN": [{
+            "African-American": [169, 107, 98, 80],
+            "Caucasian": [170, 63, 61, 38]
+        }, {
+            "African-American": [183, 94, 93, 89],
+            "Caucasian": [190, 56, 48, 31]
+        }, {
+            "African-American": [190, 106, 86, 92],
+            "Caucasian": [164, 71, 43, 45]
+        }, {
+            "African-American": [177, 93, 110, 80],
+            "Caucasian": [167, 65, 62, 33]
+        }, {
+            "African-American": [184, 98, 104, 94],
+            "Caucasian": [164, 73, 66, 37]
+        }, {
+            "African-American": [188, 88, 109, 82],
+            "Caucasian": [153, 71, 58, 41]
+        }, {
+            "African-American": [157, 110, 119, 88],
+            "Caucasian": [158, 60, 71, 34]
+        }, {
+            "African-American": [181, 107, 75, 93],
+            "Caucasian": [172, 57, 56, 46]
+        }, {
+            "African-American": [172, 103, 104, 105],
+            "Caucasian": [159, 77, 49, 26]
+        }, {
+            "African-American": [171, 101, 99, 91],
+            "Caucasian": [152, 79, 50, 35]
+        }],
+        "LinearSVC": [{
+            "African-American": [170, 106, 46, 132],
+            "Caucasian": [190, 43, 55, 44]
+        }, {
+            "African-American": [159, 118, 51, 131],
+            "Caucasian": [193, 53, 39, 40]
+        }, {
+            "African-American": [172, 124, 47, 131],
+            "Caucasian": [194, 41, 45, 43]
+        }, {
+            "African-American": [154, 116, 61, 129],
+            "Caucasian": [192, 40, 51, 44]
+        }, {
+            "African-American": [168, 114, 65, 133],
+            "Caucasian": [186, 51, 58, 45]
+        }, {
+            "African-American": [170, 106, 62, 129],
+            "Caucasian": [165, 59, 62, 37]
+        }, {
+            "African-American": [157, 110, 55, 152],
+            "Caucasian": [160, 58, 53, 52]
+        }, {
+            "African-American": [166, 122, 39, 129],
+            "Caucasian": [176, 53, 50, 52]
+        }, {
+            "African-American": [146, 129, 46, 163],
+            "Caucasian": [177, 59, 41, 34]
+        }, {
+            "African-American": [143, 129, 51, 139],
+            "Caucasian": [188, 43, 48, 37]
+        }],
+        "SVC": [{
+            "African-American": [152, 124, 41, 137],
+            "Caucasian": [153, 80, 48, 51]
+        }, {
+            "African-American": [152, 125, 59, 123],
+            "Caucasian": [164, 82, 37, 42]
+        }, {
+            "African-American": [146, 150, 45, 133],
+            "Caucasian": [159, 76, 35, 53]
+        }, {
+            "African-American": [130, 140, 59, 131],
+            "Caucasian": [159, 73, 44, 51]
+        }, {
+            "African-American": [151, 131, 72, 126],
+            "Caucasian": [145, 92, 38, 65]
+        }, {
+            "African-American": [149, 127, 63, 128],
+            "Caucasian": [144, 80, 42, 57]
+        }, {
+            "African-American": [137, 130, 69, 138],
+            "Caucasian": [140, 78, 52, 53]
+        }, {
+            "African-American": [148, 140, 50, 118],
+            "Caucasian": [164, 65, 47, 55]
+        }, {
+            "African-American": [143, 132, 55, 154],
+            "Caucasian": [161, 75, 32, 43]
+        }, {
+            "African-American": [136, 136, 53, 137],
+            "Caucasian": [142, 89, 41, 44]
+        }],
+        "Forest": [{
+            "African-American": [198, 78, 62, 116],
+            "Caucasian": [208, 25, 60, 39]
+        }, {
+            "African-American": [214, 63, 82, 100],
+            "Caucasian": [209, 37, 49, 30]
+        }, {
+            "African-American": [214, 82, 71, 107],
+            "Caucasian": [212, 23, 54, 34]
+        }, {
+            "African-American": [192, 78, 76, 114],
+            "Caucasian": [199, 33, 54, 41]
+        }, {
+            "African-American": [208, 74, 86, 112],
+            "Caucasian": [199, 38, 69, 34]
+        }, {
+            "African-American": [202, 74, 86, 105],
+            "Caucasian": [188, 36, 65, 34]
+        }, {
+            "African-American": [196, 71, 88, 119],
+            "Caucasian": [189, 29, 67, 38]
+        }, {
+            "African-American": [214, 74, 58, 110],
+            "Caucasian": [196, 33, 55, 47]
+        }, {
+            "African-American": [191, 84, 81, 128],
+            "Caucasian": [203, 33, 56, 19]
+        }, {
+            "African-American": [186, 86, 78, 112],
+            "Caucasian": [203, 28, 56, 29]
+        }],
+        "LogReg": [{
+            "African-American": [166, 110, 40, 138],
+            "Caucasian": [182, 51, 54, 45]
+        }, {
+            "African-American": [176, 101, 57, 125],
+            "Caucasian": [199, 47, 39, 40]
+        }, {
+            "African-American": [179, 117, 48, 130],
+            "Caucasian": [196, 39, 47, 41]
+        }, {
+            "African-American": [156, 114, 64, 126],
+            "Caucasian": [191, 41, 52, 43]
+        }, {
+            "African-American": [183, 99, 69, 129],
+            "Caucasian": [190, 47, 56, 47]
+        }, {
+            "African-American": [173, 103, 66, 125],
+            "Caucasian": [167, 57, 62, 37]
+        }, {
+            "African-American": [160, 107, 59, 148],
+            "Caucasian": [165, 53, 56, 49]
+        }, {
+            "African-American": [174, 114, 42, 126],
+            "Caucasian": [181, 48, 49, 53]
+        }, {
+            "African-American": [154, 121, 52, 157],
+            "Caucasian": [180, 56, 41, 34]
+        }, {
+            "African-American": [154, 118, 58, 132],
+            "Caucasian": [189, 42, 50, 35]
+        }],
+        "Tree": [{
+            "African-American": [202, 74, 65, 113],
+            "Caucasian": [212, 21, 61, 38]
+        }, {
+            "African-American": [201, 76, 84, 98],
+            "Caucasian": [213, 33, 49, 30]
+        }, {
+            "African-American": [204, 92, 67, 111],
+            "Caucasian": [200, 35, 58, 30]
+        }, {
+            "African-American": [172, 98, 77, 113],
+            "Caucasian": [195, 37, 57, 38]
+        }, {
+            "African-American": [181, 101, 78, 120],
+            "Caucasian": [180, 57, 61, 42]
+        }, {
+            "African-American": [204, 72, 91, 100],
+            "Caucasian": [188, 36, 64, 35]
+        }, {
+            "African-American": [195, 72, 96, 111],
+            "Caucasian": [188, 30, 75, 30]
+        }, {
+            "African-American": [192, 96, 58, 110],
+            "Caucasian": [187, 42, 56, 46]
+        }, {
+            "African-American": [177, 98, 87, 122],
+            "Caucasian": [204, 32, 51, 24]
+        }, {
+            "African-American": [205, 67, 93, 97],
+            "Caucasian": [209, 22, 57, 28]
+        }],
+        "MLP": [{
+            "African-American": [120, 156, 21, 157],
+            "Caucasian": [159, 74, 40, 59]
+        }, {
+            "African-American": [195, 82, 69, 113],
+            "Caucasian": [196, 50, 39, 40]
+        }, {
+            "African-American": [170, 126, 49, 129],
+            "Caucasian": [182, 53, 48, 40]
+        }, {
+            "African-American": [101, 169, 37, 153],
+            "Caucasian": [152, 80, 36, 59]
+        }, {
+            "African-American": [170, 112, 66, 132],
+            "Caucasian": [181, 56, 48, 55]
+        }, {
+            "African-American": [172, 104, 74, 117],
+            "Caucasian": [166, 58, 55, 44]
+        }, {
+            "African-American": [154, 113, 56, 151],
+            "Caucasian": [156, 62, 55, 50]
+        }, {
+            "African-American": [185, 103, 39, 129],
+            "Caucasian": [181, 48, 46, 56]
+        }, {
+            "African-American": [155, 120, 55, 154],
+            "Caucasian": [178, 58, 45, 30]
+        }, {
+            "African-American": [113, 159, 30, 160],
+            "Caucasian": [144, 87, 25, 60]
+        }]
+    },
+    "Fill by Mean (Original)": {
+        "KNN": [{
+            "African-American": [178, 122, 95, 85],
+            "Caucasian": [182, 63, 61, 38]
+        }, {
+            "African-American": [198, 100, 97, 92],
+            "Caucasian": [186, 62, 49, 33]
+        }, {
+            "African-American": [198, 118, 79, 102],
+            "Caucasian": [172, 70, 49, 42]
+        }, {
+            "African-American": [185, 106, 108, 82],
+            "Caucasian": [174, 75, 58, 33]
+        }, {
+            "African-American": [186, 121, 99, 99],
+            "Caucasian": [165, 79, 65, 39]
+        }, {
+            "African-American": [190, 105, 111, 88],
+            "Caucasian": [158, 77, 58, 41]
+        }, {
+            "African-American": [163, 123, 120, 93],
+            "Caucasian": [157, 70, 71, 34]
+        }, {
+            "African-American": [190, 119, 79, 88],
+            "Caucasian": [176, 66, 57, 47]
+        }, {
+            "African-American": [191, 102, 112, 100],
+            "Caucasian": [172, 78, 47, 28]
+        }, {
+            "African-American": [183, 109, 105, 90],
+            "Caucasian": [161, 83, 51, 34]
+        }],
+        "LinearSVC": [{
+            "African-American": [177, 123, 37, 143],
+            "Caucasian": [189, 56, 56, 43]
+        }, {
+            "African-American": [179, 119, 53, 136],
+            "Caucasian": [194, 54, 42, 40]
+        }, {
+            "African-American": [184, 132, 50, 131],
+            "Caucasian": [200, 42, 46, 45]
+        }, {
+            "African-American": [160, 131, 60, 130],
+            "Caucasian": [198, 51, 48, 43]
+        }, {
+            "African-American": [178, 129, 64, 134],
+            "Caucasian": [193, 51, 61, 43]
+        }, {
+            "African-American": [183, 112, 64, 135],
+            "Caucasian": [176, 59, 63, 36]
+        }, {
+            "African-American": [164, 122, 54, 159],
+            "Caucasian": [163, 64, 56, 49]
+        }, {
+            "African-American": [174, 135, 39, 128],
+            "Caucasian": [185, 57, 51, 53]
+        }, {
+            "African-American": [155, 138, 54, 158],
+            "Caucasian": [189, 61, 42, 33]
+        }, {
+            "African-American": [159, 133, 49, 146],
+            "Caucasian": [195, 49, 48, 37]
+        }],
+        "SVC": [{
+            "African-American": [140, 160, 35, 145],
+            "Caucasian": [135, 110, 40, 59]
+        }, {
+            "African-American": [129, 169, 49, 140],
+            "Caucasian": [149, 99, 33, 49]
+        }, {
+            "African-American": [142, 174, 34, 147],
+            "Caucasian": [144, 98, 32, 59]
+        }, {
+            "African-American": [114, 177, 51, 139],
+            "Caucasian": [153, 96, 41, 50]
+        }, {
+            "African-American": [133, 174, 49, 149],
+            "Caucasian": [136, 108, 33, 71]
+        }, {
+            "African-American": [118, 177, 40, 159],
+            "Caucasian": [129, 106, 38, 61]
+        }, {
+            "African-American": [119, 167, 63, 150],
+            "Caucasian": [136, 91, 39, 66]
+        }, {
+            "African-American": [114, 195, 38, 129],
+            "Caucasian": [139, 103, 38, 66]
+        }, {
+            "African-American": [116, 177, 45, 167],
+            "Caucasian": [154, 96, 24, 51]
+        }, {
+            "African-American": [128, 164, 33, 162],
+            "Caucasian": [142, 102, 37, 48]
+        }],
+        "Forest": [{
+            "African-American": [212, 88, 58, 122],
+            "Caucasian": [223, 22, 57, 42]
+        }, {
+            "African-American": [223, 75, 82, 107],
+            "Caucasian": [217, 31, 54, 28]
+        }, {
+            "African-American": [226, 90, 75, 106],
+            "Caucasian": [216, 26, 59, 32]
+        }, {
+            "African-American": [200, 91, 81, 109],
+            "Caucasian": [217, 32, 52, 39]
+        }, {
+            "African-American": [229, 78, 91, 107],
+            "Caucasian": [205, 39, 69, 35]
+        }, {
+            "African-American": [216, 79, 89, 110],
+            "Caucasian": [199, 36, 65, 34]
+        }, {
+            "African-American": [217, 69, 87, 126],
+            "Caucasian": [195, 32, 64, 41]
+        }, {
+            "African-American": [234, 75, 64, 103],
+            "Caucasian": [208, 34, 59, 45]
+        }, {
+            "African-American": [202, 91, 83, 129],
+            "Caucasian": [214, 36, 55, 20]
+        }, {
+            "African-American": [213, 79, 85, 110],
+            "Caucasian": [212, 32, 57, 28]
+        }],
+        "LogReg": [{
+            "African-American": [180, 120, 41, 139],
+            "Caucasian": [188, 57, 52, 47]
+        }, {
+            "African-American": [184, 114, 54, 135],
+            "Caucasian": [198, 50, 40, 42]
+        }, {
+            "African-American": [202, 114, 51, 130],
+            "Caucasian": [207, 35, 51, 40]
+        }, {
+            "African-American": [168, 123, 62, 128],
+            "Caucasian": [202, 47, 49, 42]
+        }, {
+            "African-American": [178, 129, 63, 135],
+            "Caucasian": [192, 52, 60, 44]
+        }, {
+            "African-American": [189, 106, 68, 131],
+            "Caucasian": [178, 57, 62, 37]
+        }, {
+            "African-American": [166, 120, 57, 156],
+            "Caucasian": [166, 61, 55, 50]
+        }, {
+            "African-American": [183, 126, 42, 125],
+            "Caucasian": [187, 55, 57, 47]
+        }, {
+            "African-American": [156, 137, 50, 162],
+            "Caucasian": [186, 64, 40, 35]
+        }, {
+            "African-American": [166, 126, 56, 139],
+            "Caucasian": [198, 46, 49, 36]
+        }],
+        "Tree": [{
+            "African-American": [231, 69, 69, 111],
+            "Caucasian": [218, 27, 65, 34]
+        }, {
+            "African-American": [222, 76, 86, 103],
+            "Caucasian": [210, 38, 49, 33]
+        }, {
+            "African-American": [222, 94, 73, 108],
+            "Caucasian": [213, 29, 61, 30]
+        }, {
+            "African-American": [184, 107, 78, 112],
+            "Caucasian": [214, 35, 52, 39]
+        }, {
+            "African-American": [222, 85, 90, 108],
+            "Caucasian": [208, 36, 72, 32]
+        }, {
+            "African-American": [226, 69, 97, 102],
+            "Caucasian": [200, 35, 64, 35]
+        }, {
+            "African-American": [215, 71, 89, 124],
+            "Caucasian": [197, 30, 71, 34]
+        }, {
+            "African-American": [233, 76, 63, 104],
+            "Caucasian": [214, 28, 63, 41]
+        }, {
+            "African-American": [192, 101, 88, 124],
+            "Caucasian": [207, 43, 56, 19]
+        }, {
+            "African-American": [200, 92, 84, 111],
+            "Caucasian": [203, 41, 57, 28]
+        }],
+        "MLP": [{
+            "African-American": [177, 123, 41, 139],
+            "Caucasian": [200, 45, 53, 46]
+        }, {
+            "African-American": [160, 138, 43, 146],
+            "Caucasian": [171, 77, 38, 44]
+        }, {
+            "African-American": [200, 116, 60, 121],
+            "Caucasian": [203, 39, 53, 38]
+        }, {
+            "African-American": [101, 190, 38, 152],
+            "Caucasian": [154, 95, 37, 54]
+        }, {
+            "African-American": [176, 131, 54, 144],
+            "Caucasian": [179, 65, 53, 51]
+        }, {
+            "African-American": [162, 133, 54, 145],
+            "Caucasian": [164, 71, 46, 53]
+        }, {
+            "African-American": [141, 145, 51, 162],
+            "Caucasian": [161, 66, 41, 64]
+        }, {
+            "African-American": [191, 118, 42, 125],
+            "Caucasian": [190, 52, 50, 54]
+        }, {
+            "African-American": [158, 135, 56, 156],
+            "Caucasian": [190, 60, 46, 29]
+        }, {
+            "African-American": [157, 135, 46, 149],
+            "Caucasian": [183, 61, 38, 47]
+        }]
+    },
+    "Fill by Similar (Original)": {
+        "KNN": [{
+            "African-American": [194, 106, 99, 81],
+            "Caucasian": [183, 62, 62, 37]
+        }, {
+            "African-American": [204, 94, 99, 90],
+            "Caucasian": [190, 58, 50, 32]
+        }, {
+            "African-American": [203, 113, 88, 93],
+            "Caucasian": [171, 71, 48, 43]
+        }, {
+            "African-American": [196, 95, 110, 80],
+            "Caucasian": [177, 72, 58, 33]
+        }, {
+            "African-American": [195, 112, 105, 93],
+            "Caucasian": [171, 73, 66, 38]
+        }, {
+            "African-American": [198, 97, 112, 87],
+            "Caucasian": [159, 76, 61, 38]
+        }, {
+            "African-American": [167, 119, 119, 94],
+            "Caucasian": [163, 64, 70, 35]
+        }, {
+            "African-American": [192, 117, 82, 85],
+            "Caucasian": [178, 64, 56, 48]
+        }, {
+            "African-American": [183, 110, 115, 97],
+            "Caucasian": [168, 82, 44, 31]
+        }, {
+            "African-American": [188, 104, 103, 92],
+            "Caucasian": [164, 80, 54, 31]
+        }],
+        "LinearSVC": [{
+            "African-American": [181, 119, 41, 139],
+            "Caucasian": [192, 53, 56, 43]
+        }, {
+            "African-American": [179, 119, 56, 133],
+            "Caucasian": [200, 48, 43, 39]
+        }, {
+            "African-American": [187, 129, 50, 131],
+            "Caucasian": [199, 43, 47, 44]
+        }, {
+            "African-American": [159, 132, 60, 130],
+            "Caucasian": [198, 51, 48, 43]
+        }, {
+            "African-American": [177, 130, 65, 133],
+            "Caucasian": [190, 54, 61, 43]
+        }, {
+            "African-American": [183, 112, 63, 136],
+            "Caucasian": [176, 59, 64, 35]
+        }, {
+            "African-American": [167, 119, 59, 154],
+            "Caucasian": [165, 62, 55, 50]
+        }, {
+            "African-American": [176, 133, 39, 128],
+            "Caucasian": [185, 57, 51, 53]
+        }, {
+            "African-American": [153, 140, 53, 159],
+            "Caucasian": [188, 62, 41, 34]
+        }, {
+            "African-American": [164, 128, 53, 142],
+            "Caucasian": [198, 46, 48, 37]
+        }],
+        "SVC": [{
+            "African-American": [152, 148, 35, 145],
+            "Caucasian": [147, 98, 47, 52]
+        }, {
+            "African-American": [148, 150, 52, 137],
+            "Caucasian": [161, 87, 35, 47]
+        }, {
+            "African-American": [149, 167, 38, 143],
+            "Caucasian": [156, 86, 34, 57]
+        }, {
+            "African-American": [118, 173, 57, 133],
+            "Caucasian": [157, 92, 43, 48]
+        }, {
+            "African-American": [148, 159, 63, 135],
+            "Caucasian": [140, 104, 34, 70]
+        }, {
+            "African-American": [137, 158, 59, 140],
+            "Caucasian": [140, 95, 41, 58]
+        }, {
+            "African-American": [134, 152, 68, 145],
+            "Caucasian": [144, 83, 48, 57]
+        }, {
+            "African-American": [134, 175, 44, 123],
+            "Caucasian": [154, 88, 42, 62]
+        }, {
+            "African-American": [143, 150, 58, 154],
+            "Caucasian": [159, 91, 34, 41]
+        }, {
+            "African-American": [133, 159, 40, 155],
+            "Caucasian": [148, 96, 41, 44]
+        }],
+        "Forest": [{
+            "African-American": [219, 81, 60, 120],
+            "Caucasian": [226, 19, 59, 40]
+        }, {
+            "African-American": [230, 68, 90, 99],
+            "Caucasian": [215, 33, 54, 28]
+        }, {
+            "African-American": [237, 79, 75, 106],
+            "Caucasian": [217, 25, 60, 31]
+        }, {
+            "African-American": [211, 80, 85, 105],
+            "Caucasian": [218, 31, 54, 37]
+        }, {
+            "African-American": [232, 75, 93, 105],
+            "Caucasian": [212, 32, 72, 32]
+        }, {
+            "African-American": [212, 83, 93, 106],
+            "Caucasian": [199, 36, 69, 30]
+        }, {
+            "African-American": [214, 72, 90, 123],
+            "Caucasian": [195, 32, 66, 39]
+        }, {
+            "African-American": [233, 76, 63, 104],
+            "Caucasian": [207, 35, 58, 46]
+        }, {
+            "African-American": [202, 91, 81, 131],
+            "Caucasian": [212, 38, 55, 20]
+        }, {
+            "African-American": [210, 82, 88, 107],
+            "Caucasian": [215, 29, 62, 23]
+        }],
+        "LogReg": [{
+            "African-American": [186, 114, 41, 139],
+            "Caucasian": [195, 50, 55, 44]
+        }, {
+            "African-American": [183, 115, 52, 137],
+            "Caucasian": [198, 50, 40, 42]
+        }, {
+            "African-American": [194, 122, 51, 130],
+            "Caucasian": [203, 39, 49, 42]
+        }, {
+            "African-American": [169, 122, 63, 127],
+            "Caucasian": [203, 46, 50, 41]
+        }, {
+            "African-American": [181, 126, 65, 133],
+            "Caucasian": [192, 52, 59, 45]
+        }, {
+            "African-American": [181, 114, 64, 135],
+            "Caucasian": [175, 60, 63, 36]
+        }, {
+            "African-American": [171, 115, 63, 150],
+            "Caucasian": [170, 57, 57, 48]
+        }, {
+            "African-American": [185, 124, 42, 125],
+            "Caucasian": [188, 54, 52, 52]
+        }, {
+            "African-American": [159, 134, 58, 154],
+            "Caucasian": [189, 61, 40, 35]
+        }, {
+            "African-American": [167, 125, 55, 140],
+            "Caucasian": [198, 46, 49, 36]
+        }],
+        "Tree": [{
+            "African-American": [228, 72, 62, 118],
+            "Caucasian": [220, 25, 67, 32]
+        }, {
+            "African-American": [228, 70, 83, 106],
+            "Caucasian": [214, 34, 52, 30]
+        }, {
+            "African-American": [227, 89, 73, 108],
+            "Caucasian": [210, 32, 60, 31]
+        }, {
+            "African-American": [204, 87, 85, 105],
+            "Caucasian": [216, 33, 59, 32]
+        }, {
+            "African-American": [223, 84, 86, 112],
+            "Caucasian": [205, 39, 73, 31]
+        }, {
+            "African-American": [219, 76, 95, 104],
+            "Caucasian": [205, 30, 65, 34]
+        }, {
+            "African-American": [211, 75, 101, 112],
+            "Caucasian": [196, 31, 76, 29]
+        }, {
+            "African-American": [225, 84, 72, 95],
+            "Caucasian": [210, 32, 70, 34]
+        }, {
+            "African-American": [185, 108, 84, 128],
+            "Caucasian": [201, 49, 50, 25]
+        }, {
+            "African-American": [202, 90, 86, 109],
+            "Caucasian": [212, 32, 60, 25]
+        }],
+        "MLP": [{
+            "African-American": [183, 117, 37, 143],
+            "Caucasian": [188, 57, 49, 50]
+        }, {
+            "African-American": [198, 100, 65, 124],
+            "Caucasian": [190, 58, 45, 37]
+        }, {
+            "African-American": [143, 173, 34, 147],
+            "Caucasian": [171, 71, 34, 57]
+        }, {
+            "African-American": [157, 134, 63, 127],
+            "Caucasian": [196, 53, 44, 47]
+        }, {
+            "African-American": [161, 146, 50, 148],
+            "Caucasian": [165, 79, 50, 54]
+        }, {
+            "African-American": [172, 123, 62, 137],
+            "Caucasian": [167, 68, 51, 48]
+        }, {
+            "African-American": [167, 119, 61, 152],
+            "Caucasian": [179, 48, 48, 57]
+        }, {
+            "African-American": [181, 128, 40, 127],
+            "Caucasian": [179, 63, 43, 61]
+        }, {
+            "African-American": [181, 112, 79, 133],
+            "Caucasian": [201, 49, 48, 27]
+        }, {
+            "African-American": [154, 138, 49, 146],
+            "Caucasian": [176, 68, 37, 48]
+        }]
+    },
+    "Fill by Multiple Imputation (Original)": {
+        "KNN": [{
+            "African-American": [189, 111, 100, 80],
+            "Caucasian": [179, 66, 62, 37]
+        }, {
+            "African-American": [200, 98, 93, 96],
+            "Caucasian": [190, 58, 49, 33]
+        }, {
+            "African-American": [203, 113, 84, 97],
+            "Caucasian": [173, 69, 45, 46]
+        }, {
+            "African-American": [193, 98, 102, 88],
+            "Caucasian": [178, 71, 58, 33]
+        }, {
+            "African-American": [205, 102, 103, 95],
+            "Caucasian": [167, 77, 65, 39]
+        }, {
+            "African-American": [200, 95, 115, 84],
+            "Caucasian": [161, 74, 62, 37]
+        }, {
+            "African-American": [171, 115, 130, 83],
+            "Caucasian": [162, 65, 70, 35]
+        }, {
+            "African-American": [198, 111, 76, 91],
+            "Caucasian": [179, 63, 58, 46]
+        }, {
+            "African-American": [188, 105, 108, 104],
+            "Caucasian": [170, 80, 49, 26]
+        }, {
+            "African-American": [186, 106, 105, 90],
+            "Caucasian": [165, 79, 51, 34]
+        }],
+        "LinearSVC": [{
+            "African-American": [181, 119, 38, 142],
+            "Caucasian": [193, 52, 55, 44]
+        }, {
+            "African-American": [179, 119, 52, 137],
+            "Caucasian": [195, 53, 42, 40]
+        }, {
+            "African-American": [189, 127, 53, 128],
+            "Caucasian": [203, 39, 48, 43]
+        }, {
+            "African-American": [160, 131, 63, 127],
+            "Caucasian": [200, 49, 48, 43]
+        }, {
+            "African-American": [186, 121, 67, 131],
+            "Caucasian": [194, 50, 60, 44]
+        }, {
+            "African-American": [185, 110, 66, 133],
+            "Caucasian": [180, 55, 63, 36]
+        }, {
+            "African-American": [165, 121, 54, 159],
+            "Caucasian": [162, 65, 54, 51]
+        }, {
+            "African-American": [180, 129, 41, 126],
+            "Caucasian": [187, 55, 54, 50]
+        }, {
+            "African-American": [154, 139, 52, 160],
+            "Caucasian": [188, 62, 41, 34]
+        }, {
+            "African-American": [166, 126, 56, 139],
+            "Caucasian": [196, 48, 48, 37]
+        }],
+        "SVC": [{
+            "African-American": [165, 135, 42, 138],
+            "Caucasian": [139, 106, 42, 57]
+        }, {
+            "African-American": [139, 159, 47, 142],
+            "Caucasian": [150, 98, 31, 51]
+        }, {
+            "African-American": [154, 162, 46, 135],
+            "Caucasian": [157, 85, 36, 55]
+        }, {
+            "African-American": [125, 166, 55, 135],
+            "Caucasian": [159, 90, 40, 51]
+        }, {
+            "African-American": [154, 153, 65, 133],
+            "Caucasian": [146, 98, 32, 72]
+        }, {
+            "African-American": [151, 144, 68, 131],
+            "Caucasian": [142, 93, 39, 60]
+        }, {
+            "African-American": [129, 157, 68, 145],
+            "Caucasian": [138, 89, 44, 61]
+        }, {
+            "African-American": [139, 170, 39, 128],
+            "Caucasian": [149, 93, 41, 63]
+        }, {
+            "African-American": [142, 151, 52, 160],
+            "Caucasian": [157, 93, 26, 49]
+        }, {
+            "African-American": [131, 161, 33, 162],
+            "Caucasian": [144, 100, 36, 49]
+        }],
+        "Forest": [{
+            "African-American": [217, 83, 58, 122],
+            "Caucasian": [223, 22, 61, 38]
+        }, {
+            "African-American": [238, 60, 87, 102],
+            "Caucasian": [213, 35, 53, 29]
+        }, {
+            "African-American": [234, 82, 76, 105],
+            "Caucasian": [215, 27, 57, 34]
+        }, {
+            "African-American": [212, 79, 86, 104],
+            "Caucasian": [216, 33, 54, 37]
+        }, {
+            "African-American": [228, 79, 93, 105],
+            "Caucasian": [211, 33, 68, 36]
+        }, {
+            "African-American": [215, 80, 96, 103],
+            "Caucasian": [203, 32, 66, 33]
+        }, {
+            "African-American": [216, 70, 93, 120],
+            "Caucasian": [194, 33, 68, 37]
+        }, {
+            "African-American": [232, 77, 61, 106],
+            "Caucasian": [209, 33, 59, 45]
+        }, {
+            "African-American": [207, 86, 83, 129],
+            "Caucasian": [212, 38, 54, 21]
+        }, {
+            "African-American": [215, 77, 86, 109],
+            "Caucasian": [217, 27, 58, 27]
+        }],
+        "LogReg": [{
+            "African-American": [177, 123, 38, 142],
+            "Caucasian": [189, 56, 52, 47]
+        }, {
+            "African-American": [182, 116, 62, 127],
+            "Caucasian": [200, 48, 43, 39]
+        }, {
+            "African-American": [192, 124, 60, 121],
+            "Caucasian": [201, 41, 47, 44]
+        }, {
+            "African-American": [155, 136, 58, 132],
+            "Caucasian": [196, 53, 47, 44]
+        }, {
+            "African-American": [186, 121, 66, 132],
+            "Caucasian": [194, 50, 60, 44]
+        }, {
+            "African-American": [187, 108, 68, 131],
+            "Caucasian": [180, 55, 61, 38]
+        }, {
+            "African-American": [174, 112, 61, 152],
+            "Caucasian": [173, 54, 57, 48]
+        }, {
+            "African-American": [183, 126, 41, 126],
+            "Caucasian": [187, 55, 51, 53]
+        }, {
+            "African-American": [152, 141, 51, 161],
+            "Caucasian": [185, 65, 41, 34]
+        }, {
+            "African-American": [175, 117, 59, 136],
+            "Caucasian": [199, 45, 48, 37]
+        }],
+        "Tree": [{
+            "African-American": [207, 93, 50, 130],
+            "Caucasian": [213, 32, 61, 38]
+        }, {
+            "African-American": [230, 68, 89, 100],
+            "Caucasian": [212, 36, 54, 28]
+        }, {
+            "African-American": [216, 100, 76, 105],
+            "Caucasian": [208, 34, 55, 36]
+        }, {
+            "African-American": [212, 79, 91, 99],
+            "Caucasian": [212, 37, 59, 32]
+        }, {
+            "African-American": [224, 83, 99, 99],
+            "Caucasian": [206, 38, 70, 34]
+        }, {
+            "African-American": [217, 78, 98, 101],
+            "Caucasian": [206, 29, 70, 29]
+        }, {
+            "African-American": [217, 69, 102, 111],
+            "Caucasian": [202, 25, 73, 32]
+        }, {
+            "African-American": [214, 95, 64, 103],
+            "Caucasian": [204, 38, 58, 46]
+        }, {
+            "African-American": [193, 100, 93, 119],
+            "Caucasian": [211, 39, 56, 19]
+        }, {
+            "African-American": [209, 83, 91, 104],
+            "Caucasian": [215, 29, 60, 25]
+        }],
+        "MLP": [{
+            "African-American": [204, 96, 46, 134],
+            "Caucasian": [201, 44, 50, 49]
+        }, {
+            "African-American": [183, 115, 48, 141],
+            "Caucasian": [188, 60, 40, 42]
+        }, {
+            "African-American": [144, 172, 41, 140],
+            "Caucasian": [174, 68, 40, 51]
+        }, {
+            "African-American": [115, 176, 41, 149],
+            "Caucasian": [169, 80, 38, 53]
+        }, {
+            "African-American": [196, 111, 70, 128],
+            "Caucasian": [191, 53, 61, 43]
+        }, {
+            "African-American": [185, 110, 67, 132],
+            "Caucasian": [176, 59, 54, 45]
+        }, {
+            "African-American": [165, 121, 59, 154],
+            "Caucasian": [168, 59, 49, 56]
+        }, {
+            "African-American": [138, 171, 24, 143],
+            "Caucasian": [153, 89, 34, 70]
+        }, {
+            "African-American": [166, 127, 63, 149],
+            "Caucasian": [186, 64, 43, 32]
+        }, {
+            "African-American": [185, 107, 61, 134],
+            "Caucasian": [196, 48, 46, 39]
+        }]
+    },
+    "Fill by Mean (Simulated)": {
+        "KNN": [{
+            "African-American": [114, 101, 75, 73],
+            "Caucasian": [117, 69, 43, 38]
+        }, {
+            "African-American": [149, 88, 69, 85],
+            "Caucasian": [137, 57, 36, 25]
+        }, {
+            "African-American": [153, 78, 84, 59],
+            "Caucasian": [139, 49, 40, 36]
+        }, {
+            "African-American": [136, 86, 87, 68],
+            "Caucasian": [131, 57, 63, 14]
+        }, {
+            "African-American": [132, 90, 89, 71],
+            "Caucasian": [123, 81, 43, 41]
+        }, {
+            "African-American": [142, 85, 81, 73],
+            "Caucasian": [116, 66, 42, 37]
+        }, {
+            "African-American": [121, 98, 99, 71],
+            "Caucasian": [120, 58, 56, 30]
+        }, {
+            "African-American": [154, 80, 64, 69],
+            "Caucasian": [130, 52, 54, 29]
+        }, {
+            "African-American": [127, 102, 95, 78],
+            "Caucasian": [123, 67, 33, 19]
+        }, {
+            "African-American": [129, 84, 75, 82],
+            "Caucasian": [123, 60, 47, 23]
+        }],
+        "LinearSVC": [{
+            "African-American": [138, 77, 41, 107],
+            "Caucasian": [151, 35, 43, 38]
+        }, {
+            "African-American": [148, 89, 53, 101],
+            "Caucasian": [147, 47, 34, 27]
+        }, {
+            "African-American": [134, 97, 45, 98],
+            "Caucasian": [159, 29, 40, 36]
+        }, {
+            "African-American": [132, 90, 54, 101],
+            "Caucasian": [144, 44, 44, 33]
+        }, {
+            "African-American": [135, 87, 65, 95],
+            "Caucasian": [161, 43, 45, 39]
+        }, {
+            "African-American": [141, 86, 55, 99],
+            "Caucasian": [134, 48, 47, 32]
+        }, {
+            "African-American": [129, 90, 59, 111],
+            "Caucasian": [134, 44, 52, 34]
+        }, {
+            "African-American": [145, 89, 41, 92],
+            "Caucasian": [150, 32, 42, 41]
+        }, {
+            "African-American": [120, 109, 48, 125],
+            "Caucasian": [143, 47, 26, 26]
+        }, {
+            "African-American": [112, 101, 49, 108],
+            "Caucasian": [142, 41, 42, 28]
+        }],
+        "SVC": [{
+            "African-American": [99, 116, 28, 120],
+            "Caucasian": [105, 81, 32, 49]
+        }, {
+            "African-American": [126, 111, 49, 105],
+            "Caucasian": [121, 73, 30, 31]
+        }, {
+            "African-American": [125, 106, 40, 103],
+            "Caucasian": [120, 68, 34, 42]
+        }, {
+            "African-American": [109, 113, 55, 100],
+            "Caucasian": [117, 71, 38, 39]
+        }, {
+            "African-American": [103, 119, 62, 98],
+            "Caucasian": [115, 89, 27, 57]
+        }, {
+            "African-American": [105, 122, 43, 111],
+            "Caucasian": [101, 81, 35, 44]
+        }, {
+            "African-American": [104, 115, 65, 105],
+            "Caucasian": [108, 70, 42, 44]
+        }, {
+            "African-American": [89, 145, 44, 89],
+            "Caucasian": [109, 73, 25, 58]
+        }, {
+            "African-American": [106, 123, 50, 123],
+            "Caucasian": [124, 66, 20, 32]
+        }, {
+            "African-American": [97, 116, 46, 111],
+            "Caucasian": [103, 80, 34, 36]
+        }],
+        "Forest": [{
+            "African-American": [123, 92, 36, 112],
+            "Caucasian": [131, 55, 33, 48]
+        }, {
+            "African-American": [128, 109, 50, 104],
+            "Caucasian": [120, 74, 29, 32]
+        }, {
+            "African-American": [121, 110, 47, 96],
+            "Caucasian": [117, 71, 38, 38]
+        }, {
+            "African-American": [121, 101, 49, 106],
+            "Caucasian": [118, 70, 41, 36]
+        }, {
+            "African-American": [110, 112, 54, 106],
+            "Caucasian": [113, 91, 40, 44]
+        }, {
+            "African-American": [130, 97, 55, 99],
+            "Caucasian": [124, 58, 40, 39]
+        }, {
+            "African-American": [105, 114, 62, 108],
+            "Caucasian": [100, 78, 42, 44]
+        }, {
+            "African-American": [130, 104, 36, 97],
+            "Caucasian": [127, 55, 30, 53]
+        }, {
+            "African-American": [113, 116, 56, 117],
+            "Caucasian": [125, 65, 29, 23]
+        }, {
+            "African-American": [118, 95, 54, 103],
+            "Caucasian": [106, 77, 43, 27]
+        }],
+        "LogReg": [{
+            "African-American": [137, 78, 42, 106],
+            "Caucasian": [147, 39, 42, 39]
+        }, {
+            "African-American": [161, 76, 62, 92],
+            "Caucasian": [153, 41, 35, 26]
+        }, {
+            "African-American": [137, 94, 44, 99],
+            "Caucasian": [160, 28, 42, 34]
+        }, {
+            "African-American": [135, 87, 57, 98],
+            "Caucasian": [143, 45, 47, 30]
+        }, {
+            "African-American": [140, 82, 64, 96],
+            "Caucasian": [163, 41, 46, 38]
+        }, {
+            "African-American": [148, 79, 60, 94],
+            "Caucasian": [138, 44, 48, 31]
+        }, {
+            "African-American": [129, 90, 57, 113],
+            "Caucasian": [133, 45, 51, 35]
+        }, {
+            "African-American": [147, 87, 43, 90],
+            "Caucasian": [147, 35, 43, 40]
+        }, {
+            "African-American": [131, 98, 55, 118],
+            "Caucasian": [147, 43, 27, 25]
+        }, {
+            "African-American": [128, 85, 55, 102],
+            "Caucasian": [147, 36, 41, 29]
+        }],
+        "Tree": [{
+            "African-American": [128, 87, 44, 104],
+            "Caucasian": [133, 53, 37, 44]
+        }, {
+            "African-American": [166, 71, 61, 93],
+            "Caucasian": [141, 53, 37, 24]
+        }, {
+            "African-American": [128, 103, 48, 95],
+            "Caucasian": [137, 51, 42, 34]
+        }, {
+            "African-American": [147, 75, 70, 85],
+            "Caucasian": [135, 53, 48, 29]
+        }, {
+            "African-American": [135, 87, 61, 99],
+            "Caucasian": [134, 70, 37, 47]
+        }, {
+            "African-American": [138, 89, 65, 89],
+            "Caucasian": [126, 56, 45, 34]
+        }, {
+            "African-American": [110, 109, 65, 105],
+            "Caucasian": [118, 60, 47, 39]
+        }, {
+            "African-American": [150, 84, 59, 74],
+            "Caucasian": [147, 35, 45, 38]
+        }, {
+            "African-American": [119, 110, 55, 118],
+            "Caucasian": [138, 52, 26, 26]
+        }, {
+            "African-American": [132, 81, 53, 104],
+            "Caucasian": [127, 56, 42, 28]
+        }],
+        "MLP": [{
+            "African-American": [74, 141, 15, 133],
+            "Caucasian": [90, 96, 22, 59]
+        }, {
+            "African-American": [103, 134, 27, 127],
+            "Caucasian": [112, 82, 24, 37]
+        }, {
+            "African-American": [158, 73, 61, 82],
+            "Caucasian": [154, 34, 42, 34]
+        }, {
+            "African-American": [102, 120, 47, 108],
+            "Caucasian": [122, 66, 36, 41]
+        }, {
+            "African-American": [147, 75, 68, 92],
+            "Caucasian": [168, 36, 47, 37]
+        }, {
+            "African-American": [104, 123, 33, 121],
+            "Caucasian": [104, 78, 32, 47]
+        }, {
+            "African-American": [144, 75, 74, 96],
+            "Caucasian": [140, 38, 62, 24]
+        }, {
+            "African-American": [70, 164, 18, 115],
+            "Caucasian": [100, 82, 21, 62]
+        }, {
+            "African-American": [110, 119, 44, 129],
+            "Caucasian": [133, 57, 26, 26]
+        }, {
+            "African-American": [124, 89, 43, 114],
+            "Caucasian": [130, 53, 36, 34]
+        }]
+    },
+    "Fill by Similar (Simulated)": {
+        "KNN": [{
+            "African-American": [131, 84, 83, 65],
+            "Caucasian": [133, 53, 49, 32]
+        }, {
+            "African-American": [152, 85, 74, 80],
+            "Caucasian": [144, 50, 34, 27]
+        }, {
+            "African-American": [158, 73, 79, 64],
+            "Caucasian": [137, 51, 43, 33]
+        }, {
+            "African-American": [137, 85, 84, 71],
+            "Caucasian": [135, 53, 56, 21]
+        }, {
+            "African-American": [145, 77, 93, 67],
+            "Caucasian": [148, 56, 50, 34]
+        }, {
+            "African-American": [156, 71, 91, 63],
+            "Caucasian": [120, 62, 48, 31]
+        }, {
+            "African-American": [130, 89, 106, 64],
+            "Caucasian": [120, 58, 56, 30]
+        }, {
+            "African-American": [152, 82, 60, 73],
+            "Caucasian": [132, 50, 51, 32]
+        }, {
+            "African-American": [134, 95, 92, 81],
+            "Caucasian": [126, 64, 34, 18]
+        }, {
+            "African-American": [139, 74, 89, 68],
+            "Caucasian": [117, 66, 45, 25]
+        }],
+        "LinearSVC": [{
+            "African-American": [127, 88, 32, 116],
+            "Caucasian": [144, 42, 40, 41]
+        }, {
+            "African-American": [145, 92, 63, 91],
+            "Caucasian": [152, 42, 32, 29]
+        }, {
+            "African-American": [132, 99, 44, 99],
+            "Caucasian": [153, 35, 43, 33]
+        }, {
+            "African-American": [122, 100, 56, 99],
+            "Caucasian": [142, 46, 39, 38]
+        }, {
+            "African-American": [135, 87, 63, 97],
+            "Caucasian": [160, 44, 46, 38]
+        }, {
+            "African-American": [143, 84, 52, 102],
+            "Caucasian": [135, 47, 51, 28]
+        }, {
+            "African-American": [129, 90, 56, 114],
+            "Caucasian": [130, 48, 47, 39]
+        }, {
+            "African-American": [142, 92, 36, 97],
+            "Caucasian": [141, 41, 41, 42]
+        }, {
+            "African-American": [116, 113, 43, 130],
+            "Caucasian": [137, 53, 24, 28]
+        }, {
+            "African-American": [119, 94, 49, 108],
+            "Caucasian": [146, 37, 41, 29]
+        }],
+        "SVC": [{
+            "African-American": [119, 96, 33, 115],
+            "Caucasian": [112, 74, 31, 50]
+        }, {
+            "African-American": [120, 117, 50, 104],
+            "Caucasian": [119, 75, 30, 31]
+        }, {
+            "African-American": [107, 124, 27, 116],
+            "Caucasian": [113, 75, 29, 47]
+        }, {
+            "African-American": [100, 122, 52, 103],
+            "Caucasian": [110, 78, 35, 42]
+        }, {
+            "African-American": [109, 113, 58, 102],
+            "Caucasian": [116, 88, 34, 50]
+        }, {
+            "African-American": [129, 98, 59, 95],
+            "Caucasian": [118, 64, 41, 38]
+        }, {
+            "African-American": [104, 115, 60, 110],
+            "Caucasian": [102, 76, 46, 40]
+        }, {
+            "African-American": [111, 123, 49, 84],
+            "Caucasian": [127, 55, 33, 50]
+        }, {
+            "African-American": [110, 119, 49, 124],
+            "Caucasian": [124, 66, 20, 32]
+        }, {
+            "African-American": [93, 120, 37, 120],
+            "Caucasian": [98, 85, 32, 38]
+        }],
+        "Forest": [{
+            "African-American": [157, 58, 45, 103],
+            "Caucasian": [164, 22, 50, 31]
+        }, {
+            "African-American": [164, 73, 68, 86],
+            "Caucasian": [159, 35, 38, 23]
+        }, {
+            "African-American": [153, 78, 53, 90],
+            "Caucasian": [162, 26, 48, 28]
+        }, {
+            "African-American": [141, 81, 69, 86],
+            "Caucasian": [140, 48, 47, 30]
+        }, {
+            "African-American": [149, 73, 78, 82],
+            "Caucasian": [175, 29, 54, 30]
+        }, {
+            "African-American": [153, 74, 69, 85],
+            "Caucasian": [153, 29, 57, 22]
+        }, {
+            "African-American": [151, 68, 83, 87],
+            "Caucasian": [144, 34, 64, 22]
+        }, {
+            "African-American": [161, 73, 49, 84],
+            "Caucasian": [151, 31, 45, 38]
+        }, {
+            "African-American": [154, 75, 75, 98],
+            "Caucasian": [156, 34, 34, 18]
+        }, {
+            "African-American": [144, 69, 76, 81],
+            "Caucasian": [146, 37, 47, 23]
+        }],
+        "LogReg": [{
+            "African-American": [135, 80, 42, 106],
+            "Caucasian": [147, 39, 43, 38]
+        }, {
+            "African-American": [153, 84, 66, 88],
+            "Caucasian": [155, 39, 34, 27]
+        }, {
+            "African-American": [143, 88, 42, 101],
+            "Caucasian": [155, 33, 43, 33]
+        }, {
+            "African-American": [132, 90, 53, 102],
+            "Caucasian": [141, 47, 41, 36]
+        }, {
+            "African-American": [141, 81, 69, 91],
+            "Caucasian": [162, 42, 47, 37]
+        }, {
+            "African-American": [150, 77, 55, 99],
+            "Caucasian": [137, 45, 51, 28]
+        }, {
+            "African-American": [136, 83, 59, 111],
+            "Caucasian": [132, 46, 49, 37]
+        }, {
+            "African-American": [152, 82, 38, 95],
+            "Caucasian": [143, 39, 44, 39]
+        }, {
+            "African-American": [124, 105, 51, 122],
+            "Caucasian": [139, 51, 25, 27]
+        }, {
+            "African-American": [128, 85, 52, 105],
+            "Caucasian": [151, 32, 41, 29]
+        }],
+        "Tree": [{
+            "African-American": [129, 86, 41, 107],
+            "Caucasian": [149, 37, 40, 41]
+        }, {
+            "African-American": [165, 72, 75, 79],
+            "Caucasian": [147, 47, 40, 21]
+        }, {
+            "African-American": [141, 90, 56, 87],
+            "Caucasian": [149, 39, 47, 29]
+        }, {
+            "African-American": [113, 109, 62, 93],
+            "Caucasian": [129, 59, 40, 37]
+        }, {
+            "African-American": [163, 59, 84, 76],
+            "Caucasian": [175, 29, 60, 24]
+        }, {
+            "African-American": [157, 70, 68, 86],
+            "Caucasian": [146, 36, 54, 25]
+        }, {
+            "African-American": [144, 75, 97, 73],
+            "Caucasian": [140, 38, 58, 28]
+        }, {
+            "African-American": [143, 91, 44, 89],
+            "Caucasian": [141, 41, 42, 41]
+        }, {
+            "African-American": [145, 84, 68, 105],
+            "Caucasian": [152, 38, 30, 22]
+        }, {
+            "African-American": [148, 65, 76, 81],
+            "Caucasian": [143, 40, 45, 25]
+        }],
+        "MLP": [{
+            "African-American": [118, 97, 22, 126],
+            "Caucasian": [134, 52, 34, 47]
+        }, {
+            "African-American": [134, 103, 45, 109],
+            "Caucasian": [135, 59, 32, 29]
+        }, {
+            "African-American": [132, 99, 44, 99],
+            "Caucasian": [140, 48, 40, 36]
+        }, {
+            "African-American": [118, 104, 56, 99],
+            "Caucasian": [126, 62, 36, 41]
+        }, {
+            "African-American": [129, 93, 60, 100],
+            "Caucasian": [154, 50, 44, 40]
+        }, {
+            "African-American": [118, 109, 41, 113],
+            "Caucasian": [121, 61, 37, 42]
+        }, {
+            "African-American": [111, 108, 51, 119],
+            "Caucasian": [118, 60, 48, 38]
+        }, {
+            "African-American": [88, 146, 17, 116],
+            "Caucasian": [108, 74, 23, 60]
+        }, {
+            "African-American": [92, 137, 30, 143],
+            "Caucasian": [118, 72, 20, 32]
+        }, {
+            "African-American": [87, 126, 23, 134],
+            "Caucasian": [99, 84, 23, 47]
+        }]
+    },
+    "Fill by Multiple Imputation (Simulated)": {
+        "KNN": [{
+            "African-American": [138, 77, 80, 68],
+            "Caucasian": [124, 62, 45, 36]
+        }, {
+            "African-American": [161, 76, 82, 72],
+            "Caucasian": [144, 50, 35, 26]
+        }, {
+            "African-American": [138, 93, 89, 54],
+            "Caucasian": [127, 61, 40, 36]
+        }, {
+            "African-American": [133, 89, 90, 65],
+            "Caucasian": [139, 49, 57, 20]
+        }, {
+            "African-American": [140, 82, 94, 66],
+            "Caucasian": [134, 70, 51, 33]
+        }, {
+            "African-American": [149, 78, 94, 60],
+            "Caucasian": [117, 65, 39, 40]
+        }, {
+            "African-American": [127, 92, 98, 72],
+            "Caucasian": [116, 62, 57, 29]
+        }, {
+            "African-American": [149, 85, 68, 65],
+            "Caucasian": [133, 49, 57, 26]
+        }, {
+            "African-American": [140, 89, 97, 76],
+            "Caucasian": [127, 63, 34, 18]
+        }, {
+            "African-American": [123, 90, 92, 65],
+            "Caucasian": [115, 68, 44, 26]
+        }],
+        "LinearSVC": [{
+            "African-American": [132, 83, 48, 100],
+            "Caucasian": [142, 44, 42, 39]
+        }, {
+            "African-American": [143, 94, 62, 92],
+            "Caucasian": [144, 50, 36, 25]
+        }, {
+            "African-American": [128, 103, 43, 100],
+            "Caucasian": [147, 41, 40, 36]
+        }, {
+            "African-American": [131, 91, 47, 108],
+            "Caucasian": [139, 49, 41, 36]
+        }, {
+            "African-American": [132, 90, 59, 101],
+            "Caucasian": [150, 54, 44, 40]
+        }, {
+            "African-American": [137, 90, 54, 100],
+            "Caucasian": [132, 50, 48, 31]
+        }, {
+            "African-American": [133, 86, 62, 108],
+            "Caucasian": [132, 46, 55, 31]
+        }, {
+            "African-American": [133, 101, 42, 91],
+            "Caucasian": [143, 39, 35, 48]
+        }, {
+            "African-American": [128, 101, 45, 128],
+            "Caucasian": [139, 51, 26, 26]
+        }, {
+            "African-American": [118, 95, 51, 106],
+            "Caucasian": [142, 41, 40, 30]
+        }],
+        "SVC": [{
+            "African-American": [118, 97, 40, 108],
+            "Caucasian": [107, 79, 29, 52]
+        }, {
+            "African-American": [136, 101, 56, 98],
+            "Caucasian": [119, 75, 31, 30]
+        }, {
+            "African-American": [117, 114, 41, 102],
+            "Caucasian": [118, 70, 31, 45]
+        }, {
+            "African-American": [116, 106, 63, 92],
+            "Caucasian": [119, 69, 40, 37]
+        }, {
+            "African-American": [103, 119, 63, 97],
+            "Caucasian": [112, 92, 27, 57]
+        }, {
+            "African-American": [119, 108, 59, 95],
+            "Caucasian": [124, 58, 40, 39]
+        }, {
+            "African-American": [103, 116, 67, 103],
+            "Caucasian": [103, 75, 39, 47]
+        }, {
+            "African-American": [102, 132, 41, 92],
+            "Caucasian": [104, 78, 28, 55]
+        }, {
+            "African-American": [106, 123, 51, 122],
+            "Caucasian": [116, 74, 18, 34]
+        }, {
+            "African-American": [98, 115, 46, 111],
+            "Caucasian": [107, 76, 34, 36]
+        }],
+        "Forest": [{
+            "African-American": [146, 69, 52, 96],
+            "Caucasian": [152, 34, 41, 40]
+        }, {
+            "African-American": [164, 73, 66, 88],
+            "Caucasian": [150, 44, 35, 26]
+        }, {
+            "African-American": [149, 82, 53, 90],
+            "Caucasian": [151, 37, 52, 24]
+        }, {
+            "African-American": [143, 79, 72, 83],
+            "Caucasian": [141, 47, 45, 32]
+        }, {
+            "African-American": [150, 72, 70, 90],
+            "Caucasian": [161, 43, 47, 37]
+        }, {
+            "African-American": [156, 71, 65, 89],
+            "Caucasian": [150, 32, 53, 26]
+        }, {
+            "African-American": [141, 78, 77, 93],
+            "Caucasian": [132, 46, 59, 27]
+        }, {
+            "African-American": [158, 76, 47, 86],
+            "Caucasian": [149, 33, 40, 43]
+        }, {
+            "African-American": [150, 79, 64, 109],
+            "Caucasian": [151, 39, 34, 18]
+        }, {
+            "African-American": [141, 72, 70, 87],
+            "Caucasian": [149, 34, 46, 24]
+        }],
+        "LogReg": [{
+            "African-American": [130, 85, 45, 103],
+            "Caucasian": [143, 43, 38, 43]
+        }, {
+            "African-American": [142, 95, 60, 94],
+            "Caucasian": [146, 48, 35, 26]
+        }, {
+            "African-American": [136, 95, 48, 95],
+            "Caucasian": [148, 40, 43, 33]
+        }, {
+            "African-American": [137, 85, 53, 102],
+            "Caucasian": [142, 46, 39, 38]
+        }, {
+            "African-American": [138, 84, 64, 96],
+            "Caucasian": [154, 50, 45, 39]
+        }, {
+            "African-American": [147, 80, 53, 101],
+            "Caucasian": [132, 50, 48, 31]
+        }, {
+            "African-American": [135, 84, 60, 110],
+            "Caucasian": [134, 44, 53, 33]
+        }, {
+            "African-American": [132, 102, 36, 97],
+            "Caucasian": [138, 44, 40, 43]
+        }, {
+            "African-American": [136, 93, 50, 123],
+            "Caucasian": [141, 49, 27, 25]
+        }, {
+            "African-American": [124, 89, 57, 100],
+            "Caucasian": [146, 37, 42, 28]
+        }],
+        "Tree": [{
+            "African-American": [147, 68, 57, 91],
+            "Caucasian": [147, 39, 38, 43]
+        }, {
+            "African-American": [172, 65, 68, 86],
+            "Caucasian": [150, 44, 38, 23]
+        }, {
+            "African-American": [130, 101, 54, 89],
+            "Caucasian": [140, 48, 45, 31]
+        }, {
+            "African-American": [132, 90, 70, 85],
+            "Caucasian": [131, 57, 43, 34]
+        }, {
+            "African-American": [149, 73, 83, 77],
+            "Caucasian": [160, 44, 53, 31]
+        }, {
+            "African-American": [151, 76, 64, 90],
+            "Caucasian": [140, 42, 52, 27]
+        }, {
+            "African-American": [136, 83, 90, 80],
+            "Caucasian": [133, 45, 55, 31]
+        }, {
+            "African-American": [146, 88, 43, 90],
+            "Caucasian": [131, 51, 32, 51]
+        }, {
+            "African-American": [139, 90, 65, 108],
+            "Caucasian": [143, 47, 31, 21]
+        }, {
+            "African-American": [131, 82, 68, 89],
+            "Caucasian": [138, 45, 43, 27]
+        }],
+        "MLP": [{
+            "African-American": [72, 143, 16, 132],
+            "Caucasian": [95, 91, 21, 60]
+        }, {
+            "African-American": [148, 89, 51, 103],
+            "Caucasian": [143, 51, 32, 29]
+        }, {
+            "African-American": [132, 99, 43, 100],
+            "Caucasian": [149, 39, 35, 41]
+        }, {
+            "African-American": [104, 118, 39, 116],
+            "Caucasian": [127, 61, 32, 45]
+        }, {
+            "African-American": [106, 116, 43, 117],
+            "Caucasian": [115, 89, 29, 55]
+        }, {
+            "African-American": [124, 103, 46, 108],
+            "Caucasian": [116, 66, 37, 42]
+        }, {
+            "African-American": [143, 76, 67, 103],
+            "Caucasian": [135, 43, 59, 27]
+        }, {
+            "African-American": [102, 132, 24, 109],
+            "Caucasian": [113, 69, 24, 59]
+        }, {
+            "African-American": [158, 71, 63, 110],
+            "Caucasian": [148, 42, 34, 18]
+        }, {
+            "African-American": [120, 93, 51, 106],
+            "Caucasian": [129, 54, 38, 32]
+        }]
+    }
+}
