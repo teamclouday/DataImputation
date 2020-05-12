@@ -286,7 +286,8 @@ class Dataset:
             self.has_nan = False
         self.y = y
         self.convert_all = convert_all
-        assert len(protected_features) == len([x for x in protected_features if x in self.X.columns.tolist()])
+        if protected_features:
+            assert len(protected_features) == len([x for x in protected_features if x in self.X.columns.tolist()])
         self.protected = protected_features
         if auto_convert:
             self.encoder = self._convert_categories()
