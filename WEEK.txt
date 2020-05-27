@@ -1,0 +1,2 @@
+1. plot accuracy bias by decreasing random ratio
+2. create the fill by similar of opposite groups
