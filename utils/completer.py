@@ -50,7 +50,7 @@ def complete_by_nearby_row(data, print_time=False):
 
 # Method 4
 # complete missing entries by values from most similar row
-def complete_by_similar_row(data, print_time=False):
+def complete_by_similar_row(data, print_time=False, K=5):
     if print_time:
         tt = time.process_time()
     data = data.copy()
@@ -82,7 +82,7 @@ def complete_by_similar_row(data, print_time=False):
     #             if len(possible_rows) <= 0: possible_rows = [(0,0)]
     #             new_data.X[col_name][i] = data.X[col_name][possible_rows[0][0]]
 
-    imputer = KNNImputer(n_neighbors=5, weights="uniform") # by default use euclidean distance
+    imputer = KNNImputer(n_neighbors=K, weights="uniform") # by default use euclidean distance
     data_unprotected = pd.DataFrame(imputer.fit_transform(data_unprotected), columns=data_unprotected.columns)
     data.X = pd.concat([data_unprotected, data_protected], axis=1)
 
