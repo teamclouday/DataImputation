@@ -13,6 +13,7 @@ from utils.data import *
 # then for each of these rows, select random cols based on random_ratio
 # replace these entries with value of NaN
 # IMPORTANT: leave at least one value for each column
+# IMPORTANT: skip the protected features
 # return the converted dataset object
 def gen_complete_random(data, random_ratio=0.2, print_time=False, print_all=True):
     if print_time:
@@ -21,6 +22,9 @@ def gen_complete_random(data, random_ratio=0.2, print_time=False, print_all=True
         if print_all:
             print("Warning: gen_complete_random, random missing ratio > 0.5")
     X_data = data.X.copy()
+    if data.protected:
+        X_data.drop(columns=data.protected, inplace=True)
+        X_data_protected = data.X[data.protected].copy()
     if len(X_data.shape) != 2:
         print("Error: gen_complete_random only support dataset with rank of 2\nYour input has rank of {0}".format(len(X_data.shape)))
         sys.exit(1)
@@ -36,6 +40,8 @@ def gen_complete_random(data, random_ratio=0.2, print_time=False, print_all=True
                 X_data.iloc[row, col] = np.nan
     if print_all:
         print("gen_complete_random: {0} NaN values have been inserted".format(X_data.isnull().sum().sum()))
+    if data.protected:
+        X_data = pd.concat([X_data, X_data_protected], axis=1)
     data = data.copy()
     data.X = X_data
     if print_time and print_all:
@@ -53,6 +59,7 @@ def gen_complete_random(data, random_ratio=0.2, print_time=False, print_all=True
 # for each selected col on that row
 # replace the value of the entry with NaN
 # IMPORTANT: leave at least one value for each column
+# IMPORTANT: skip the protected features
 # return the Dataset object
 def gen_random(data, random_ratio=0.2, random_cols=[], print_time=False, print_all=True):
     if print_time:
@@ -61,6 +68,9 @@ def gen_random(data, random_ratio=0.2, random_cols=[], print_time=False, print_a
         if print_all:
             print("Warning: gen_random, random missing ratio > 0.5")
     X_data = data.X.copy()
+    if data.protected:
+        X_data.drop(columns=data.protected, inplace=True)
+        X_data_protected = data.X[data.protected].copy()
     if len(X_data.shape) != 2:
         print("Error: gen_random only support dataset with rank of 2\nYour input has rank of {0}".format(len(X_data.shape)))
         sys.exit(1)
@@ -78,6 +88,8 @@ def gen_random(data, random_ratio=0.2, random_cols=[], print_time=False, print_a
                 X_data.iloc[row, col] = np.nan
     if print_all:
         print("gen_random: {0} NaN values have been inserted".format(X_data.isnull().sum().sum()))
+    if data.protected:
+        X_data = pd.concat([X_data, X_data_protected], axis=1)
     data = data.copy()
     data.X = X_data
     if print_time and print_all:
