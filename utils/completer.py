@@ -90,6 +90,49 @@ def complete_by_similar_row(data, print_time=False, K=5):
         print("Performance Monitor: ({:.4f}s) ".format(time.process_time() - tt) + inspect.stack()[0][3])
     return data
 
+# Method 4 version 2
+# complete missing entries by values from most similar row
+# if target_feature (protected feature) is provided
+# the imputation will be implemented by groups
+# for example, entries for race="African-American" will be imputed from rows whose race is not this
+# else if target_feature not provided
+# it will perform the version 1 similar imputation
+def complete_by_similar_row_v2(data, print_time=False, K=5, target_feature=None):
+    if print_time:
+        tt = time.process_time()
+    data = data.copy()
+
+    if target_feature:
+        assert target_feature in data.protected
+        target_unique_values = data.X[target_feature].unique().tolist()
+        assert len(target_unique_values) > 0
+        imputed_parts = []
+        for value in target_unique_values:
+            imputer = KNNImputer(n_neighbors=K, weights="uniform")
+            data_train = data.X[data.X[target_feature] != value].drop(columns=data.protected).copy()
+            imputer.fit(data_train)
+            data_protected = data.X[data.X[target_feature] == value][data.protected].copy()
+            data_unprotected = data.X[data.X[target_feature] == value].drop(columns=data.protected).copy()
+            data_unprotected = pd.DataFrame(imputer.transform(data_unprotected), columns=data_unprotected.columns, index=data_unprotected.index)
+            imputed_parts.append(pd.concat([data_unprotected, data_protected], axis=1))
+        data_X = imputed_parts[0]
+        idx = 1
+        while idx < len(imputed_parts):
+            data_X = pd.concat([data_X, imputed_parts[idx]], axis=0)
+            idx += 1
+        assert data_X.shape == data.X.shape
+        data.X = data_X.sort_index()
+    else:
+        data_protected = data.X[data.protected].copy()
+        data_unprotected = data.X.drop(columns=data.protected).copy()
+        imputer = KNNImputer(n_neighbors=K, weights="uniform")
+        data_unprotected = pd.DataFrame(imputer.fit_transform(data_unprotected), columns=data_unprotected.columns)
+        data.X = pd.concat([data_unprotected, data_protected], axis=1)
+
+    if print_time:
+        print("Performance Monitor: ({:.4f}s) ".format(time.process_time() - tt) + inspect.stack()[0][3])
+    return data
+
 # Method 5
 # fill with the most frequent value in that column
 def complete_by_most_freq(data, print_time=False):

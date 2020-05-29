@@ -277,7 +277,7 @@ def create_compas_dataset(print_time=False):
     return Dataset("compas", X, y, protected_features=protected_features)
 
 class Dataset:
-    def __init__(self, name, X, y, auto_convert=True, types=None, convert_all=False, protected_features=None, encoders=None):
+    def __init__(self, name, X, y, auto_convert=True, types=None, convert_all=False, protected_features=[], encoders=None):
         self.name = name
         self.X = X
         if self.X.drop(protected_features, axis=1).isnull().sum().sum() > 0:
@@ -286,7 +286,7 @@ class Dataset:
             self.has_nan = False
         self.y = y
         self.convert_all = convert_all
-        if protected_features:
+        if len(protected_features) > 0:
             assert len(protected_features) == len([x for x in protected_features if x in self.X.columns.tolist()])
         self.protected = protected_features
         self.encoder = None
