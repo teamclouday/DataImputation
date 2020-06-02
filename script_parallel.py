@@ -240,10 +240,9 @@ if __name__ == "__main__":
         result = list(tqdm.tqdm(pool.imap(complete_similar_v2_task, range(len(actual_ratios))), total=len(actual_ratios)))
     with open("similar_v2.pkl", "wb") as outFile:
         pickle.dump(result, outFile)
-     run multiple imputation
+    # run multiple imputation
     print("Now running complete_multi_task")
     with Pool(processes=MAX_PROCESS_COUNT) as pool:
         result = list(tqdm.tqdm(pool.imap(complete_multi_task, range(len(actual_ratios))), total=len(actual_ratios)))
     with open("multi.pkl", "wb") as outFile:
         pickle.dump(result, outFile)
-
