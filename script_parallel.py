@@ -3,6 +3,7 @@
 # this script is currently for computing random ratios on compas analysis
 
 import os
+import tqdm
 import pickle
 import numpy as np
 import pandas as pd
@@ -224,22 +225,26 @@ def complete_multi_task(idx):
 if __name__ == "__main__":
     MAX_PROCESS_COUNT = multiprocessing.cpu_count() - 1 or 1 # at least 1, and leave one core for basic functioning
     # run mean
+    print("Now running complete_mean_task")
     with Pool(processes=MAX_PROCESS_COUNT) as pool:
-        result = list(pool.imap(complete_mean_task, range(len(actual_ratios))))
+        result = list(tqdm.tqdm(pool.imap(complete_mean_task, range(len(actual_ratios))), total=len(actual_ratios)))
     with open("mean.pkl", "wb") as outFile:
         pickle.dump(result, outFile)
     # run similar version 1
+    print("Now running complete_similar_task")
     with Pool(processes=MAX_PROCESS_COUNT) as pool:
-        result = list(pool.imap(complete_similar_task, range(len(actual_ratios))))
+        result = list(tqdm.tqdm(pool.imap(complete_similar_task, range(len(actual_ratios))), total=len(actual_ratios)))
     with open("similar_v1.pkl", "wb") as outFile:
         pickle.dump(result, outFile)
     # run similar version 2
+    print("Now running complete_similar_v2_task")
     with Pool(processes=MAX_PROCESS_COUNT) as pool:
-        result = list(pool.imap(complete_by_similar_row_v2, range(len(actual_ratios))))
+        result = list(tqdm.tqdm(pool.imap(complete_similar_v2_task, range(len(actual_ratios))), total=len(actual_ratios)))
     with open("similar_v2.pkl", "wb") as outFile:
         pickle.dump(result, outFile)
     # run multiple imputation
+    print("Now running complete_multi_task")
     with Pool(processes=MAX_PROCESS_COUNT) as pool:
-        result = list(pool.imap(complete_multi_task, range(len(actual_ratios))))
+        result = list(tqdm.tqdm(pool.imap(complete_multi_task, range(len(actual_ratios))), total=len(actual_ratios)))
     with open("multi.pkl", "wb") as outFile:
         pickle.dump(result, outFile)
