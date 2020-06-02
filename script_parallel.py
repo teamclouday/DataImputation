@@ -42,7 +42,7 @@ def bias1(data):
     if FNR_AA == 0 or FNR_C == 0: return -1 # mark error situation
     bias = (FPR_AA / FNR_AA) - (FPR_C / FNR_C)
     return abs(bias)
-   
+
 def bias2(data):
     # input should be data from compute_confusion_matrix
     # bias 2 = |(FPR_AA/FPR_C) - (FNR_AA/FNR_C)|
@@ -89,7 +89,6 @@ def compute_confusion_matrix(X_train, y_train, X_test, y_test, clf, protected_fe
         X_test_first = X_test[0]
         y_test_AA = y_test[X_test_first[X_test_first["race"] == "African-American"].index.tolist()]
         y_test_C = y_test[X_test_first[X_test_first["race"] == "Caucasian"].index.tolist()]
-        scores = [0, 0]
         for X_train_m in X_train:
             X_train_m = X_train_m.drop(columns=protected_features).copy().to_numpy()
             X_train_res, y_train_res = smote.fit_resample(X_train_m, y_train)
@@ -99,8 +98,6 @@ def compute_confusion_matrix(X_train, y_train, X_test, y_test, clf, protected_fe
                 X_test_C = X_test_m[X_test_m["race"] == "Caucasian"].drop(columns=protected_features).to_numpy()
                 prediction_AA.append(clf.predict(X_test_AA))
                 prediction_C.append(clf.predict(X_test_C))
-                scores[0] += clf.score(X_test_m.drop(columns=protected_features).copy().to_numpy(), y_test)
-                scores[1] += 1
         # compute final predictions by voting
         prediction_AA = np.apply_along_axis(helper_freq, 0, np.array(prediction_AA))
         prediction_C = np.apply_along_axis(helper_freq, 0, np.array(prediction_C))
@@ -163,7 +160,7 @@ def test_imputation(X, y, protected_features, completer_func=None, multi=False):
         # do imputations on training set and test set individually
             data_incomplete = Dataset("tmp", X_train, y_train, auto_convert=False, protected_features=protected_features)
             data_complete = completer_func(data_incomplete)
-            X_train = [m.X.copy() for m in data_complete] if multi else data_complete.X.copy() 
+            X_train = [m.X.copy() for m in data_complete] if multi else data_complete.X.copy()
             y_train = data_complete[0].y.copy() if multi else data_complete.y.copy()
             data_incomplete = Dataset("tmp", X_test, y_test, auto_convert=False, protected_features=protected_features)
             data_complete = completer_func(data_incomplete)
@@ -223,7 +220,8 @@ def complete_multi_task(idx):
 
 
 if __name__ == "__main__":
-    MAX_PROCESS_COUNT = multiprocessing.cpu_count() - 1 or 1 # at least 1, and leave one core for basic functioning
+    MAX_PROCESS_COUNT = (multiprocessing.cpu_count() - 1) or 1 # at least 1, and leave one core for basic functioning
+    complete_mean_task(0)
     # run mean
     print("Now running complete_mean_task")
     with Pool(processes=MAX_PROCESS_COUNT) as pool:
@@ -242,9 +240,10 @@ if __name__ == "__main__":
         result = list(tqdm.tqdm(pool.imap(complete_similar_v2_task, range(len(actual_ratios))), total=len(actual_ratios)))
     with open("similar_v2.pkl", "wb") as outFile:
         pickle.dump(result, outFile)
-    # run multiple imputation
+     run multiple imputation
     print("Now running complete_multi_task")
     with Pool(processes=MAX_PROCESS_COUNT) as pool:
         result = list(tqdm.tqdm(pool.imap(complete_multi_task, range(len(actual_ratios))), total=len(actual_ratios)))
     with open("multi.pkl", "wb") as outFile:
         pickle.dump(result, outFile)
+
