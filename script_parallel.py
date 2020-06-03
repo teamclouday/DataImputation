@@ -218,10 +218,9 @@ def complete_multi_task(idx):
                              data_sim.protected, complete_by_multi, multi=True)
     return result
 
+MAX_PROCESS_COUNT = (multiprocessing.cpu_count() - 1) or 1 # at least 1, and leave one core for basic functioning
 
 if __name__ == "__main__":
-    MAX_PROCESS_COUNT = (multiprocessing.cpu_count() - 1) or 1 # at least 1, and leave one core for basic functioning
-    complete_mean_task(0)
     # run mean
     print("Now running complete_mean_task")
     with Pool(processes=MAX_PROCESS_COUNT) as pool:
