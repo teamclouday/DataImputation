@@ -3,13 +3,17 @@
 # this script is currently for computing random ratios on compas analysis
 
 import os
+os.environ["MKL_NUM_THREADS"] = '1'
+os.environ["OMP_NUM_THREADS"] = '1'
+os.environ["NUMEXPR_NUM_THREADS"] = '1'
+
 import tqdm
 import pickle
 import numpy as np
 import pandas as pd
 import matplotlib.pyplot as plt
 import multiprocessing
-from multiprocessing import Pool
+from multiprocessing.pool import Pool
 import warnings
 warnings.filterwarnings('ignore')
 
@@ -186,11 +190,11 @@ data_compas_complete.X = tmp_concat.drop(columns=["_TARGET_"]).copy()
 data_compas_complete.y = tmp_concat["_TARGET_"].copy().to_numpy().ravel()
 
 # define how many iterations for each ratio
-iter_per_ratio = 10
+iter_per_ratio = 19
 random_ratios = np.linspace(0.0, 1.0, num=20, endpoint=False)
 actual_ratios = np.array([
     random_ratios for _ in range(iter_per_ratio)
-]).transpose().ravel().tolist()[(iter_per_ratio-1):] # remove redundant 0 ratio cases
+]).transpose().ravel().tolist()
 
 # define single task functions
 
@@ -218,7 +222,8 @@ def complete_multi_task(idx):
                              data_sim.protected, complete_by_multi, multi=True)
     return result
 
-MAX_PROCESS_COUNT = (multiprocessing.cpu_count() - 1) or 1 # at least 1, and leave one core for basic functioning
+MAX_PROCESS_COUNT = multiprocessing.cpu_count() - 1
+MAX_PROCESS_COUNT = MAX_PROCESS_COUNT if MAX_PROCESS_COUNT > 0 else 1
 
 if __name__ == "__main__":
     # run mean
