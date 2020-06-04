@@ -14,6 +14,7 @@ import pandas as pd
 import matplotlib.pyplot as plt
 import multiprocessing
 from multiprocessing.pool import Pool
+from functools import partial
 import warnings
 warnings.filterwarnings('ignore')
 
@@ -213,7 +214,7 @@ def complete_similar_task(idx):
 def complete_similar_v2_task(idx):
     data_sim = gen_complete_random(data_compas_complete, random_ratio=actual_ratios[idx], print_all=False)
     result = test_imputation(data_sim.X.copy(), data_sim.y.copy(),
-                             data_sim.protected, complete_by_similar_row_v2, multi=False)
+                             data_sim.protected, partial(complete_by_similar_row_v2, target_feature="race"), multi=False)
     return result
 
 def complete_multi_task(idx):
@@ -227,17 +228,17 @@ MAX_PROCESS_COUNT = MAX_PROCESS_COUNT if MAX_PROCESS_COUNT > 0 else 1
 
 if __name__ == "__main__":
     # run mean
-    print("Now running complete_mean_task")
-    with Pool(processes=MAX_PROCESS_COUNT) as pool:
-        result = list(tqdm.tqdm(pool.imap(complete_mean_task, range(len(actual_ratios))), total=len(actual_ratios)))
-    with open("mean.pkl", "wb") as outFile:
-        pickle.dump(result, outFile)
+    #print("Now running complete_mean_task")
+    #with Pool(processes=MAX_PROCESS_COUNT) as pool:
+    #    result = list(tqdm.tqdm(pool.imap(complete_mean_task, range(len(actual_ratios))), total=len(actual_ratios)))
+    #with open("mean.pkl", "wb") as outFile:
+    #    pickle.dump(result, outFile)
     # run similar version 1
-    print("Now running complete_similar_task")
-    with Pool(processes=MAX_PROCESS_COUNT) as pool:
-        result = list(tqdm.tqdm(pool.imap(complete_similar_task, range(len(actual_ratios))), total=len(actual_ratios)))
-    with open("similar_v1.pkl", "wb") as outFile:
-        pickle.dump(result, outFile)
+    #print("Now running complete_similar_task")
+    #with Pool(processes=MAX_PROCESS_COUNT) as pool:
+    #    result = list(tqdm.tqdm(pool.imap(complete_similar_task, range(len(actual_ratios))), total=len(actual_ratios)))
+    #with open("similar_v1.pkl", "wb") as outFile:
+    #    pickle.dump(result, outFile)
     # run similar version 2
     print("Now running complete_similar_v2_task")
     with Pool(processes=MAX_PROCESS_COUNT) as pool:
@@ -245,8 +246,8 @@ if __name__ == "__main__":
     with open("similar_v2.pkl", "wb") as outFile:
         pickle.dump(result, outFile)
     # run multiple imputation
-    print("Now running complete_multi_task")
-    with Pool(processes=MAX_PROCESS_COUNT) as pool:
-        result = list(tqdm.tqdm(pool.imap(complete_multi_task, range(len(actual_ratios))), total=len(actual_ratios)))
-    with open("multi.pkl", "wb") as outFile:
-        pickle.dump(result, outFile)
+    #print("Now running complete_multi_task")
+    #with Pool(processes=MAX_PROCESS_COUNT) as pool:
+    #    result = list(tqdm.tqdm(pool.imap(complete_multi_task, range(len(actual_ratios))), total=len(actual_ratios)))
+    #with open("multi.pkl", "wb") as outFile:
+    #    pickle.dump(result, outFile)
