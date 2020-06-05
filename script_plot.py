@@ -9,10 +9,10 @@ import matplotlib.pyplot as plt
 
 from script_parallel import iter_per_ratio, random_ratios
 
-PLOT_CREATE_MEAN        = False
-PLOT_CREATE_SIMILAR_V1  = False
+PLOT_CREATE_MEAN        = True
+PLOT_CREATE_SIMILAR_V1  = True
 PLOT_CREATE_SIMILAR_V2  = True
-PLOT_CREATE_MULTI       = False
+PLOT_CREATE_MULTI       = True
 
 def plot_func(data, method_name, file_name=None, bias1_ylim=None, bias2_ylim=None, plot_error=True):
     assert len(data) == (iter_per_ratio * len(random_ratios))
@@ -44,15 +44,15 @@ def plot_func(data, method_name, file_name=None, bias1_ylim=None, bias2_ylim=Non
                         tmp_data_processed[0].append(x)
                         tmp_data_processed[1].append(y)
                         tmp_data_processed[2].append(z)
-                data_processed[0].append(sum(tmp_data_processed[0]) / len(tmp_data_processed[0]))
-                data_processed[1].append(sum(tmp_data_processed[1]) / len(tmp_data_processed[1]))
-                data_processed[2].append(sum(tmp_data_processed[2]) / len(tmp_data_processed[2]))
-            plot_acc[clf][0].append(sum(data_processed[0]) / len(data_processed[0]))
-            plot_acc[clf][1].append((max(data_processed[0]) - min(data_processed[0])) / 2)
-            plot_bias1[clf][0].append(sum(data_processed[1]) / len(data_processed[1]))
-            plot_bias1[clf][1].append((max(data_processed[1]) - min(data_processed[1])) / 2)
-            plot_bias2[clf][0].append(sum(data_processed[2]) / len(data_processed[2]))
-            plot_bias2[clf][1].append((max(data_processed[2]) - min(data_processed[2])) / 2)
+                data_processed[0].append(np.mean(tmp_data_processed[0]))
+                data_processed[1].append(np.mean(tmp_data_processed[1]))
+                data_processed[2].append(np.mean(tmp_data_processed[2]))
+            plot_acc[clf][0].append(np.mean(data_processed[0]))
+            plot_acc[clf][1].append(np.std(data_processed[0]))
+            plot_bias1[clf][0].append(np.mean(data_processed[1]))
+            plot_bias1[clf][1].append(np.std(data_processed[1]))
+            plot_bias2[clf][0].append(np.mean(data_processed[2]))
+            plot_bias2[clf][1].append(np.std(data_processed[2]))
     plot_gap = 0.002
     fig, axes = plt.subplots(3, figsize=(10, 15))
     # axes[0] shows bias1
