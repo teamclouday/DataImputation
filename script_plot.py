@@ -6,13 +6,16 @@ import os
 import pickle
 import numpy as np
 import matplotlib.pyplot as plt
+from matplotlib.lines import Line2D
 
 from script_parallel import iter_per_ratio, random_ratios
 
-PLOT_CREATE_MEAN        = True
-PLOT_CREATE_SIMILAR_V1  = True
-PLOT_CREATE_SIMILAR_V2  = True
-PLOT_CREATE_MULTI       = True
+PLOT_CREATE_MEAN        = False
+PLOT_CREATE_SIMILAR_V1  = False
+PLOT_CREATE_SIMILAR_V2  = False
+PLOT_CREATE_MULTI       = False
+
+PLOT_PARETO_FRONTIER    = True
 
 def plot_func(data, method_name, file_name=None, bias1_ylim=None, bias2_ylim=None, plot_error=True):
     assert len(data) == (iter_per_ratio * len(random_ratios))
@@ -96,6 +99,133 @@ def plot_func(data, method_name, file_name=None, bias1_ylim=None, bias2_ylim=Non
         fig.savefig(file_name, transparent=False, bbox_inches='tight', pad_inches=0.1)
     plt.show()
 
+def plot_func_pareto_front(data, file_name=None, y_scale=None):
+    # extract data
+    data_mean       = data["mean"]
+    data_similar_v1 = data["similar_v1"]
+    data_similar_v2 = data["similar_v2"]
+    data_multi      = data["multi"]
+    classifiers         = ["KNN", "LinearSVC", "SVC",  "Forest", "LogReg",     "Tree", "MLP"]
+    classifier_colors   = ["red", "green",     "blue", "gold",   "darkorange", "grey", "purple"]
+    ratio_dot_size      = [(x+1)*3 for x in range(len(random_ratios))]
+    assert len(data_mean) == len(data_similar_v1) == len(data_similar_v2) == len(data_multi) == (iter_per_ratio * len(random_ratios))
+    # prepare data for plotting
+    plot_data_mean          = {}
+    plot_data_similar_v1    = {}
+    plot_data_similar_v2    = {}
+    plot_data_multi         = {}
+    for clf in classifiers:
+        plot_data_mean[clf]         = ([], [], []) # [[acc_X], [bias1_Y], [bias2_Y]]
+        plot_data_similar_v1[clf]   = ([], [], [])
+        plot_data_similar_v2[clf]   = ([], [], [])
+        plot_data_multi[clf]        = ([], [], [])
+    for i in range(0, len(data_mean), iter_per_ratio):
+        d_data_mean         = data_mean[i:(i+iter_per_ratio)]
+        d_data_similar_v1   = data_similar_v1[i:(i+iter_per_ratio)]
+        d_data_similar_v2   = data_similar_v2[i:(i+iter_per_ratio)]
+        d_data_multi        = data_multi[i:(i+iter_per_ratio)]
+        for clf in classifiers:
+            clf_data_mean       = [(x[0][clf], x[1][clf], x[2][clf]) for x in d_data_mean]
+            clf_data_similar_v1 = [(x[0][clf], x[1][clf], x[2][clf]) for x in d_data_similar_v1]
+            clf_data_similar_v2 = [(x[0][clf], x[1][clf], x[2][clf]) for x in d_data_similar_v2]
+            clf_data_multi      = [(x[0][clf], x[1][clf], x[2][clf]) for x in d_data_multi]
+            # process mean method
+            data_processed = [[], [], []] # [[acc], [bias1], [bias2]]
+            for xx, yy, zz in clf_data_mean:
+                tmp_processed = [[], [], []] # [[acc], [bias1], [bias2]]
+                for x, y, z in zip(xx, yy, zz):
+                    if (y > 0) and (z > 0):
+                        tmp_processed[0].append(x)
+                        tmp_processed[1].append(y)
+                        tmp_processed[2].append(z)
+                data_processed[0].append(np.mean(tmp_processed[0]))
+                data_processed[1].append(np.mean(tmp_processed[1]))
+                data_processed[2].append(np.mean(tmp_processed[2]))
+            plot_data_mean[clf][0].append(np.mean(data_processed[0]))
+            plot_data_mean[clf][1].append(np.mean(data_processed[1]))
+            plot_data_mean[clf][2].append(np.mean(data_processed[2]))
+            # process similar_v1 method
+            data_processed = [[], [], []] # [[acc], [bias1], [bias2]]
+            for xx, yy, zz in clf_data_similar_v1:
+                tmp_processed = [[], [], []] # [[acc], [bias1], [bias2]]
+                for x, y, z in zip(xx, yy, zz):
+                    if (y > 0) and (z > 0):
+                        tmp_processed[0].append(x)
+                        tmp_processed[1].append(y)
+                        tmp_processed[2].append(z)
+                data_processed[0].append(np.mean(tmp_processed[0]))
+                data_processed[1].append(np.mean(tmp_processed[1]))
+                data_processed[2].append(np.mean(tmp_processed[2]))
+            plot_data_similar_v1[clf][0].append(np.mean(data_processed[0]))
+            plot_data_similar_v1[clf][1].append(np.mean(data_processed[1]))
+            plot_data_similar_v1[clf][2].append(np.mean(data_processed[2]))
+            # process similar_v2 method
+            data_processed = [[], [], []] # [[acc], [bias1], [bias2]]
+            for xx, yy, zz in clf_data_similar_v2:
+                tmp_processed = [[], [], []] # [[acc], [bias1], [bias2]]
+                for x, y, z in zip(xx, yy, zz):
+                    if (y > 0) and (z > 0):
+                        tmp_processed[0].append(x)
+                        tmp_processed[1].append(y)
+                        tmp_processed[2].append(z)
+                data_processed[0].append(np.mean(tmp_processed[0]))
+                data_processed[1].append(np.mean(tmp_processed[1]))
+                data_processed[2].append(np.mean(tmp_processed[2]))
+            plot_data_similar_v2[clf][0].append(np.mean(data_processed[0]))
+            plot_data_similar_v2[clf][1].append(np.mean(data_processed[1]))
+            plot_data_similar_v2[clf][2].append(np.mean(data_processed[2]))
+            # process multi method
+            data_processed = [[], [], []] # [[acc], [bias1], [bias2]]
+            for xx, yy, zz in clf_data_multi:
+                tmp_processed = [[], [], []] # [[acc], [bias1], [bias2]]
+                for x, y, z in zip(xx, yy, zz):
+                    if (y > 0) and (z > 0):
+                        tmp_processed[0].append(x)
+                        tmp_processed[1].append(y)
+                        tmp_processed[2].append(z)
+                data_processed[0].append(np.mean(tmp_processed[0]))
+                data_processed[1].append(np.mean(tmp_processed[1]))
+                data_processed[2].append(np.mean(tmp_processed[2]))
+            plot_data_multi[clf][0].append(np.mean(data_processed[0]))
+            plot_data_multi[clf][1].append(np.mean(data_processed[1]))
+            plot_data_multi[clf][2].append(np.mean(data_processed[2]))
+    fig, axes = plt.subplots(2, figsize=(8, 12)) # axes[0] for bias1, axes[1] for bias2
+    axes[0].set_xlim([0.38, 0.7])
+    axes[1].set_xlim([0.38, 0.7])
+    axes[0].set_xlabel("Accuracy")
+    axes[1].set_xlabel("Accuracy")
+    axes[0].set_ylabel("Bias1 Values")
+    axes[1].set_ylabel("Bias2 Values")
+    # each classifier has different color
+    for clf, clf_c in zip(classifiers, classifier_colors):
+        # plot for mean method
+        axes[0].scatter(plot_data_mean[clf][0], plot_data_mean[clf][1], c=clf_c, s=ratio_dot_size, marker="o", alpha=0.8)
+        axes[1].scatter(plot_data_mean[clf][0], plot_data_mean[clf][2], c=clf_c, s=ratio_dot_size, marker="o", alpha=0.8)
+        # plot for similar_v1 method
+        axes[0].scatter(plot_data_similar_v1[clf][0], plot_data_similar_v1[clf][1], c=clf_c, s=ratio_dot_size, marker="s", alpha=0.8)
+        axes[1].scatter(plot_data_similar_v1[clf][0], plot_data_similar_v1[clf][2], c=clf_c, s=ratio_dot_size, marker="s", alpha=0.8)
+        # plot for similar_v2 method
+        axes[0].scatter(plot_data_similar_v2[clf][0], plot_data_similar_v2[clf][1], c=clf_c, s=ratio_dot_size, marker="*", alpha=0.8)
+        axes[1].scatter(plot_data_similar_v2[clf][0], plot_data_similar_v2[clf][2], c=clf_c, s=ratio_dot_size, marker="*", alpha=0.8)
+        # plot for multi method
+        axes[0].scatter(plot_data_multi[clf][0], plot_data_multi[clf][1], c=clf_c, s=ratio_dot_size, marker="^", alpha=0.8)
+        axes[1].scatter(plot_data_multi[clf][0], plot_data_multi[clf][2], c=clf_c, s=ratio_dot_size, marker="^", alpha=0.8)
+    if y_scale:
+        axes[0].set_yscale(y_scale)
+        axes[1].set_yscale(y_scale)
+    custom_legend = [Line2D([0], [0], markerfacecolor=x, marker="o", label=y, markersize=10) for x,y in zip(classifier_colors, classifiers)]
+    custom_legend.append(Line2D([0], [0], color='w', markersize=10, markerfacecolor="black", marker="o", label="mean"))
+    custom_legend.append(Line2D([0], [0], color='w', markersize=10, markerfacecolor="black", marker="s", label="similar_v1"))
+    custom_legend.append(Line2D([0], [0], color='w', markersize=10, markerfacecolor="black", marker="*", label="similar_v2"))
+    custom_legend.append(Line2D([0], [0], color='w', markersize=10, markerfacecolor="black", marker="^", label="multi"))
+    plt.legend(handles=custom_legend, bbox_to_anchor=(1, 0.5))
+    fig.tight_layout()
+    fig.suptitle("Pareto Front Plots")
+    plt.subplots_adjust(top=0.94)
+    if file_name:
+        plt.savefig(file_name, transparent=False, bbox_inches='tight', pad_inches=0.1)
+    plt.show()
+
 if __name__=="__main__":
     if not os.path.exists("ratio_analysis_plots"):
         os.makedirs("ratio_analysis_plots")
@@ -131,3 +261,16 @@ if __name__=="__main__":
         plot_func(data, "Complete by Multiple Imputation", "ratio_analysis_plots/ratio_multi.png")
         plot_func(data, "Complete by Multiple Imputation", "ratio_analysis_plots/ratio_multi_scaled.png", bias1_ylim=[-0.1, 1.4])
         plot_func(data, "Complete by Multiple Imputation", "ratio_analysis_plots/ratio_multi_scaled_clean.png", bias1_ylim=[-0.1, 1.4], plot_error=False)
+    # generate pareto front plots
+    if os.path.exists("mean.pkl") and os.path.exists("similar_v1.pkl") and os.path.exists("similar_v2.pkl") and os.path.exists("multi.pkl") and PLOT_PARETO_FRONTIER:
+        data = {}
+        with open("mean.pkl", "rb") as inFile:
+            data["mean"] = pickle.load(inFile)
+        with open("similar_v1.pkl", "rb") as inFile:
+            data["similar_v1"] = pickle.load(inFile)
+        with open("similar_v2.pkl", "rb") as inFile:
+            data["similar_v2"] = pickle.load(inFile)
+        with open("multi.pkl", "rb") as inFile:
+            data["multi"] = pickle.load(inFile)
+        plot_func_pareto_front(data, "ratio_analysis_plots/pareto_front.png")
+        plot_func_pareto_front(data, "ratio_analysis_plots/pareto_front_scaled.png", y_scale="log")
