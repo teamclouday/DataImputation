@@ -99,14 +99,15 @@ def plot_func(data, method_name, file_name=None, bias1_ylim=None, bias2_ylim=Non
         fig.savefig(file_name, transparent=False, bbox_inches='tight', pad_inches=0.1)
     plt.show()
 
-def plot_func_pareto_front(data, file_name=None, y_scale=None):
+def plot_func_pareto_front(data, file_name=None, y_scale=None, switch=False):
     # extract data
     data_mean       = data["mean"]
     data_similar_v1 = data["similar_v1"]
     data_similar_v2 = data["similar_v2"]
     data_multi      = data["multi"]
-    classifiers         = ["KNN", "LinearSVC", "SVC",  "Forest", "LogReg",     "Tree", "MLP"]
-    classifier_colors   = ["red", "green",     "blue", "gold",   "darkorange", "grey", "purple"]
+    classifiers = ["KNN", "LinearSVC", "SVC", "Forest", "LogReg", "Tree", "MLP"]
+    plot_colors = ["red", "green", "blue", "gold", "darkorange", "grey", "purple"]
+    plot_markers = ["o", "s", "*", "^", "P", "v", "X"]
     ratio_dot_size      = [(x+1)*3 for x in range(len(random_ratios))]
     assert len(data_mean) == len(data_similar_v1) == len(data_similar_v2) == len(data_multi) == (iter_per_ratio * len(random_ratios))
     # prepare data for plotting
@@ -197,27 +198,48 @@ def plot_func_pareto_front(data, file_name=None, y_scale=None):
     axes[0].set_ylabel("Bias1 Values")
     axes[1].set_ylabel("Bias2 Values")
     # each classifier has different color
-    for clf, clf_c in zip(classifiers, classifier_colors):
-        # plot for mean method
-        axes[0].scatter(plot_data_mean[clf][0], plot_data_mean[clf][1], c=clf_c, s=ratio_dot_size, marker="o", alpha=0.8)
-        axes[1].scatter(plot_data_mean[clf][0], plot_data_mean[clf][2], c=clf_c, s=ratio_dot_size, marker="o", alpha=0.8)
-        # plot for similar_v1 method
-        axes[0].scatter(plot_data_similar_v1[clf][0], plot_data_similar_v1[clf][1], c=clf_c, s=ratio_dot_size, marker="s", alpha=0.8)
-        axes[1].scatter(plot_data_similar_v1[clf][0], plot_data_similar_v1[clf][2], c=clf_c, s=ratio_dot_size, marker="s", alpha=0.8)
-        # plot for similar_v2 method
-        axes[0].scatter(plot_data_similar_v2[clf][0], plot_data_similar_v2[clf][1], c=clf_c, s=ratio_dot_size, marker="*", alpha=0.8)
-        axes[1].scatter(plot_data_similar_v2[clf][0], plot_data_similar_v2[clf][2], c=clf_c, s=ratio_dot_size, marker="*", alpha=0.8)
-        # plot for multi method
-        axes[0].scatter(plot_data_multi[clf][0], plot_data_multi[clf][1], c=clf_c, s=ratio_dot_size, marker="^", alpha=0.8)
-        axes[1].scatter(plot_data_multi[clf][0], plot_data_multi[clf][2], c=clf_c, s=ratio_dot_size, marker="^", alpha=0.8)
+    for clf, clf_c, clf_m in zip(classifiers, plot_colors, plot_markers):
+        if switch:
+            # plot for mean method
+            axes[0].scatter(plot_data_mean[clf][0], plot_data_mean[clf][1], c=plot_colors[0], s=ratio_dot_size, marker=clf_m, alpha=0.8)
+            axes[1].scatter(plot_data_mean[clf][0], plot_data_mean[clf][2], c=plot_colors[0], s=ratio_dot_size, marker=clf_m, alpha=0.8)
+            # plot for similar_v1 method
+            axes[0].scatter(plot_data_similar_v1[clf][0], plot_data_similar_v1[clf][1], c=plot_colors[1], s=ratio_dot_size, marker=clf_m, alpha=0.8)
+            axes[1].scatter(plot_data_similar_v1[clf][0], plot_data_similar_v1[clf][2], c=plot_colors[1], s=ratio_dot_size, marker=clf_m, alpha=0.8)
+            # plot for similar_v2 method
+            axes[0].scatter(plot_data_similar_v2[clf][0], plot_data_similar_v2[clf][1], c=plot_colors[2], s=ratio_dot_size, marker=clf_m, alpha=0.8)
+            axes[1].scatter(plot_data_similar_v2[clf][0], plot_data_similar_v2[clf][2], c=plot_colors[2], s=ratio_dot_size, marker=clf_m, alpha=0.8)
+            # plot for multi method
+            axes[0].scatter(plot_data_multi[clf][0], plot_data_multi[clf][1], c=plot_colors[3], s=ratio_dot_size, marker=clf_m, alpha=0.8)
+            axes[1].scatter(plot_data_multi[clf][0], plot_data_multi[clf][2], c=plot_colors[3], s=ratio_dot_size, marker=clf_m, alpha=0.8)
+        else:
+            # plot for mean method
+            axes[0].scatter(plot_data_mean[clf][0], plot_data_mean[clf][1], c=clf_c, s=ratio_dot_size, marker=plot_markers[0], alpha=0.8)
+            axes[1].scatter(plot_data_mean[clf][0], plot_data_mean[clf][2], c=clf_c, s=ratio_dot_size, marker=plot_markers[0], alpha=0.8)
+            # plot for similar_v1 method
+            axes[0].scatter(plot_data_similar_v1[clf][0], plot_data_similar_v1[clf][1], c=clf_c, s=ratio_dot_size, marker=plot_markers[1], alpha=0.8)
+            axes[1].scatter(plot_data_similar_v1[clf][0], plot_data_similar_v1[clf][2], c=clf_c, s=ratio_dot_size, marker=plot_markers[1], alpha=0.8)
+            # plot for similar_v2 method
+            axes[0].scatter(plot_data_similar_v2[clf][0], plot_data_similar_v2[clf][1], c=clf_c, s=ratio_dot_size, marker=plot_markers[2], alpha=0.8)
+            axes[1].scatter(plot_data_similar_v2[clf][0], plot_data_similar_v2[clf][2], c=clf_c, s=ratio_dot_size, marker=plot_markers[2], alpha=0.8)
+            # plot for multi method
+            axes[0].scatter(plot_data_multi[clf][0], plot_data_multi[clf][1], c=clf_c, s=ratio_dot_size, marker=plot_markers[3], alpha=0.8)
+            axes[1].scatter(plot_data_multi[clf][0], plot_data_multi[clf][2], c=clf_c, s=ratio_dot_size, marker=plot_markers[3], alpha=0.8)
     if y_scale:
         axes[0].set_yscale(y_scale)
         axes[1].set_yscale(y_scale)
-    custom_legend = [Line2D([0], [0], markerfacecolor=x, marker="o", label=y, markersize=10) for x,y in zip(classifier_colors, classifiers)]
-    custom_legend.append(Line2D([0], [0], color='w', markersize=10, markerfacecolor="black", marker="o", label="mean"))
-    custom_legend.append(Line2D([0], [0], color='w', markersize=10, markerfacecolor="black", marker="s", label="similar_v1"))
-    custom_legend.append(Line2D([0], [0], color='w', markersize=10, markerfacecolor="black", marker="*", label="similar_v2"))
-    custom_legend.append(Line2D([0], [0], color='w', markersize=10, markerfacecolor="black", marker="^", label="multi"))
+    if switch:
+        custom_legend = [Line2D([0], [0], color='w', markerfacecolor="black", marker=x, label=y, markersize=10) for x,y in zip(plot_markers, classifiers)]
+        custom_legend.append(Line2D([0], [0], markersize=10, markerfacecolor=plot_colors[0], marker="o", label="mean"))
+        custom_legend.append(Line2D([0], [0], markersize=10, markerfacecolor=plot_colors[1], marker="o", label="similar_v1"))
+        custom_legend.append(Line2D([0], [0], markersize=10, markerfacecolor=plot_colors[2], marker="o", label="similar_v2"))
+        custom_legend.append(Line2D([0], [0], markersize=10, markerfacecolor=plot_colors[3], marker="o", label="multi"))
+    else:
+        custom_legend = [Line2D([0], [0], markerfacecolor=x, marker="o", label=y, markersize=10) for x,y in zip(plot_colors, classifiers)]
+        custom_legend.append(Line2D([0], [0], color='w', markersize=10, markerfacecolor="black", marker=plot_markers[0], label="mean"))
+        custom_legend.append(Line2D([0], [0], color='w', markersize=10, markerfacecolor="black", marker=plot_markers[1], label="similar_v1"))
+        custom_legend.append(Line2D([0], [0], color='w', markersize=10, markerfacecolor="black", marker=plot_markers[2], label="similar_v2"))
+        custom_legend.append(Line2D([0], [0], color='w', markersize=10, markerfacecolor="black", marker=plot_markers[3], label="multi"))
     plt.legend(handles=custom_legend, bbox_to_anchor=(1, 0.5))
     fig.tight_layout()
     fig.suptitle("Pareto Front Plots")
@@ -274,3 +296,5 @@ if __name__=="__main__":
             data["multi"] = pickle.load(inFile)
         plot_func_pareto_front(data, "ratio_analysis_plots/pareto_front.png")
         plot_func_pareto_front(data, "ratio_analysis_plots/pareto_front_scaled.png", y_scale="log")
+        plot_func_pareto_front(data, "ratio_analysis_plots/pareto_front_v2.png", switch=True)
+        plot_func_pareto_front(data, "ratio_analysis_plots/pareto_front_scaled_v2.png", y_scale="log", switch=True)
