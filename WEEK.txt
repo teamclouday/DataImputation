@@ -1,2 +1,5 @@
-1. plot accuracy bias by decreasing random ratio
-2. create the fill by similar of opposite groups
+1. run imputation for more times 100
+2. keep only random forest, linearsvc, mlp, knn
+3. implement v2 multiple imputation
+4. probably implement v2 mean imputation
+5. learn about missing at random, and try to implement
