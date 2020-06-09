@@ -20,6 +20,7 @@ PLOT_PARETO_FRONTIER    = True
 def plot_func(data, method_name, file_name=None, bias1_ylim=None, bias2_ylim=None, plot_error=True):
     assert len(data) == (iter_per_ratio * len(random_ratios))
     classifiers = ["KNN", "LinearSVC", "SVC", "Forest", "LogReg", "Tree", "MLP"]
+    raise Exception("Update classifiers before run!")
     d_acc   = [x[0] for x in data]
     d_bias1 = [x[1] for x in data]
     d_bias2 = [x[2] for x in data]
@@ -106,6 +107,7 @@ def plot_func_pareto_front(data, file_name=None, y_scale=None, switch=False):
     data_similar_v2 = data["similar_v2"]
     data_multi      = data["multi"]
     classifiers = ["KNN", "LinearSVC", "SVC", "Forest", "LogReg", "Tree", "MLP"]
+    raise Exception("Update classifiers before run!")
     plot_colors = ["red", "green", "blue", "gold", "darkorange", "grey", "purple"]
     plot_markers = ["o", "s", "*", "^", "P", "v", "X"]
     ratio_dot_size      = [(x+1)*3 for x in range(len(random_ratios))]

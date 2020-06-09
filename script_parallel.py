@@ -23,12 +23,11 @@ from utils.generator import gen_complete_random
 from utils.completer import complete_by_mean_col, complete_by_multi, complete_by_similar_row, complete_by_similar_row_v2
 
 from sklearn.neighbors import KNeighborsClassifier
-from sklearn.svm import LinearSVC, SVC
+from sklearn.svm import LinearSVC #, SVC
 from sklearn.ensemble import RandomForestClassifier
-from sklearn.linear_model import LogisticRegression
-from sklearn.tree import DecisionTreeClassifier
+#from sklearn.linear_model import LogisticRegression
+#from sklearn.tree import DecisionTreeClassifier
 from sklearn.neural_network import MLPClassifier
-from sklearn.model_selection import train_test_split
 from sklearn.model_selection import KFold
 from sklearn.metrics import confusion_matrix
 
@@ -120,37 +119,37 @@ def test_imputation(X, y, protected_features, completer_func=None, multi=False):
     clfs = { # define all the classifiers with best parameters
         "KNN": KNeighborsClassifier(n_neighbors=2, leaf_size=5),
         "LinearSVC": LinearSVC(dual=False, tol=0.001, C=0.1, max_iter=1000),
-        "SVC": SVC(tol=0.0001, C=10, max_iter=-1),
+        #"SVC": SVC(tol=0.0001, C=10, max_iter=-1),
         "Forest": RandomForestClassifier(n_estimators=100, max_depth=50, min_samples_leaf=5),
-        "LogReg": LogisticRegression(tol=1e-5, C=10, max_iter=100),
-        "Tree": DecisionTreeClassifier(max_depth=10, max_leaf_nodes=100, min_samples_leaf=1),
+        #"LogReg": LogisticRegression(tol=1e-5, C=10, max_iter=100),
+        #"Tree": DecisionTreeClassifier(max_depth=10, max_leaf_nodes=100, min_samples_leaf=1),
         "MLP": MLPClassifier(alpha=0.0001, learning_rate_init=0.01, max_iter=500),
     }
     acc_cv = { # save each accuracy output cv
         "KNN": [],
         "LinearSVC": [],
-        "SVC": [],
+        #"SVC": [],
         "Forest": [],
-        "LogReg": [],
-        "Tree": [],
+        #"LogReg": [],
+        #"Tree": [],
         "MLP": [],
     }
     bias1_cv = { # save each bias 1 outputs cv
         "KNN": [],
         "LinearSVC": [],
-        "SVC": [],
+        #"SVC": [],
         "Forest": [],
-        "LogReg": [],
-        "Tree": [],
+        #"LogReg": [],
+        #"Tree": [],
         "MLP": [],
     }
     bias2_cv = { # save each bias 2 outputs cv
         "KNN": [],
         "LinearSVC": [],
-        "SVC": [],
+        #"SVC": [],
         "Forest": [],
-        "LogReg": [],
-        "Tree": [],
+        #"LogReg": [],
+        #"Tree": [],
         "MLP": [],
     }
     kf = KFold(n_splits=10, shuffle=True)
@@ -228,17 +227,17 @@ MAX_PROCESS_COUNT = MAX_PROCESS_COUNT if MAX_PROCESS_COUNT > 0 else 1
 
 if __name__ == "__main__":
     # run mean
-    #print("Now running complete_mean_task")
-    #with Pool(processes=MAX_PROCESS_COUNT) as pool:
-    #    result = list(tqdm.tqdm(pool.imap(complete_mean_task, range(len(actual_ratios))), total=len(actual_ratios)))
-    #with open("mean.pkl", "wb") as outFile:
-    #    pickle.dump(result, outFile)
+    print("Now running complete_mean_task")
+    with Pool(processes=MAX_PROCESS_COUNT) as pool:
+        result = list(tqdm.tqdm(pool.imap(complete_mean_task, range(len(actual_ratios))), total=len(actual_ratios)))
+    with open("mean.pkl", "wb") as outFile:
+        pickle.dump(result, outFile)
     # run similar version 1
-    #print("Now running complete_similar_task")
-    #with Pool(processes=MAX_PROCESS_COUNT) as pool:
-    #    result = list(tqdm.tqdm(pool.imap(complete_similar_task, range(len(actual_ratios))), total=len(actual_ratios)))
-    #with open("similar_v1.pkl", "wb") as outFile:
-    #    pickle.dump(result, outFile)
+    print("Now running complete_similar_task")
+    with Pool(processes=MAX_PROCESS_COUNT) as pool:
+        result = list(tqdm.tqdm(pool.imap(complete_similar_task, range(len(actual_ratios))), total=len(actual_ratios)))
+    with open("similar_v1.pkl", "wb") as outFile:
+        pickle.dump(result, outFile)
     # run similar version 2
     print("Now running complete_similar_v2_task")
     with Pool(processes=MAX_PROCESS_COUNT) as pool:
@@ -246,8 +245,8 @@ if __name__ == "__main__":
     with open("similar_v2.pkl", "wb") as outFile:
         pickle.dump(result, outFile)
     # run multiple imputation
-    #print("Now running complete_multi_task")
-    #with Pool(processes=MAX_PROCESS_COUNT) as pool:
-    #    result = list(tqdm.tqdm(pool.imap(complete_multi_task, range(len(actual_ratios))), total=len(actual_ratios)))
-    #with open("multi.pkl", "wb") as outFile:
-    #    pickle.dump(result, outFile)
+    print("Now running complete_multi_task")
+    with Pool(processes=MAX_PROCESS_COUNT) as pool:
+        result = list(tqdm.tqdm(pool.imap(complete_multi_task, range(len(actual_ratios))), total=len(actual_ratios)))
+    with open("multi.pkl", "wb") as outFile:
+        pickle.dump(result, outFile)
