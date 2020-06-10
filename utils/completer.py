@@ -32,6 +32,42 @@ def complete_by_mean_col(data, print_time=False):
         print("Performance Monitor: ({:.4f}s) ".format(time.process_time() - tt) + inspect.stack()[0][3])
     return data
 
+# Method 2 version 2
+# same idea as similar imputation version 2
+def complete_by_mean_col_v2(data, print_time=False, target_feature=None):
+    if print_time:
+        tt = time.process_time()
+    data = data.copy()
+
+    if target_feature:
+        assert target_feature in data.protected
+        target_unique_values = data.X[target_feature].unique().tolist()
+        assert len(target_unique_values) > 0
+        imputed_parts = []
+        for value in target_unique_values:
+            data_train = data.X[data.X[target_feature] != value].drop(columns=data.protected).copy()
+            data_protected = data.X[data.X[target_feature] == value][data.protected].copy()
+            data_unprotected = data.X[data.X[target_feature] == value].drop(columns=data.protected).copy()
+            data_unprotected = data_unprotected.fillna(data_train.mean()).astype(data.types.drop(data.protected))
+            imputed_parts.append(pd.concat([data_unprotected, data_protected], axis=1))
+        data_X = imputed_parts[0]
+        idx = 1
+        while idx < len(imputed_parts):
+            data_X = pd.concat([data_X, imputed_parts[idx]], axis=0)
+            idx += 1
+        assert data_X.shape == data.X.shape
+        data.X = data_X.sort_index()
+    else:
+        print("Warning: You're using V2 mean imputation, but didn't set a value for target_feature. Will perform V1.")
+        data_protected = data.X[data.protected].copy()
+        data_unprotected = data.X.drop(columns=data.protected).copy()
+        data_unprotected = data_unprotected.fillna(data_unprotected.mean()).astype(data.types.drop(data.protected))
+        data.X = pd.concat([data_unprotected, data_protected], axis=1)
+
+    if print_time:
+        print("Performance Monitor: ({:.4f}s) ".format(time.process_time() - tt) + inspect.stack()[0][3])
+    return data
+
 # Method 3
 # complete missing entries using value from previous row
 # if previous rows are all NaN, then fill with value from next row
@@ -123,7 +159,7 @@ def complete_by_similar_row_v2(data, print_time=False, K=5, target_feature=None)
         assert data_X.shape == data.X.shape
         data.X = data_X.sort_index()
     else:
-        print("Warning: You're use V2 similar imputation, but didn't set a value for target_feature. Will perform V1.")
+        print("Warning: You're using V2 similar imputation, but didn't set a value for target_feature. Will perform V1.")
         data_protected = data.X[data.protected].copy()
         data_unprotected = data.X.drop(columns=data.protected).copy()
         imputer = KNNImputer(n_neighbors=K, weights="uniform")
@@ -170,7 +206,7 @@ def complete_by_multi(data, print_time=False, num_outputs=5):
 # multiple imputation
 # same idea as similar imputation version 2
 # apply imputation based on the data from opposite groups
-def complete_by_multi(data, print_time=False, num_outputs=5, target_feature=None):
+def complete_by_multi_v2(data, print_time=False, num_outputs=5, target_feature=None):
     if print_time:
         tt = time.process_time()
 
@@ -200,7 +236,7 @@ def complete_by_multi(data, print_time=False, num_outputs=5, target_feature=None
             data_copy.X = data_X.sort_index()
             data_new.append(data_copy)
     else:
-        print("Warning: You're use V2 multiple imputation, but didn't set a value for target_feature. Will perform V1.")
+        print("Warning: You're using V2 multiple imputation, but didn't set a value for target_feature. Will perform V1.")
         imputer = IterativeImputer(max_iter=50, sample_posterior=True)
         for i in range(num_outputs):
             data_copy = data.copy()
