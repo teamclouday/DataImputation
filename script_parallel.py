@@ -20,7 +20,7 @@ warnings.filterwarnings('ignore')
 
 from utils.data import create_compas_dataset, Dataset
 from utils.generator import gen_complete_random
-from utils.completer import complete_by_mean_col, complete_by_multi, complete_by_similar_row, complete_by_similar_row_v2
+from utils.completer import complete_by_mean_col, complete_by_mean_col_v2, complete_by_multi, complete_by_multi_v2, complete_by_similar_row, complete_by_similar_row_v2
 
 from sklearn.neighbors import KNeighborsClassifier
 from sklearn.svm import LinearSVC #, SVC
@@ -190,7 +190,7 @@ data_compas_complete.X = tmp_concat.drop(columns=["_TARGET_"]).copy()
 data_compas_complete.y = tmp_concat["_TARGET_"].copy().to_numpy().ravel()
 
 # define how many iterations for each ratio
-iter_per_ratio = 19
+iter_per_ratio = 100
 random_ratios = np.linspace(0.0, 1.0, num=20, endpoint=False)
 actual_ratios = np.array([
     random_ratios for _ in range(iter_per_ratio)
@@ -202,6 +202,12 @@ def complete_mean_task(idx):
     data_sim = gen_complete_random(data_compas_complete, random_ratio=actual_ratios[idx], print_all=False)
     result = test_imputation(data_sim.X.copy(), data_sim.y.copy(),
                              data_sim.protected, complete_by_mean_col, multi=False)
+    return result
+
+def complete_mean_v2_task(idx):
+    data_sim = gen_complete_random(data_compas_complete, random_ratio=actual_ratios[idx], print_all=False)
+    result = test_imputation(data_sim.X.copy(), data_sim.y.copy(),
+                             data_sim.protected, partial(complete_by_mean_col_v2, target_feature="race"), multi=False)
     return result
 
 def complete_similar_task(idx):
@@ -222,15 +228,27 @@ def complete_multi_task(idx):
                              data_sim.protected, complete_by_multi, multi=True)
     return result
 
+def complete_multi_v2_task(idx):
+    data_sim = gen_complete_random(data_compas_complete, random_ratio=actual_ratios[idx], print_all=False)
+    result = test_imputation(data_sim.X.copy(), data_sim.y.copy(),
+                             data_sim.protected, partial(complete_by_multi_v2, target_feature="race"), multi=True)
+    return result
+
 MAX_PROCESS_COUNT = multiprocessing.cpu_count() - 1
 MAX_PROCESS_COUNT = MAX_PROCESS_COUNT if MAX_PROCESS_COUNT > 0 else 1
 
 if __name__ == "__main__":
-    # run mean
+    # run mean version 1
     print("Now running complete_mean_task")
     with Pool(processes=MAX_PROCESS_COUNT) as pool:
         result = list(tqdm.tqdm(pool.imap(complete_mean_task, range(len(actual_ratios))), total=len(actual_ratios)))
-    with open("mean.pkl", "wb") as outFile:
+    with open("mean_v1.pkl", "wb") as outFile:
+        pickle.dump(result, outFile)
+    # run mean version 2
+    print("Now running complete_mean_v2_task")
+    with Pool(processes=MAX_PROCESS_COUNT) as pool:
+        result = list(tqdm.tqdm(pool.imap(complete_mean_v2_task, range(len(actual_ratios))), total=len(actual_ratios)))
+    with open("mean_v2.pkl", "wb") as outFile:
         pickle.dump(result, outFile)
     # run similar version 1
     print("Now running complete_similar_task")
@@ -244,9 +262,15 @@ if __name__ == "__main__":
         result = list(tqdm.tqdm(pool.imap(complete_similar_v2_task, range(len(actual_ratios))), total=len(actual_ratios)))
     with open("similar_v2.pkl", "wb") as outFile:
         pickle.dump(result, outFile)
-    # run multiple imputation
+    # run multiple imputation version 1
     print("Now running complete_multi_task")
     with Pool(processes=MAX_PROCESS_COUNT) as pool:
         result = list(tqdm.tqdm(pool.imap(complete_multi_task, range(len(actual_ratios))), total=len(actual_ratios)))
-    with open("multi.pkl", "wb") as outFile:
+    with open("multi_v1.pkl", "wb") as outFile:
+        pickle.dump(result, outFile)
+    # run multiple imputation version 2
+    print("Now running complete_multi_v2_task")
+    with Pool(processes=MAX_PROCESS_COUNT) as pool:
+        result = list(tqdm.tqdm(pool.imap(complete_multi_v2_task, range(len(actual_ratios))), total=len(actual_ratios)))
+    with open("multi_v2.pkl", "wb") as outFile:
         pickle.dump(result, outFile)
