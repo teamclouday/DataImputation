@@ -8,7 +8,6 @@ os.environ["OMP_NUM_THREADS"] = '1'
 os.environ["NUMEXPR_NUM_THREADS"] = '1'
 import sys
 import time
-import tqdm
 import pickle
 import numpy as np
 import pandas as pd
@@ -238,45 +237,58 @@ if __name__ == "__main__":
 
     final_result = {}
     start_time = time.time()
+    total_time = time.time()
 
     # run mean version 1
     print("Now running mean imputation version 1")
     final_result["mean_v1"] = []
     with Pool(processes=MAX_PROCESS_COUNT) as pool:
-        final_result["mean_v1"] = list(tqdm.tqdm(pool.imap(complete_mean_task, range(len(random_ratios))), total=len(random_ratios)))
+        final_result["mean_v1"] = list(pool.imap(complete_mean_task, range(len(random_ratios))), total=len(random_ratios))
+    print("Task complete in {:.2f}min".format((time.time() - start_time) / 60))
+    start_time = time.time()
 
     # run mean version 2
     print("Now running mean imputation version 2")
     final_result["mean_v2"] = []
     with Pool(processes=MAX_PROCESS_COUNT) as pool:
-        final_result["mean_v2"] = list(tqdm.tqdm(pool.imap(complete_mean_v2_task, range(len(random_ratios))), total=len(random_ratios)))
+        final_result["mean_v2"] = list(pool.imap(complete_mean_v2_task, range(len(random_ratios))), total=len(random_ratios))
+    print("Task complete in {:.2f}min".format((time.time() - start_time) / 60))
+    start_time = time.time()
 
     # run similar version 1
     print("Now running similar imputation version 1")
     final_result["similar_v1"] = []
     with Pool(processes=MAX_PROCESS_COUNT) as pool:
-        final_result["similar_v1"] = list(tqdm.tqdm(pool.imap(complete_similar_task, range(len(random_ratios))), total=len(random_ratios)))
+        final_result["similar_v1"] = list(pool.imap(complete_similar_task, range(len(random_ratios))), total=len(random_ratios))
+    print("Task complete in {:.2f}min".format((time.time() - start_time) / 60))
+    start_time = time.time()
 
     # run similar version 2
     print("Now running similar imputation version 2")
     final_result["similar_v2"] = []
     with Pool(processes=MAX_PROCESS_COUNT) as pool:
-        final_result["similar_v2"] = list(tqdm.tqdm(pool.imap(complete_similar_v2_task, range(len(random_ratios))), total=len(random_ratios)))
+        final_result["similar_v2"] = list(pool.imap(complete_similar_v2_task, range(len(random_ratios))), total=len(random_ratios))
+    print("Task complete in {:.2f}min".format((time.time() - start_time) / 60))
+    start_time = time.time()
 
     # run multi version 1
     print("Now running multiple imputation version 1")
     final_result["multi_v1"] = []
     with Pool(processes=MAX_PROCESS_COUNT) as pool:
-        final_result["multi_v1"] = list(tqdm.tqdm(pool.imap(complete_multi_task, range(len(random_ratios))), total=len(random_ratios)))
+        final_result["multi_v1"] = list(pool.imap(complete_multi_task, range(len(random_ratios))), total=len(random_ratios))
+    print("Task complete in {:.2f}min".format((time.time() - start_time) / 60))
+    start_time = time.time()
 
     # run multi version 2
     print("Now running multiple imputation version 2")
     final_result["multi_v2"] = []
     with Pool(processes=MAX_PROCESS_COUNT) as pool:
-        final_result["multi_v2"] = list(tqdm.tqdm(pool.imap(complete_multi_v2_task, range(len(random_ratios))), total=len(random_ratios)))
+        final_result["multi_v2"] = list(pool.imap(complete_multi_v2_task, range(len(random_ratios))), total=len(random_ratios))
+    print("Task complete in {:.2f}min".format((time.time() - start_time) / 60))
+    start_time = time.time()
 
     # save outputs
     with open(os.path.join("condor_outputs", "output_{:0>4}.pkl".format(sys.argv[1])), "wb") as outFile:
         pickle.dump(final_result, outFile)
 
-    print("task complete in {:.2f}hr".format((time.time() - start_time) / 3600))
+    print("All tasks complete in {:.2f}hr".format((time.time() - total_time) / 3600))
