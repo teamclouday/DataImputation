@@ -5,9 +5,12 @@
 import os
 import sys
 import time
+import tqdm
 import pickle
 import numpy as np
 import pandas as pd
+import multiprocessing
+from multiprocessing.pool import Pool
 from functools import partial
 import warnings
 warnings.filterwarnings('ignore')
@@ -184,6 +187,46 @@ data_compas_complete.y = tmp_concat["_TARGET_"].copy().to_numpy().ravel()
 
 random_ratios = np.linspace(0.0, 1.0, num=20, endpoint=False)
 
+MAX_PROCESS_COUNT = multiprocessing.cpu_count()
+
+# define single task functions
+
+def complete_mean_task(idx):
+    data_sim = gen_complete_random(data_compas_complete, random_ratio=random_ratios[idx], print_all=False)
+    result = test_imputation(data_sim.X.copy(), data_sim.y.copy(),
+                             data_sim.protected, complete_by_mean_col, multi=False)
+    return result
+
+def complete_mean_v2_task(idx):
+    data_sim = gen_complete_random(data_compas_complete, random_ratio=random_ratios[idx], print_all=False)
+    result = test_imputation(data_sim.X.copy(), data_sim.y.copy(),
+                             data_sim.protected, partial(complete_by_mean_col_v2, target_feature="race"), multi=False)
+    return result
+
+def complete_similar_task(idx):
+    data_sim = gen_complete_random(data_compas_complete, random_ratio=random_ratios[idx], print_all=False)
+    result = test_imputation(data_sim.X.copy(), data_sim.y.copy(),
+                             data_sim.protected, complete_by_similar_row, multi=False)
+    return result
+
+def complete_similar_v2_task(idx):
+    data_sim = gen_complete_random(data_compas_complete, random_ratio=random_ratios[idx], print_all=False)
+    result = test_imputation(data_sim.X.copy(), data_sim.y.copy(),
+                             data_sim.protected, partial(complete_by_similar_row_v2, target_feature="race"), multi=False)
+    return result
+
+def complete_multi_task(idx):
+    data_sim = gen_complete_random(data_compas_complete, random_ratio=random_ratios[idx], print_all=False)
+    result = test_imputation(data_sim.X.copy(), data_sim.y.copy(),
+                             data_sim.protected, complete_by_multi, multi=True)
+    return result
+
+def complete_multi_v2_task(idx):
+    data_sim = gen_complete_random(data_compas_complete, random_ratio=random_ratios[idx], print_all=False)
+    result = test_imputation(data_sim.X.copy(), data_sim.y.copy(),
+                             data_sim.protected, partial(complete_by_multi_v2, target_feature="race"), multi=True)
+    return result
+
 if __name__ == "__main__":
     if not os.path.exists("condor_outputs"):
         os.makedirs("condor_outputs")
@@ -196,63 +239,41 @@ if __name__ == "__main__":
     # run mean version 1
     print("Now running mean imputation version 1")
     final_result["mean_v1"] = []
-    for ratio in random_ratios:
-        print("Current Ratio: {:.2f}".format(ratio))
-        data_sim = gen_complete_random(data_compas_complete, random_ratio=ratio, print_all=False)
-        final_result["mean_v1"].append(test_imputation(data_sim.X.copy(), data_sim.y.copy(), data_sim.protected, complete_by_mean_col, multi=False))
-    print("Task finished in {:.3f}s\n".format(time.time() - start_time))
-    start_time = time.time()
+    with Pool(processes=MAX_PROCESS_COUNT) as pool:
+        final_result["mean_v1"] = list(tqdm.tqdm(pool.imap(complete_mean_task, range(len(random_ratios))), total=len(random_ratios)))
 
     # run mean version 2
     print("Now running mean imputation version 2")
     final_result["mean_v2"] = []
-    for ratio in random_ratios:
-        print("Current Ratio: {:.2f}".format(ratio))
-        data_sim = gen_complete_random(data_compas_complete, random_ratio=ratio, print_all=False)
-        final_result["mean_v2"].append(test_imputation(data_sim.X.copy(), data_sim.y.copy(), data_sim.protected, partial(complete_by_mean_col_v2, target_feature="race"), multi=False))
-    print("Task finished in {:.3f}s\n".format(time.time() - start_time))
-    start_time = time.time()
+    with Pool(processes=MAX_PROCESS_COUNT) as pool:
+        final_result["mean_v2"] = list(tqdm.tqdm(pool.imap(complete_mean_v2_task, range(len(random_ratios))), total=len(random_ratios)))
 
     # run similar version 1
     print("Now running similar imputation version 1")
     final_result["similar_v1"] = []
-    for ratio in random_ratios:
-        print("Current Ratio: {:.2f}".format(ratio))
-        data_sim = gen_complete_random(data_compas_complete, random_ratio=ratio, print_all=False)
-        final_result["similar_v1"].append(test_imputation(data_sim.X.copy(), data_sim.y.copy(), data_sim.protected, complete_by_similar_row, multi=False))
-    print("Task finished in {:.3f}s\n".format(time.time() - start_time))
-    start_time = time.time()
+    with Pool(processes=MAX_PROCESS_COUNT) as pool:
+        final_result["similar_v1"] = list(tqdm.tqdm(pool.imap(complete_similar_task, range(len(random_ratios))), total=len(random_ratios)))
 
     # run similar version 2
     print("Now running similar imputation version 2")
     final_result["similar_v2"] = []
-    for ratio in random_ratios:
-        print("Current Ratio: {:.2f}".format(ratio))
-        data_sim = gen_complete_random(data_compas_complete, random_ratio=ratio, print_all=False)
-        final_result["similar_v2"].append(test_imputation(data_sim.X.copy(), data_sim.y.copy(), data_sim.protected, partial(complete_by_similar_row_v2, target_feature="race"), multi=False))
-    print("Task finished in {:.3f}s\n".format(time.time() - start_time))
-    start_time = time.time()
+    with Pool(processes=MAX_PROCESS_COUNT) as pool:
+        final_result["similar_v2"] = list(tqdm.tqdm(pool.imap(complete_similar_v2_task, range(len(random_ratios))), total=len(random_ratios)))
 
     # run multi version 1
     print("Now running multiple imputation version 1")
     final_result["multi_v1"] = []
-    for ratio in random_ratios:
-        print("Current Ratio: {:.2f}".format(ratio))
-        data_sim = gen_complete_random(data_compas_complete, random_ratio=ratio, print_all=False)
-        final_result["multi_v1"].append(test_imputation(data_sim.X.copy(), data_sim.y.copy(), data_sim.protected, complete_by_multi, multi=True))
-    print("Task finished in {:.3f}s\n".format(time.time() - start_time))
-    start_time = time.time()
+    with Pool(processes=MAX_PROCESS_COUNT) as pool:
+        final_result["multi_v1"] = list(tqdm.tqdm(pool.imap(complete_multi_task, range(len(random_ratios))), total=len(random_ratios)))
 
     # run multi version 2
     print("Now running multiple imputation version 2")
     final_result["multi_v2"] = []
-    for ratio in random_ratios:
-        print("Current Ratio: {:.2f}".format(ratio))
-        data_sim = gen_complete_random(data_compas_complete, random_ratio=ratio, print_all=False)
-        final_result["multi_v2"].append(test_imputation(data_sim.X.copy(), data_sim.y.copy(), data_sim.protected, partial(complete_by_multi_v2, target_feature="race"), multi=True))
-    print("Task finished in {:.3f}s\n".format(time.time() - start_time))
-    start_time = time.time()
+    with Pool(processes=MAX_PROCESS_COUNT) as pool:
+        final_result["multi_v2"] = list(tqdm.tqdm(pool.imap(complete_multi_v2_task, range(len(random_ratios))), total=len(random_ratios)))
 
     # save outputs
     with open(os.path.join("condor_outputs", "output_{:0>4}.pkl".format(sys.argv[1])), "wb") as outFile:
         pickle.dump(final_result, outFile)
+
+    print("task complete in {:.2f}hr".format((time.time() - start_time) / 3600))
