@@ -3,6 +3,9 @@
 # this script is currently for computing random ratios on compas analysis
 
 import os
+os.environ["MKL_NUM_THREADS"] = '1'
+os.environ["OMP_NUM_THREADS"] = '1'
+os.environ["NUMEXPR_NUM_THREADS"] = '1'
 import sys
 import time
 import tqdm
