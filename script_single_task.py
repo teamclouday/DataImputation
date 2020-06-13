@@ -3,6 +3,7 @@
 # this script is currently for computing random ratios on compas analysis
 
 import os
+import sys
 import time
 import pickle
 import numpy as np
@@ -186,6 +187,8 @@ random_ratios = np.linspace(0.0, 1.0, num=20, endpoint=False)
 if __name__ == "__main__":
     if not os.path.exists("condor_outputs"):
         os.makedirs("condor_outputs")
+    if len(sys.argv) < 2:
+        raise Exception("should have argument for task id")
 
     final_result = {}
     start_time = time.time()
@@ -251,5 +254,5 @@ if __name__ == "__main__":
     start_time = time.time()
 
     # save outputs
-    with open(os.path.join("condor_outputs", "output.pkl"), "wb") as outFile:
+    with open(os.path.join("condor_outputs", "output_{:0>4}.pkl".format(sys.argv[1])), "wb") as outFile:
         pickle.dump(final_result, outFile)
