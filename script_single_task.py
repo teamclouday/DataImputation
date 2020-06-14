@@ -32,11 +32,11 @@ from sklearn.metrics import confusion_matrix
 
 from imblearn.over_sampling import SVMSMOTE
 
-RUN_MEAN_V1     = False
-RUN_MEAN_V2     = False
-RUN_SIMILAR_V1  = False
-RUN_SIMILAR_V2  = False
-RUN_MULTI_V1    = False
+RUN_MEAN_V1     = True
+RUN_MEAN_V2     = True
+RUN_SIMILAR_V1  = True
+RUN_SIMILAR_V2  = True
+RUN_MULTI_V1    = True
 RUN_MULTI_V2    = True
 
 #define functions
@@ -251,7 +251,7 @@ if __name__ == "__main__":
         print("Now running mean imputation version 1")
         final_result["mean_v1"] = []
         with Pool(processes=MAX_PROCESS_COUNT) as pool:
-            final_result["mean_v1"] = list(pool.imap(complete_mean_task, range(len(random_ratios))), total=len(random_ratios))
+            final_result["mean_v1"] = list(pool.imap(complete_mean_task, range(len(random_ratios))))
         print("Task complete in {:.2f}min".format((time.time() - start_time) / 60))
         start_time = time.time()
 
@@ -260,7 +260,7 @@ if __name__ == "__main__":
         print("Now running mean imputation version 2")
         final_result["mean_v2"] = []
         with Pool(processes=MAX_PROCESS_COUNT) as pool:
-            final_result["mean_v2"] = list(pool.imap(complete_mean_v2_task, range(len(random_ratios))), total=len(random_ratios))
+            final_result["mean_v2"] = list(pool.imap(complete_mean_v2_task, range(len(random_ratios))))
         print("Task complete in {:.2f}min".format((time.time() - start_time) / 60))
         start_time = time.time()
 
@@ -269,7 +269,7 @@ if __name__ == "__main__":
         print("Now running similar imputation version 1")
         final_result["similar_v1"] = []
         with Pool(processes=MAX_PROCESS_COUNT) as pool:
-            final_result["similar_v1"] = list(pool.imap(complete_similar_task, range(len(random_ratios))), total=len(random_ratios))
+            final_result["similar_v1"] = list(pool.imap(complete_similar_task, range(len(random_ratios))))
         print("Task complete in {:.2f}min".format((time.time() - start_time) / 60))
         start_time = time.time()
 
@@ -278,7 +278,7 @@ if __name__ == "__main__":
         print("Now running similar imputation version 2")
         final_result["similar_v2"] = []
         with Pool(processes=MAX_PROCESS_COUNT) as pool:
-            final_result["similar_v2"] = list(pool.imap(complete_similar_v2_task, range(len(random_ratios))), total=len(random_ratios))
+            final_result["similar_v2"] = list(pool.imap(complete_similar_v2_task, range(len(random_ratios))))
         print("Task complete in {:.2f}min".format((time.time() - start_time) / 60))
         start_time = time.time()
 
@@ -287,7 +287,7 @@ if __name__ == "__main__":
         print("Now running multiple imputation version 1")
         final_result["multi_v1"] = []
         with Pool(processes=MAX_PROCESS_COUNT) as pool:
-            final_result["multi_v1"] = list(pool.imap(complete_multi_task, range(len(random_ratios))), total=len(random_ratios))
+            final_result["multi_v1"] = list(pool.imap(complete_multi_task, range(len(random_ratios))))
         print("Task complete in {:.2f}min".format((time.time() - start_time) / 60))
         start_time = time.time()
 
@@ -296,7 +296,7 @@ if __name__ == "__main__":
         print("Now running multiple imputation version 2")
         final_result["multi_v2"] = []
         with Pool(processes=MAX_PROCESS_COUNT) as pool:
-            final_result["multi_v2"] = list(pool.imap(complete_multi_v2_task, range(len(random_ratios))), total=len(random_ratios))
+            final_result["multi_v2"] = list(pool.imap(complete_multi_v2_task, range(len(random_ratios))))
         print("Task complete in {:.2f}min".format((time.time() - start_time) / 60))
         start_time = time.time()
 
