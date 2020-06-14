@@ -32,6 +32,13 @@ from sklearn.metrics import confusion_matrix
 
 from imblearn.over_sampling import SVMSMOTE
 
+RUN_MEAN_V1     = False
+RUN_MEAN_V2     = False
+RUN_SIMILAR_V1  = False
+RUN_SIMILAR_V2  = False
+RUN_MULTI_V1    = False
+RUN_MULTI_V2    = True
+
 #define functions
 
 # [TN_AA, FP_AA, FN_AA, TP_AA, TN_C, FP_C, FN_C, TP_C]
@@ -240,52 +247,58 @@ if __name__ == "__main__":
     total_time = time.time()
 
     # run mean version 1
-    print("Now running mean imputation version 1")
-    final_result["mean_v1"] = []
-    with Pool(processes=MAX_PROCESS_COUNT) as pool:
-        final_result["mean_v1"] = list(pool.imap(complete_mean_task, range(len(random_ratios))), total=len(random_ratios))
-    print("Task complete in {:.2f}min".format((time.time() - start_time) / 60))
-    start_time = time.time()
+    if RUN_MEAN_V1:
+        print("Now running mean imputation version 1")
+        final_result["mean_v1"] = []
+        with Pool(processes=MAX_PROCESS_COUNT) as pool:
+            final_result["mean_v1"] = list(pool.imap(complete_mean_task, range(len(random_ratios))), total=len(random_ratios))
+        print("Task complete in {:.2f}min".format((time.time() - start_time) / 60))
+        start_time = time.time()
 
     # run mean version 2
-    print("Now running mean imputation version 2")
-    final_result["mean_v2"] = []
-    with Pool(processes=MAX_PROCESS_COUNT) as pool:
-        final_result["mean_v2"] = list(pool.imap(complete_mean_v2_task, range(len(random_ratios))), total=len(random_ratios))
-    print("Task complete in {:.2f}min".format((time.time() - start_time) / 60))
-    start_time = time.time()
+    if RUN_MEAN_V2:
+        print("Now running mean imputation version 2")
+        final_result["mean_v2"] = []
+        with Pool(processes=MAX_PROCESS_COUNT) as pool:
+            final_result["mean_v2"] = list(pool.imap(complete_mean_v2_task, range(len(random_ratios))), total=len(random_ratios))
+        print("Task complete in {:.2f}min".format((time.time() - start_time) / 60))
+        start_time = time.time()
 
     # run similar version 1
-    print("Now running similar imputation version 1")
-    final_result["similar_v1"] = []
-    with Pool(processes=MAX_PROCESS_COUNT) as pool:
-        final_result["similar_v1"] = list(pool.imap(complete_similar_task, range(len(random_ratios))), total=len(random_ratios))
-    print("Task complete in {:.2f}min".format((time.time() - start_time) / 60))
-    start_time = time.time()
+    if RUN_SIMILAR_V1:
+        print("Now running similar imputation version 1")
+        final_result["similar_v1"] = []
+        with Pool(processes=MAX_PROCESS_COUNT) as pool:
+            final_result["similar_v1"] = list(pool.imap(complete_similar_task, range(len(random_ratios))), total=len(random_ratios))
+        print("Task complete in {:.2f}min".format((time.time() - start_time) / 60))
+        start_time = time.time()
 
     # run similar version 2
-    print("Now running similar imputation version 2")
-    final_result["similar_v2"] = []
-    with Pool(processes=MAX_PROCESS_COUNT) as pool:
-        final_result["similar_v2"] = list(pool.imap(complete_similar_v2_task, range(len(random_ratios))), total=len(random_ratios))
-    print("Task complete in {:.2f}min".format((time.time() - start_time) / 60))
-    start_time = time.time()
+    if RUN_SIMILAR_V2:
+        print("Now running similar imputation version 2")
+        final_result["similar_v2"] = []
+        with Pool(processes=MAX_PROCESS_COUNT) as pool:
+            final_result["similar_v2"] = list(pool.imap(complete_similar_v2_task, range(len(random_ratios))), total=len(random_ratios))
+        print("Task complete in {:.2f}min".format((time.time() - start_time) / 60))
+        start_time = time.time()
 
     # run multi version 1
-    print("Now running multiple imputation version 1")
-    final_result["multi_v1"] = []
-    with Pool(processes=MAX_PROCESS_COUNT) as pool:
-        final_result["multi_v1"] = list(pool.imap(complete_multi_task, range(len(random_ratios))), total=len(random_ratios))
-    print("Task complete in {:.2f}min".format((time.time() - start_time) / 60))
-    start_time = time.time()
+    if RUN_MULTI_V1:
+        print("Now running multiple imputation version 1")
+        final_result["multi_v1"] = []
+        with Pool(processes=MAX_PROCESS_COUNT) as pool:
+            final_result["multi_v1"] = list(pool.imap(complete_multi_task, range(len(random_ratios))), total=len(random_ratios))
+        print("Task complete in {:.2f}min".format((time.time() - start_time) / 60))
+        start_time = time.time()
 
     # run multi version 2
-    print("Now running multiple imputation version 2")
-    final_result["multi_v2"] = []
-    with Pool(processes=MAX_PROCESS_COUNT) as pool:
-        final_result["multi_v2"] = list(pool.imap(complete_multi_v2_task, range(len(random_ratios))), total=len(random_ratios))
-    print("Task complete in {:.2f}min".format((time.time() - start_time) / 60))
-    start_time = time.time()
+    if RUN_MULTI_V2:
+        print("Now running multiple imputation version 2")
+        final_result["multi_v2"] = []
+        with Pool(processes=MAX_PROCESS_COUNT) as pool:
+            final_result["multi_v2"] = list(pool.imap(complete_multi_v2_task, range(len(random_ratios))), total=len(random_ratios))
+        print("Task complete in {:.2f}min".format((time.time() - start_time) / 60))
+        start_time = time.time()
 
     # save outputs
     with open(os.path.join("condor_outputs", "output_{:0>4}.pkl".format(sys.argv[1])), "wb") as outFile:
