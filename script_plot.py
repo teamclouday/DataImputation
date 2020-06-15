@@ -12,7 +12,7 @@ from script_single_task import random_ratios, RUN_MEAN_V1, RUN_MEAN_V2, RUN_MULT
 
 iter_per_ratio = 100
 
-TRANSFORM_OUTPUTS       = True
+TRANSFORM_OUTPUTS       = False
 
 PLOT_CREATE_MEAN_V1     = False
 PLOT_CREATE_MEAN_V2     = False
@@ -21,7 +21,7 @@ PLOT_CREATE_SIMILAR_V2  = False
 PLOT_CREATE_MULTI_V1    = False
 PLOT_CREATE_MULTI_V2    = False
 
-PLOT_PARETO_FRONTIER    = False
+PLOT_PARETO_FRONTIER    = True
 
 def plot_func(data, method_name, file_name=None, yscale=None, plot_error=True):
     assert len(data) == (iter_per_ratio * len(random_ratios))
@@ -305,7 +305,7 @@ def plot_func_pareto_front(data, file_name=None, y_scale=None, switch=False):
         custom_legend.append(Line2D([0], [0], color='w', markersize=10, markerfacecolor="black", marker=plot_markers[3], label="similar_v2"))
         custom_legend.append(Line2D([0], [0], color='w', markersize=10, markerfacecolor="black", marker=plot_markers[4], label="multi_v1"))
         custom_legend.append(Line2D([0], [0], color='w', markersize=10, markerfacecolor="black", marker=plot_markers[5], label="multi_v2"))
-    plt.legend(handles=custom_legend, bbox_to_anchor=(1, 0.5))
+    plt.legend(handles=custom_legend, bbox_to_anchor=(1, 0.6))
     fig.tight_layout()
     fig.suptitle("Pareto Front Plots")
     plt.subplots_adjust(top=0.94)

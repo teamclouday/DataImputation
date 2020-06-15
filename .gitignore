@@ -1,4 +1,5 @@
 **.ipynb_checkpoints**
 dataset/*
+condor_outputs/*
 **pycache**
 *.pkl
