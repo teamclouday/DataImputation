@@ -1,5 +1,10 @@
-1. run imputation for more times 100
-2. keep only random forest, linearsvc, mlp, knn
-3. implement v2 multiple imputation
-4. probably implement v2 mean imputation
-5. learn about missing at random, and try to implement
+1. create dataframe with several columns (proportion of missing data, iteration num, model, bias1, bias2, acc, f1 score)
+linear regression, f1 score is target, regressed on one bias, controlling for the models as dummy variables, get a coefficient on bias
+a 1 unit increase in bias is associated with a beta change in f1 score, on average, controlling for the choice of ML model
+a 1 unit decrease in bias is associated with a negative beta change in f1 score, on average, controlling for the choice of ML model
+
+y = bx + c + delta1*model (True or False)
+
+2. read paper https://arxiv.org/pdf/1905.12728.pdf
+3. > 100 trials
+4. add titanic dataset
