@@ -72,6 +72,19 @@ def acc(data):
     accuracy = (TP + TN) / sum(data)
     return accuracy
 
+def f1score(data):
+    # input should be data from compute_confusion_matrix
+    # precision = TP / (TP + FP)
+    # recall    = TP / (TP + FN)
+    # f1 score  = 2 * (precision * recall) / (recall + precision)
+    precision_AA = data[3] / (data[3] + data[1])
+    precision_C  = data[7] / (data[7] + data[5])
+    recall_AA    = data[3] / (data[3] + data[2])
+    recall_C     = data[7] / (data[7] + data[6])
+    f1_AA        = 2 * (precision_AA * recall_AA) / (recall_AA + precision_AA)
+    f1_C         = 2 * (precision_C * recall_C) / (recall_C + precision_C)
+    return (f1_AA, f1_C)
+
 def helper_freq(array):
     """simple helper function to return the most frequent number in an array"""
     count = np.bincount(array)
@@ -140,6 +153,15 @@ def test_imputation(X, y, protected_features, completer_func=None, multi=False):
         "Tree": [],
         "MLP": [],
     }
+    f1_cv = { # save each f1 score outputs cv
+        "KNN": [],
+        "LinearSVC": [],
+        "SVC": [],
+        "Forest": [],
+        "LogReg": [],
+        "Tree": [],
+        "MLP": [],
+    }
     bias1_cv = { # save each bias 1 outputs cv
         "KNN": [],
         "LinearSVC": [],
@@ -179,10 +201,11 @@ def test_imputation(X, y, protected_features, completer_func=None, multi=False):
         for clf_name, clf in clfs.items():
             result = compute_confusion_matrix(X_train, y_train, X_test, y_test, clf, protected_features, multi=multi)
             acc_cv[clf_name].append(acc(result))
+            f1_cv[clf_name].append(f1score(result))
             bias1_cv[clf_name].append(bias1(result))
             bias2_cv[clf_name].append(bias2(result))
         fold += 1
-    return (acc_cv, bias1_cv, bias2_cv)
+    return (acc_cv, bias1_cv, bias2_cv, f1_cv)
 
 # prepare data
 
