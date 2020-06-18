@@ -81,6 +81,8 @@ def f1score(data):
     precision_C  = data[7] / (data[7] + data[5])
     recall_AA    = data[3] / (data[3] + data[2])
     recall_C     = data[7] / (data[7] + data[6])
+    if (recall_AA + precision_AA) == 0 or (recall_C + precision_C) == 0:
+        return [None] # mark error situation
     f1_AA        = 2 * (precision_AA * recall_AA) / (recall_AA + precision_AA)
     f1_C         = 2 * (precision_C * recall_C) / (recall_C + precision_C)
     return (f1_AA, f1_C)
