@@ -77,10 +77,8 @@ def f1score(data):
     # precision = TP / (TP + FP)
     # recall    = TP / (TP + FN)
     # f1 score  = 2 * (precision * recall) / (recall + precision)
-    if (data[3] + data[1]) == 0 or (data[7] + data[5]) == 0 or (data[3] + data[2]) == 0 or (data[7] + data[6]) == 0:
-        return [None] # mark error situation
-    precision_AA = data[3] / (data[3] + data[1])
-    precision_C  = data[7] / (data[7] + data[5])
+    precision_AA = data[3] / (data[3] + data[1]) if (data[3] + data[1]) != 0 else 0
+    precision_C  = data[7] / (data[7] + data[5]) if (data[7] + data[5]) != 0 else 0
     recall_AA    = data[3] / (data[3] + data[2])
     recall_C     = data[7] / (data[7] + data[6])
     if (recall_AA + precision_AA) == 0 or (recall_C + precision_C) == 0:
