@@ -77,6 +77,8 @@ def f1score(data):
     # precision = TP / (TP + FP)
     # recall    = TP / (TP + FN)
     # f1 score  = 2 * (precision * recall) / (recall + precision)
+    if (data[3] + data[1]) == 0 or (data[7] + data[5]) == 0 or (data[3] + data[2]) == 0 or (data[7] + data[6]) == 0:
+        return [None] # mark error situation
     precision_AA = data[3] / (data[3] + data[1])
     precision_C  = data[7] / (data[7] + data[5])
     recall_AA    = data[3] / (data[3] + data[2])
@@ -85,7 +87,7 @@ def f1score(data):
         return [None] # mark error situation
     f1_AA        = 2 * (precision_AA * recall_AA) / (recall_AA + precision_AA)
     f1_C         = 2 * (precision_C * recall_C) / (recall_C + precision_C)
-    return (f1_AA, f1_C)
+    return [f1_AA, f1_C]
 
 def helper_freq(array):
     """simple helper function to return the most frequent number in an array"""
