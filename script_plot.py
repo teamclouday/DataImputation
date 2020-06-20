@@ -10,18 +10,19 @@ from matplotlib.lines import Line2D
 
 from script_single_task import random_ratios, RUN_MEAN_V1, RUN_MEAN_V2, RUN_MULTI_V1, RUN_MULTI_V2, RUN_SIMILAR_V1, RUN_SIMILAR_V2
 
-iter_per_ratio = 100
+iter_per_ratio = 300
 
-TRANSFORM_OUTPUTS       = False
+TRANSFORM_OUTPUTS       = True
 
-PLOT_CREATE_MEAN_V1     = False
-PLOT_CREATE_MEAN_V2     = False
-PLOT_CREATE_SIMILAR_V1  = False
-PLOT_CREATE_SIMILAR_V2  = False
-PLOT_CREATE_MULTI_V1    = False
-PLOT_CREATE_MULTI_V2    = False
+PLOT_CREATE_MEAN_V1     = True
+PLOT_CREATE_MEAN_V2     = True
+PLOT_CREATE_SIMILAR_V1  = True
+PLOT_CREATE_SIMILAR_V2  = True
+PLOT_CREATE_MULTI_V1    = True
+PLOT_CREATE_MULTI_V2    = True
 
-PLOT_PARETO_FRONTIER    = True
+PLOT_PARETO_FRONTIER_V1 = True
+PLOT_PARETO_FRONTIER_V2 = True
 
 def plot_func(data, method_name, file_name=None, yscale=None, plot_error=True):
     assert len(data) == (iter_per_ratio * len(random_ratios))
@@ -29,41 +30,50 @@ def plot_func(data, method_name, file_name=None, yscale=None, plot_error=True):
     d_acc   = [x[0] for x in data]
     d_bias1 = [x[1] for x in data]
     d_bias2 = [x[2] for x in data]
-    assert len(d_acc) == len(d_bias1) == len(d_bias2)
+    d_f1    = [x[3] for x in data]
+    assert len(d_acc) == len(d_bias1) == len(d_bias2) == len(d_f1)
     plot_bias1 = {}
     plot_bias2 = {}
     plot_acc = {}
+    plot_f1 = {}
     for clf in classifiers:
         plot_bias1[clf] = [[], []] # [[actual averaged data], [data for error bar]]
         plot_bias2[clf] = [[], []]
         plot_acc[clf]   = [[], []]
+        plot_f1[clf]    = [[], []]
     for i in range(0, len(d_acc), iter_per_ratio):
         i_acc = d_acc[i:(i+iter_per_ratio)]
         i_bias1 = d_bias1[i:(i+iter_per_ratio)]
         i_bias2 = d_bias2[i:(i+iter_per_ratio)]
+        i_f1 = d_f1[i:(i+iter_per_ratio)]
         for clf in classifiers:
             clf_acc = [x[clf] for x in i_acc]
             clf_bias1 = [x[clf] for x in i_bias1]
             clf_bias2 = [x[clf] for x in i_bias2]
-            data_processed = [[], [], []] # [[acc avg], [bias1], [bias2]], remove -1 cases
-            for xx,yy,zz in zip(clf_acc, clf_bias1, clf_bias2):
-                tmp_data_processed = [[], [], []] #  [[acc each fold], [bias1], [bias2]], remove -1 cases
-                for x,y,z in zip(xx, yy, zz):
-                    if (y > 0) and (z > 0):
+            clf_f1 = [x[clf] for x in i_f1]
+            data_processed = [[], [], [], []] # [[acc avg], [bias1], [bias2], [f1 score]], remove -1, [None] cases
+            for xx,yy,zz,ww in zip(clf_acc, clf_bias1, clf_bias2, clf_f1):
+                tmp_data_processed = [[], [], [], []] #  [[acc each fold], [bias1], [bias2], [f1 score]], remove -1, [None] cases
+                for x,y,z,w in zip(xx, yy, zz, ww):
+                    if (y > 0) and (z > 0) and len(w) == 2:
                         tmp_data_processed[0].append(x)
                         tmp_data_processed[1].append(y)
                         tmp_data_processed[2].append(z)
+                        tmp_data_processed[3].append(np.mean(w))
                 data_processed[0].append(np.mean(tmp_data_processed[0]))
                 data_processed[1].append(np.mean(tmp_data_processed[1]))
                 data_processed[2].append(np.mean(tmp_data_processed[2]))
+                data_processed[3].append(np.mean(tmp_data_processed[3]))
             plot_acc[clf][0].append(np.mean(data_processed[0]))
             plot_acc[clf][1].append(np.std(data_processed[0]))
             plot_bias1[clf][0].append(np.mean(data_processed[1]))
             plot_bias1[clf][1].append(np.std(data_processed[1]))
             plot_bias2[clf][0].append(np.mean(data_processed[2]))
             plot_bias2[clf][1].append(np.std(data_processed[2]))
+            plot_f1[clf][0].append(np.mean(data_processed[3]))
+            plot_f1[clf][1].append(np.std(data_processed[3]))
     plot_gap = 0.002
-    fig, axes = plt.subplots(3, figsize=(10, 15))
+    fig, axes = plt.subplots(4, figsize=(10, 20))
     # axes[0] shows bias1
     axes[0].set_title("Bias1")
     for i, clf in enumerate(classifiers):
@@ -100,6 +110,18 @@ def plot_func(data, method_name, file_name=None, yscale=None, plot_error=True):
     axes[2].set_xticks(np.arange(0.0, 1.0, 0.05))
     if yscale:
         axes[2].set_yscale(yscale)
+    # axes[3] shows f1 score
+    axes[3].set_title("F1 Score")
+    for i, clf in enumerate(classifiers):
+        if plot_error:
+            axes[3].errorbar(random_ratios+(i-3)*plot_gap, plot_f1[clf][0], yerr=plot_f1[clf][1], label=clf)
+        else:
+            axes[3].plot(random_ratios+(i-3)*plot_gap, plot_f1[clf][0], label=clf)
+        axes[3].scatter(random_ratios+(i-3)*plot_gap, plot_f1[clf][0], s=2)
+    axes[3].legend(loc="best")
+    axes[3].set_xticks(np.arange(0.0, 1.0, 0.05))
+    if yscale:
+        axes[3].set_yscale(yscale)
     fig.tight_layout()
     fig.suptitle("Imputation Method: {}".format(method_name))
     plt.subplots_adjust(top=0.94)
@@ -107,7 +129,7 @@ def plot_func(data, method_name, file_name=None, yscale=None, plot_error=True):
         fig.savefig(file_name, transparent=False, bbox_inches='tight', pad_inches=0.1)
     plt.show()
 
-def plot_func_pareto_front(data, file_name=None, y_scale=None, switch=False):
+def plot_func_pareto_front(data, title, file_name=None, y_scale=None, switch=False, x_acc=True):
     # extract data
     data_mean_v1    = data["mean_v1"]
     data_mean_v2    = data["mean_v2"]
@@ -129,12 +151,12 @@ def plot_func_pareto_front(data, file_name=None, y_scale=None, switch=False):
     plot_data_multi_v1      = {}
     plot_data_multi_v2      = {}
     for clf in classifiers:
-        plot_data_mean_v1[clf]      = ([], [], []) # [[acc_X], [bias1_Y], [bias2_Y]]
-        plot_data_mean_v2[clf]      = ([], [], [])
-        plot_data_similar_v1[clf]   = ([], [], [])
-        plot_data_similar_v2[clf]   = ([], [], [])
-        plot_data_multi_v1[clf]     = ([], [], [])
-        plot_data_multi_v2[clf]     = ([], [], [])
+        plot_data_mean_v1[clf]      = ([], [], [], []) # [[acc_X], [bias1_Y], [bias2_Y], [f1_X]]
+        plot_data_mean_v2[clf]      = ([], [], [], [])
+        plot_data_similar_v1[clf]   = ([], [], [], [])
+        plot_data_similar_v2[clf]   = ([], [], [], [])
+        plot_data_multi_v1[clf]     = ([], [], [], [])
+        plot_data_multi_v2[clf]     = ([], [], [], [])
     for i in range(0, len(data_mean_v1), iter_per_ratio):
         d_data_mean_v1      = data_mean_v1[i:(i+iter_per_ratio)]
         d_data_mean_v2      = data_mean_v2[i:(i+iter_per_ratio)]
@@ -143,149 +165,169 @@ def plot_func_pareto_front(data, file_name=None, y_scale=None, switch=False):
         d_data_multi_v1     = data_multi_v1[i:(i+iter_per_ratio)]
         d_data_multi_v2     = data_multi_v2[i:(i+iter_per_ratio)]
         for clf in classifiers:
-            clf_data_mean_v1    = [(x[0][clf], x[1][clf], x[2][clf]) for x in d_data_mean_v1]
-            clf_data_mean_v2    = [(x[0][clf], x[1][clf], x[2][clf]) for x in d_data_mean_v2]
-            clf_data_similar_v1 = [(x[0][clf], x[1][clf], x[2][clf]) for x in d_data_similar_v1]
-            clf_data_similar_v2 = [(x[0][clf], x[1][clf], x[2][clf]) for x in d_data_similar_v2]
-            clf_data_multi_v1   = [(x[0][clf], x[1][clf], x[2][clf]) for x in d_data_multi_v1]
-            clf_data_multi_v2   = [(x[0][clf], x[1][clf], x[2][clf]) for x in d_data_multi_v2]
+            clf_data_mean_v1    = [(x[0][clf], x[1][clf], x[2][clf], x[3][clf]) for x in d_data_mean_v1]
+            clf_data_mean_v2    = [(x[0][clf], x[1][clf], x[2][clf], x[3][clf]) for x in d_data_mean_v2]
+            clf_data_similar_v1 = [(x[0][clf], x[1][clf], x[2][clf], x[3][clf]) for x in d_data_similar_v1]
+            clf_data_similar_v2 = [(x[0][clf], x[1][clf], x[2][clf], x[3][clf]) for x in d_data_similar_v2]
+            clf_data_multi_v1   = [(x[0][clf], x[1][clf], x[2][clf], x[3][clf]) for x in d_data_multi_v1]
+            clf_data_multi_v2   = [(x[0][clf], x[1][clf], x[2][clf], x[3][clf]) for x in d_data_multi_v2]
             # process mean_v1 method
-            data_processed = [[], [], []] # [[acc], [bias1], [bias2]]
-            for xx, yy, zz in clf_data_mean_v1:
-                tmp_processed = [[], [], []] # [[acc], [bias1], [bias2]]
-                for x, y, z in zip(xx, yy, zz):
-                    if (y > 0) and (z > 0):
+            data_processed = [[], [], [], []] # [[acc], [bias1], [bias2], [f1 score]]
+            for xx, yy, zz, ww in clf_data_mean_v1:
+                tmp_processed = [[], [], [], []] # [[acc], [bias1], [bias2], [f1 score]]
+                for x, y, z, w in zip(xx, yy, zz, ww):
+                    if (y > 0) and (z > 0) and len(w) == 2:
                         tmp_processed[0].append(x)
                         tmp_processed[1].append(y)
                         tmp_processed[2].append(z)
+                        tmp_processed[3].append(np.mean(w))
                 data_processed[0].append(np.mean(tmp_processed[0]))
                 data_processed[1].append(np.mean(tmp_processed[1]))
                 data_processed[2].append(np.mean(tmp_processed[2]))
+                data_processed[3].append(np.mean(tmp_processed[3]))
             plot_data_mean_v1[clf][0].append(np.mean(data_processed[0]))
             plot_data_mean_v1[clf][1].append(np.mean(data_processed[1]))
             plot_data_mean_v1[clf][2].append(np.mean(data_processed[2]))
+            plot_data_mean_v1[clf][3].append(np.mean(data_processed[3]))
             # process mean_v2 method
-            data_processed = [[], [], []] # [[acc], [bias1], [bias2]]
-            for xx, yy, zz in clf_data_mean_v2:
-                tmp_processed = [[], [], []] # [[acc], [bias1], [bias2]]
-                for x, y, z in zip(xx, yy, zz):
-                    if (y > 0) and (z > 0):
+            data_processed = [[], [], [], []] # [[acc], [bias1], [bias2], [f1 score]]
+            for xx, yy, zz, ww in clf_data_mean_v2:
+                tmp_processed = [[], [], [], []] # [[acc], [bias1], [bias2], [f1 score]]
+                for x, y, z, w in zip(xx, yy, zz, ww):
+                    if (y > 0) and (z > 0) and len(w) == 2:
                         tmp_processed[0].append(x)
                         tmp_processed[1].append(y)
                         tmp_processed[2].append(z)
+                        tmp_processed[3].append(np.mean(w))
                 data_processed[0].append(np.mean(tmp_processed[0]))
                 data_processed[1].append(np.mean(tmp_processed[1]))
                 data_processed[2].append(np.mean(tmp_processed[2]))
+                data_processed[3].append(np.mean(tmp_processed[3]))
             plot_data_mean_v2[clf][0].append(np.mean(data_processed[0]))
             plot_data_mean_v2[clf][1].append(np.mean(data_processed[1]))
             plot_data_mean_v2[clf][2].append(np.mean(data_processed[2]))
+            plot_data_mean_v2[clf][3].append(np.mean(data_processed[3]))
             # process similar_v1 method
-            data_processed = [[], [], []] # [[acc], [bias1], [bias2]]
-            for xx, yy, zz in clf_data_similar_v1:
-                tmp_processed = [[], [], []] # [[acc], [bias1], [bias2]]
-                for x, y, z in zip(xx, yy, zz):
-                    if (y > 0) and (z > 0):
+            data_processed = [[], [], [], []] # [[acc], [bias1], [bias2], [f1 score]]
+            for xx, yy, zz, ww in clf_data_similar_v1:
+                tmp_processed = [[], [], [], []] # [[acc], [bias1], [bias2], [f1 score]]
+                for x, y, z, w in zip(xx, yy, zz, ww):
+                    if (y > 0) and (z > 0) and len(w) == 2:
                         tmp_processed[0].append(x)
                         tmp_processed[1].append(y)
                         tmp_processed[2].append(z)
+                        tmp_processed[3].append(np.mean(w))
                 data_processed[0].append(np.mean(tmp_processed[0]))
                 data_processed[1].append(np.mean(tmp_processed[1]))
                 data_processed[2].append(np.mean(tmp_processed[2]))
+                data_processed[3].append(np.mean(tmp_processed[3]))
             plot_data_similar_v1[clf][0].append(np.mean(data_processed[0]))
             plot_data_similar_v1[clf][1].append(np.mean(data_processed[1]))
             plot_data_similar_v1[clf][2].append(np.mean(data_processed[2]))
+            plot_data_similar_v1[clf][3].append(np.mean(data_processed[3]))
             # process similar_v2 method
-            data_processed = [[], [], []] # [[acc], [bias1], [bias2]]
-            for xx, yy, zz in clf_data_similar_v2:
-                tmp_processed = [[], [], []] # [[acc], [bias1], [bias2]]
-                for x, y, z in zip(xx, yy, zz):
-                    if (y > 0) and (z > 0):
+            data_processed = [[], [], [], []] # [[acc], [bias1], [bias2], [f1 score]]
+            for xx, yy, zz, ww in clf_data_similar_v2:
+                tmp_processed = [[], [], [], []] # [[acc], [bias1], [bias2], [f1 score]]
+                for x, y, z, w in zip(xx, yy, zz, ww):
+                    if (y > 0) and (z > 0) and len(w) == 2:
                         tmp_processed[0].append(x)
                         tmp_processed[1].append(y)
                         tmp_processed[2].append(z)
+                        tmp_processed[3].append(np.mean(w))
                 data_processed[0].append(np.mean(tmp_processed[0]))
                 data_processed[1].append(np.mean(tmp_processed[1]))
                 data_processed[2].append(np.mean(tmp_processed[2]))
+                data_processed[3].append(np.mean(tmp_processed[3]))
             plot_data_similar_v2[clf][0].append(np.mean(data_processed[0]))
             plot_data_similar_v2[clf][1].append(np.mean(data_processed[1]))
             plot_data_similar_v2[clf][2].append(np.mean(data_processed[2]))
+            plot_data_similar_v2[clf][3].append(np.mean(data_processed[3]))
             # process multi_v1 method
-            data_processed = [[], [], []] # [[acc], [bias1], [bias2]]
-            for xx, yy, zz in clf_data_multi_v1:
-                tmp_processed = [[], [], []] # [[acc], [bias1], [bias2]]
-                for x, y, z in zip(xx, yy, zz):
-                    if (y > 0) and (z > 0):
+            data_processed = [[], [], [], []] # [[acc], [bias1], [bias2], [f1 score]]
+            for xx, yy, zz, ww in clf_data_multi_v1:
+                tmp_processed = [[], [], [], []] # [[acc], [bias1], [bias2], [f1 score]]
+                for x, y, z, w in zip(xx, yy, zz, ww):
+                    if (y > 0) and (z > 0) and len(w) == 2:
                         tmp_processed[0].append(x)
                         tmp_processed[1].append(y)
                         tmp_processed[2].append(z)
+                        tmp_processed[3].append(np.mean(w))
                 data_processed[0].append(np.mean(tmp_processed[0]))
                 data_processed[1].append(np.mean(tmp_processed[1]))
                 data_processed[2].append(np.mean(tmp_processed[2]))
+                data_processed[3].append(np.mean(tmp_processed[3]))
             plot_data_multi_v1[clf][0].append(np.mean(data_processed[0]))
             plot_data_multi_v1[clf][1].append(np.mean(data_processed[1]))
             plot_data_multi_v1[clf][2].append(np.mean(data_processed[2]))
+            plot_data_multi_v1[clf][3].append(np.mean(data_processed[3]))
             # process multi_v2 method
-            data_processed = [[], [], []] # [[acc], [bias1], [bias2]]
-            for xx, yy, zz in clf_data_multi_v2:
-                tmp_processed = [[], [], []] # [[acc], [bias1], [bias2]]
-                for x, y, z in zip(xx, yy, zz):
-                    if (y > 0) and (z > 0):
+            data_processed = [[], [], [], []] # [[acc], [bias1], [bias2], [f1 score]]
+            for xx, yy, zz, ww in clf_data_multi_v2:
+                tmp_processed = [[], [], [], []] # [[acc], [bias1], [bias2], [f1 score]]
+                for x, y, z, w in zip(xx, yy, zz, ww):
+                    if (y > 0) and (z > 0) and len(w) == 2:
                         tmp_processed[0].append(x)
                         tmp_processed[1].append(y)
                         tmp_processed[2].append(z)
+                        tmp_processed[3].append(np.mean(w))
                 data_processed[0].append(np.mean(tmp_processed[0]))
                 data_processed[1].append(np.mean(tmp_processed[1]))
                 data_processed[2].append(np.mean(tmp_processed[2]))
+                data_processed[3].append(np.mean(tmp_processed[3]))
             plot_data_multi_v2[clf][0].append(np.mean(data_processed[0]))
             plot_data_multi_v2[clf][1].append(np.mean(data_processed[1]))
             plot_data_multi_v2[clf][2].append(np.mean(data_processed[2]))
+            plot_data_multi_v2[clf][3].append(np.mean(data_processed[3]))
     fig, axes = plt.subplots(2, figsize=(8, 12)) # axes[0] for bias1, axes[1] for bias2
-    axes[0].set_xlim([0.38, 0.7])
-    axes[1].set_xlim([0.38, 0.7])
-    axes[0].set_xlabel("Accuracy")
-    axes[1].set_xlabel("Accuracy")
+    if x_acc:
+        axes[0].set_xlabel("Accuracy")
+        axes[1].set_xlabel("Accuracy")
+    else:
+        axes[0].set_xlabel("F1 Score")
+        axes[1].set_xlabel("F1 Score")
     axes[0].set_ylabel("Bias1 Values")
     axes[1].set_ylabel("Bias2 Values")
     # each classifier has different color
     for clf, clf_c, clf_m in zip(classifiers, plot_colors, plot_markers):
         if switch:
             # plot for mean_v1 method
-            axes[0].scatter(plot_data_mean_v1[clf][0], plot_data_mean_v1[clf][1], c=plot_colors[0], s=ratio_dot_size, marker=clf_m, alpha=0.8)
-            axes[1].scatter(plot_data_mean_v1[clf][0], plot_data_mean_v1[clf][2], c=plot_colors[0], s=ratio_dot_size, marker=clf_m, alpha=0.8)
+            axes[0].scatter(plot_data_mean_v1[clf][0] if x_acc else plot_data_mean_v1[clf][3], plot_data_mean_v1[clf][1], c=plot_colors[0], s=ratio_dot_size, marker=clf_m, alpha=0.8)
+            axes[1].scatter(plot_data_mean_v1[clf][0] if x_acc else plot_data_mean_v1[clf][3], plot_data_mean_v1[clf][2], c=plot_colors[0], s=ratio_dot_size, marker=clf_m, alpha=0.8)
             # plot for mean_v2 method
-            axes[0].scatter(plot_data_mean_v2[clf][0], plot_data_mean_v2[clf][1], c=plot_colors[1], s=ratio_dot_size, marker=clf_m, alpha=0.8)
-            axes[1].scatter(plot_data_mean_v2[clf][0], plot_data_mean_v2[clf][2], c=plot_colors[1], s=ratio_dot_size, marker=clf_m, alpha=0.8)
+            axes[0].scatter(plot_data_mean_v2[clf][0] if x_acc else plot_data_mean_v2[clf][3], plot_data_mean_v2[clf][1], c=plot_colors[1], s=ratio_dot_size, marker=clf_m, alpha=0.8)
+            axes[1].scatter(plot_data_mean_v2[clf][0] if x_acc else plot_data_mean_v2[clf][3], plot_data_mean_v2[clf][2], c=plot_colors[1], s=ratio_dot_size, marker=clf_m, alpha=0.8)
             # plot for similar_v1 method
-            axes[0].scatter(plot_data_similar_v1[clf][0], plot_data_similar_v1[clf][1], c=plot_colors[2], s=ratio_dot_size, marker=clf_m, alpha=0.8)
-            axes[1].scatter(plot_data_similar_v1[clf][0], plot_data_similar_v1[clf][2], c=plot_colors[2], s=ratio_dot_size, marker=clf_m, alpha=0.8)
+            axes[0].scatter(plot_data_similar_v1[clf][0] if x_acc else plot_data_similar_v1[clf][3], plot_data_similar_v1[clf][1], c=plot_colors[2], s=ratio_dot_size, marker=clf_m, alpha=0.8)
+            axes[1].scatter(plot_data_similar_v1[clf][0] if x_acc else plot_data_similar_v1[clf][3], plot_data_similar_v1[clf][2], c=plot_colors[2], s=ratio_dot_size, marker=clf_m, alpha=0.8)
             # plot for similar_v2 method
-            axes[0].scatter(plot_data_similar_v2[clf][0], plot_data_similar_v2[clf][1], c=plot_colors[3], s=ratio_dot_size, marker=clf_m, alpha=0.8)
-            axes[1].scatter(plot_data_similar_v2[clf][0], plot_data_similar_v2[clf][2], c=plot_colors[3], s=ratio_dot_size, marker=clf_m, alpha=0.8)
+            axes[0].scatter(plot_data_similar_v2[clf][0] if x_acc else plot_data_similar_v2[clf][3], plot_data_similar_v2[clf][1], c=plot_colors[3], s=ratio_dot_size, marker=clf_m, alpha=0.8)
+            axes[1].scatter(plot_data_similar_v2[clf][0] if x_acc else plot_data_similar_v2[clf][3], plot_data_similar_v2[clf][2], c=plot_colors[3], s=ratio_dot_size, marker=clf_m, alpha=0.8)
             # plot for multi_v1 method
-            axes[0].scatter(plot_data_multi_v1[clf][0], plot_data_multi_v1[clf][1], c=plot_colors[4], s=ratio_dot_size, marker=clf_m, alpha=0.8)
-            axes[1].scatter(plot_data_multi_v1[clf][0], plot_data_multi_v1[clf][2], c=plot_colors[4], s=ratio_dot_size, marker=clf_m, alpha=0.8)
+            axes[0].scatter(plot_data_multi_v1[clf][0] if x_acc else plot_data_multi_v1[clf][3], plot_data_multi_v1[clf][1], c=plot_colors[4], s=ratio_dot_size, marker=clf_m, alpha=0.8)
+            axes[1].scatter(plot_data_multi_v1[clf][0] if x_acc else plot_data_multi_v1[clf][3], plot_data_multi_v1[clf][2], c=plot_colors[4], s=ratio_dot_size, marker=clf_m, alpha=0.8)
             # plot for multi_v2 method
-            axes[0].scatter(plot_data_multi_v2[clf][0], plot_data_multi_v2[clf][1], c=plot_colors[5], s=ratio_dot_size, marker=clf_m, alpha=0.8)
-            axes[1].scatter(plot_data_multi_v2[clf][0], plot_data_multi_v2[clf][2], c=plot_colors[5], s=ratio_dot_size, marker=clf_m, alpha=0.8)
+            axes[0].scatter(plot_data_multi_v2[clf][0] if x_acc else plot_data_multi_v2[clf][3], plot_data_multi_v2[clf][1], c=plot_colors[5], s=ratio_dot_size, marker=clf_m, alpha=0.8)
+            axes[1].scatter(plot_data_multi_v2[clf][0] if x_acc else plot_data_multi_v2[clf][3], plot_data_multi_v2[clf][2], c=plot_colors[5], s=ratio_dot_size, marker=clf_m, alpha=0.8)
         else:
             # plot for mean_v1 method
-            axes[0].scatter(plot_data_mean_v1[clf][0], plot_data_mean_v1[clf][1], c=clf_c, s=ratio_dot_size, marker=plot_markers[0], alpha=0.8)
-            axes[1].scatter(plot_data_mean_v1[clf][0], plot_data_mean_v1[clf][2], c=clf_c, s=ratio_dot_size, marker=plot_markers[0], alpha=0.8)
+            axes[0].scatter(plot_data_mean_v1[clf][0] if x_acc else plot_data_mean_v1[clf][3], plot_data_mean_v1[clf][1], c=clf_c, s=ratio_dot_size, marker=plot_markers[0], alpha=0.8)
+            axes[1].scatter(plot_data_mean_v1[clf][0] if x_acc else plot_data_mean_v1[clf][3], plot_data_mean_v1[clf][2], c=clf_c, s=ratio_dot_size, marker=plot_markers[0], alpha=0.8)
             # plot for mean_v2 method
-            axes[0].scatter(plot_data_mean_v2[clf][0], plot_data_mean_v2[clf][1], c=clf_c, s=ratio_dot_size, marker=plot_markers[1], alpha=0.8)
-            axes[1].scatter(plot_data_mean_v2[clf][0], plot_data_mean_v2[clf][2], c=clf_c, s=ratio_dot_size, marker=plot_markers[1], alpha=0.8)
+            axes[0].scatter(plot_data_mean_v2[clf][0] if x_acc else plot_data_mean_v2[clf][3], plot_data_mean_v2[clf][1], c=clf_c, s=ratio_dot_size, marker=plot_markers[1], alpha=0.8)
+            axes[1].scatter(plot_data_mean_v2[clf][0] if x_acc else plot_data_mean_v2[clf][3], plot_data_mean_v2[clf][2], c=clf_c, s=ratio_dot_size, marker=plot_markers[1], alpha=0.8)
             # plot for similar_v1 method
-            axes[0].scatter(plot_data_similar_v1[clf][0], plot_data_similar_v1[clf][1], c=clf_c, s=ratio_dot_size, marker=plot_markers[2], alpha=0.8)
-            axes[1].scatter(plot_data_similar_v1[clf][0], plot_data_similar_v1[clf][2], c=clf_c, s=ratio_dot_size, marker=plot_markers[2], alpha=0.8)
+            axes[0].scatter(plot_data_similar_v1[clf][0] if x_acc else plot_data_similar_v1[clf][3], plot_data_similar_v1[clf][1], c=clf_c, s=ratio_dot_size, marker=plot_markers[2], alpha=0.8)
+            axes[1].scatter(plot_data_similar_v1[clf][0] if x_acc else plot_data_similar_v1[clf][3], plot_data_similar_v1[clf][2], c=clf_c, s=ratio_dot_size, marker=plot_markers[2], alpha=0.8)
             # plot for similar_v2 method
-            axes[0].scatter(plot_data_similar_v2[clf][0], plot_data_similar_v2[clf][1], c=clf_c, s=ratio_dot_size, marker=plot_markers[3], alpha=0.8)
-            axes[1].scatter(plot_data_similar_v2[clf][0], plot_data_similar_v2[clf][2], c=clf_c, s=ratio_dot_size, marker=plot_markers[3], alpha=0.8)
+            axes[0].scatter(plot_data_similar_v2[clf][0] if x_acc else plot_data_similar_v2[clf][3], plot_data_similar_v2[clf][1], c=clf_c, s=ratio_dot_size, marker=plot_markers[3], alpha=0.8)
+            axes[1].scatter(plot_data_similar_v2[clf][0] if x_acc else plot_data_similar_v2[clf][3], plot_data_similar_v2[clf][2], c=clf_c, s=ratio_dot_size, marker=plot_markers[3], alpha=0.8)
             # plot for multi_v1 method
-            axes[0].scatter(plot_data_multi_v1[clf][0], plot_data_multi_v1[clf][1], c=clf_c, s=ratio_dot_size, marker=plot_markers[4], alpha=0.8)
-            axes[1].scatter(plot_data_multi_v1[clf][0], plot_data_multi_v1[clf][2], c=clf_c, s=ratio_dot_size, marker=plot_markers[4], alpha=0.8)
+            axes[0].scatter(plot_data_multi_v1[clf][0] if x_acc else plot_data_multi_v1[clf][3], plot_data_multi_v1[clf][1], c=clf_c, s=ratio_dot_size, marker=plot_markers[4], alpha=0.8)
+            axes[1].scatter(plot_data_multi_v1[clf][0] if x_acc else plot_data_multi_v1[clf][3], plot_data_multi_v1[clf][2], c=clf_c, s=ratio_dot_size, marker=plot_markers[4], alpha=0.8)
             # plot for multi_v2 method
-            axes[0].scatter(plot_data_multi_v2[clf][0], plot_data_multi_v2[clf][1], c=clf_c, s=ratio_dot_size, marker=plot_markers[5], alpha=0.8)
-            axes[1].scatter(plot_data_multi_v2[clf][0], plot_data_multi_v2[clf][2], c=clf_c, s=ratio_dot_size, marker=plot_markers[5], alpha=0.8)
+            axes[0].scatter(plot_data_multi_v2[clf][0] if x_acc else plot_data_multi_v2[clf][3], plot_data_multi_v2[clf][1], c=clf_c, s=ratio_dot_size, marker=plot_markers[5], alpha=0.8)
+            axes[1].scatter(plot_data_multi_v2[clf][0] if x_acc else plot_data_multi_v2[clf][3], plot_data_multi_v2[clf][2], c=clf_c, s=ratio_dot_size, marker=plot_markers[5], alpha=0.8)
     if y_scale:
         axes[0].set_yscale(y_scale)
         axes[1].set_yscale(y_scale)
@@ -307,7 +349,7 @@ def plot_func_pareto_front(data, file_name=None, y_scale=None, switch=False):
         custom_legend.append(Line2D([0], [0], color='w', markersize=10, markerfacecolor="black", marker=plot_markers[5], label="multi_v2"))
     plt.legend(handles=custom_legend, bbox_to_anchor=(1, 0.6))
     fig.tight_layout()
-    fig.suptitle("Pareto Front Plots")
+    fig.suptitle(title)
     plt.subplots_adjust(top=0.94)
     if file_name:
         plt.savefig(file_name, transparent=False, bbox_inches='tight', pad_inches=0.1)
@@ -387,7 +429,7 @@ if __name__=="__main__":
         plot_func(data, "Complete by Multiple Imputation V2", "ratio_analysis_plots/ratio_multi_v2.png")
         plot_func(data, "Complete by Multiple Imputation V2", "ratio_analysis_plots/ratio_multi_v2_scaled.png", yscale="log")
     # generate pareto front plots
-    if os.path.exists("mean_v1.pkl") and os.path.exists("mean_v2.pkl") and os.path.exists("similar_v1.pkl") and os.path.exists("similar_v2.pkl") and os.path.exists("multi_v1.pkl") and os.path.exists("multi_v2.pkl") and PLOT_PARETO_FRONTIER:
+    if os.path.exists("mean_v1.pkl") and os.path.exists("mean_v2.pkl") and os.path.exists("similar_v1.pkl") and os.path.exists("similar_v2.pkl") and os.path.exists("multi_v1.pkl") and os.path.exists("multi_v2.pkl") and (PLOT_PARETO_FRONTIER_V1 or PLOT_PARETO_FRONTIER_V2):
         data = {}
         with open("mean_v1.pkl", "rb") as inFile:
             data["mean_v1"] = pickle.load(inFile)
@@ -401,7 +443,15 @@ if __name__=="__main__":
             data["multi_v1"] = pickle.load(inFile)
         with open("multi_v2.pkl", "rb") as inFile:
             data["multi_v2"] = pickle.load(inFile)
-        plot_func_pareto_front(data, "ratio_analysis_plots/pareto_front.png")
-        plot_func_pareto_front(data, "ratio_analysis_plots/pareto_front_scaled.png", y_scale="log")
-        plot_func_pareto_front(data, "ratio_analysis_plots/pareto_front_v2.png", switch=True)
-        plot_func_pareto_front(data, "ratio_analysis_plots/pareto_front_scaled_v2.png", y_scale="log", switch=True)
+        if PLOT_PARETO_FRONTIER_V1:
+            print("Generate plots for pareto front V1")
+            plot_func_pareto_front(data, "Pareto Front (Accuracy)", "ratio_analysis_plots/pareto_front_v1.png")
+            plot_func_pareto_front(data, "Pareto Front (Accuracy)", "ratio_analysis_plots/pareto_front_scaled_v1.png", y_scale="log")
+            plot_func_pareto_front(data, "Pareto Front (Accuracy)", "ratio_analysis_plots/pareto_front_v1_switched.png", switch=True)
+            plot_func_pareto_front(data, "Pareto Front (Accuracy)", "ratio_analysis_plots/pareto_front_scaled_v1_switched.png", y_scale="log", switch=True)
+        if PLOT_PARETO_FRONTIER_V2:
+            print("Generate plots for pareto front V2")
+            plot_func_pareto_front(data, "Pareto Front (F1 Score)", "ratio_analysis_plots/pareto_front_v2.png", x_acc=False)
+            plot_func_pareto_front(data, "Pareto Front (F1 Score)", "ratio_analysis_plots/pareto_front_scaled_v2.png", y_scale="log", x_acc=False)
+            plot_func_pareto_front(data, "Pareto Front (F1 Score)", "ratio_analysis_plots/pareto_front_v2_switched.png", switch=True, x_acc=False)
+            plot_func_pareto_front(data, "Pareto Front (F1 Score)", "ratio_analysis_plots/pareto_front_scaled_v2_switched.png", y_scale="log", switch=True, x_acc=False)
