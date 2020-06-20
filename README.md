@@ -22,6 +22,7 @@ Specifically, this research is trying to find out how the missing data would mak
 4. [Compas Dataset](https://github.com/propublica/compas-analysis/)  
 5. [Heart Disease Dataset](https://archive.ics.uci.edu/ml/datasets/Heart+Disease) (UCI) (No Longer Used)  
 6. [Drug Consumption Dataset](https://archive.ics.uci.edu/ml/datasets/Drug+consumption+%28quantified%29) (UCI)  
+7. [Titanic Dataset](https://www.kaggle.com/c/titanic) (Kaggle) (Kaggle account required)  
 
 ------
 

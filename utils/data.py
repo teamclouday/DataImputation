@@ -4,6 +4,7 @@ import os
 import sys
 import time
 import math
+import kaggle
 import sqlite3
 import inspect
 import zipfile
@@ -99,6 +100,19 @@ def _dataset_download_drug(folder):
         urllib.request.urlretrieve(URL_PATH + name, os.path.join(folder, name))
     print("Drug Consumption dataset is downloaded")
 
+# download titanic dataset
+def _dataset_download_titanic(folder):
+    try:
+        kaggle.api.authenticate()
+    except Exception as e:
+        print("Error: Kaggle Authentication Failed\n{}".format(e))
+    if not os.path.exists(folder):
+        os.makedirs(folder)
+    kaggle.api.competition_download_files("titanic", folder)
+    with zipfile.ZipFile(os.path.join(folder, "titanic.zip"), "r") as zipF:
+        zipF.extractall(folder)
+    print("Titanic dataset is downloaded")
+
 # function that checks for existence of datasets
 def dataset_prepare():
     dataset_folders = [
@@ -107,7 +121,8 @@ def dataset_prepare():
         os.path.join("dataset", "adult"),
         os.path.join("dataset", "compas"),
         os.path.join("dataset", "heart"),
-        os.path.join("dataset", "drug")
+        os.path.join("dataset", "drug"),
+        os.path.join("dataset", "titanic"),
     ]
     load_functions = [
         _dataset_download_iris,
@@ -115,7 +130,8 @@ def dataset_prepare():
         _dataset_download_adult,
         _dataset_download_compas,
         _dataset_download_heart,
-        _dataset_download_drug
+        _dataset_download_drug,
+        _dataset_download_titanic,
     ]
     for folder, func in zip(dataset_folders, load_functions):
         if not os.path.exists(folder):
@@ -275,6 +291,17 @@ def create_compas_dataset(print_time=False):
     if print_time:
         print("Performance Monitor: ({:.4f}s) ".format(time.process_time() - tt) + inspect.stack()[0][3])
     return Dataset("compas", X, y, protected_features=protected_features)
+
+def create_titanic_dataset(print_time=False):
+    if print_time:
+        tt = time.process_time()
+    data = pd.read_csv(os.path.join("dataset", "titanic", "train.csv"))
+    X = data.drop(["Survived"], axis=1)
+    y = data[["Survived"]].copy().to_numpy().ravel()
+    protected_features = ["sex"]
+    if print_time:
+        print("Performance Monitor: ({:.4f}s) ".format(time.process_time() - tt) + inspect.stack()[0][3])
+    return Dataset("titanic", X, y, protected_features=protected_features)
 
 class Dataset:
     def __init__(self, name, X, y, auto_convert=True, types=None, convert_all=False, protected_features=[], encoders=None):
