@@ -1,14 +1,4 @@
-1. create dataframe with several columns (proportion of missing data, iteration num, model, bias1, bias2, acc, f1 score)
-linear regression, f1 score or acc is target, regressed on one bias, controlling for the models as dummy variables, get a coefficient on bias
-a 1 unit increase in bias is associated with a beta change in f1 score|acc, on average, controlling for the choice of ML model
-a 1 unit decrease in bias is associated with a negative beta change in f1 score|acc, on average, controlling for the choice of ML model
-
-y = bx + c + delta1*model (True or False)
-
-or 
-
-y = bx + c + delta1*model + delta2*method
-
-2. read paper https://arxiv.org/pdf/1905.12728.pdf
-3. > 100 trials
-4. add titanic dataset
+1. break down f1 score to precision, recall, TP, FP, TN, FN
+2. run single regression, acc is target, use one bias (principle feature), use proportion of missingness (control feature),
+   dummy var for models (remove 1 col), dummy var for methods (remove 1 col)
+   collect standard error, 95% confidence interval
