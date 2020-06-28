@@ -32,12 +32,14 @@ from sklearn.metrics import confusion_matrix
 
 from imblearn.over_sampling import SVMSMOTE
 
-RUN_MEAN_V1     = True
-RUN_MEAN_V2     = True
-RUN_SIMILAR_V1  = True
-RUN_SIMILAR_V2  = True
-RUN_MULTI_V1    = True
-RUN_MULTI_V2    = True
+RUN_MEAN_V1     = False
+RUN_MEAN_V2     = False
+RUN_SIMILAR_V1  = False
+RUN_SIMILAR_V2  = False
+RUN_MULTI_V1    = False
+RUN_MULTI_V2    = False
+
+RUN_DEBUG       = True
 
 #define functions
 
@@ -132,7 +134,7 @@ def compute_confusion_matrix(X_train, y_train, X_test, y_test, clf, protected_fe
     result = matrix_AA.ravel().tolist() + matrix_C.ravel().tolist()
     return result
 
-def test_imputation(X, y, protected_features, completer_func=None, multi=False):
+def test_imputation(X, y, protected_features, completer_func=None, multi=False, debug=False):
     # X is pandas dataframe
     # y is numpy array,
     # protected_features is list
@@ -145,6 +147,15 @@ def test_imputation(X, y, protected_features, completer_func=None, multi=False):
         "LogReg": LogisticRegression(tol=1e-5, C=10, max_iter=100),
         "Tree": DecisionTreeClassifier(max_depth=10, max_leaf_nodes=100, min_samples_leaf=1),
         "MLP": MLPClassifier(alpha=0.0001, learning_rate_init=0.01, max_iter=500),
+    }
+    rawdata_cv = { # save each raw confusion matrix output cv
+        "KNN": [],
+        "LinearSVC": [],
+        "SVC": [],
+        "Forest": [],
+        "LogReg": [],
+        "Tree": [],
+        "MLP": [],
     }
     acc_cv = { # save each accuracy output cv
         "KNN": [],
@@ -202,11 +213,15 @@ def test_imputation(X, y, protected_features, completer_func=None, multi=False):
         # get result for each classifier
         for clf_name, clf in clfs.items():
             result = compute_confusion_matrix(X_train, y_train, X_test, y_test, clf, protected_features, multi=multi)
+            if debug:
+                rawdata_cv[clf_name].append(result)
             acc_cv[clf_name].append(acc(result))
             f1_cv[clf_name].append(f1score(result))
             bias1_cv[clf_name].append(bias1(result))
             bias2_cv[clf_name].append(bias2(result))
         fold += 1
+    if debug:
+        return rawdata_cv
     return (acc_cv, bias1_cv, bias2_cv, f1_cv)
 
 # prepare data
@@ -262,10 +277,11 @@ def complete_multi_v2_task(idx):
     return result
 
 if __name__ == "__main__":
-    if not os.path.exists("condor_outputs"):
-        os.makedirs("condor_outputs")
-    if len(sys.argv) < 2:
-        raise Exception("should have argument for task id")
+    if not RUN_DEBUG:
+        if not os.path.exists("condor_outputs"):
+            os.makedirs("condor_outputs")
+        if len(sys.argv) < 2:
+            raise Exception("should have argument for task id")
 
     final_result = {}
     start_time = time.time()
@@ -326,7 +342,19 @@ if __name__ == "__main__":
         start_time = time.time()
 
     # save outputs
-    with open(os.path.join("condor_outputs", "output_{:0>4}.pkl".format(sys.argv[1])), "wb") as outFile:
-        pickle.dump(final_result, outFile)
+    if not RUN_DEBUG:
+        with open(os.path.join("condor_outputs", "output_{:0>4}.pkl".format(sys.argv[1])), "wb") as outFile:
+            pickle.dump(final_result, outFile)
 
-    print("All tasks complete in {:.2f}hr".format((time.time() - total_time) / 3600))
+        print("All tasks complete in {:.2f}hr".format((time.time() - total_time) / 3600))
+
+    if RUN_DEBUG:
+        import tqdm
+        print("Now running debug task (mean_v1)")
+        MAX_PROCESS_COUNT = (MAX_PROCESS_COUNT - 1) if MAX_PROCESS_COUNT > 1 else 1
+        with Pool(processes=MAX_PROCESS_COUNT) as pool:
+            final_result["mean_v1"] = list(tqdm.tqdm(pool.imap(complete_mean_task, range(len(random_ratios))), total=len(random_ratios)))
+        print("Task complete in {:.2f}min".format((time.time() - start_time) / 60))
+
+        with open("debug_data.pkl", "wb") as outFile:
+            pickle.dump(final_result, outFile)
