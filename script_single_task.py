@@ -215,6 +215,7 @@ def test_imputation(X, y, protected_features, completer_func=None, multi=False, 
             result = compute_confusion_matrix(X_train, y_train, X_test, y_test, clf, protected_features, multi=multi)
             if debug:
                 rawdata_cv[clf_name].append(result)
+                continue
             acc_cv[clf_name].append(acc(result))
             f1_cv[clf_name].append(f1score(result))
             bias1_cv[clf_name].append(bias1(result))
@@ -239,6 +240,12 @@ random_ratios = np.linspace(0.0, 1.0, num=20, endpoint=False)
 MAX_PROCESS_COUNT = multiprocessing.cpu_count()
 
 # define single task functions
+
+def complete_debug_task(idx):
+    data_sim = gen_complete_random(data_compas_complete, random_ratio=random_ratios[idx], print_all=False)
+    result = test_imputation(data_sim.X.copy(), data_sim.y.copy(),
+                             data_sim.protected, complete_by_mean_col, multi=False, debug=True)
+    return result
 
 def complete_mean_task(idx):
     data_sim = gen_complete_random(data_compas_complete, random_ratio=random_ratios[idx], print_all=False)
@@ -353,7 +360,7 @@ if __name__ == "__main__":
         print("Now running debug task (mean_v1)")
         MAX_PROCESS_COUNT = (MAX_PROCESS_COUNT - 1) if MAX_PROCESS_COUNT > 1 else 1
         with Pool(processes=MAX_PROCESS_COUNT) as pool:
-            final_result["mean_v1"] = list(tqdm.tqdm(pool.imap(complete_mean_task, range(len(random_ratios))), total=len(random_ratios)))
+            final_result = list(tqdm.tqdm(pool.imap(complete_debug_task, range(len(random_ratios))), total=len(random_ratios)))
         print("Task complete in {:.2f}min".format((time.time() - start_time) / 60))
 
         with open("debug_data.pkl", "wb") as outFile:
