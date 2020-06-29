@@ -12,17 +12,19 @@ from script_single_task import random_ratios, RUN_MEAN_V1, RUN_MEAN_V2, RUN_MULT
 
 iter_per_ratio = 300
 
-TRANSFORM_OUTPUTS       = True
+TRANSFORM_OUTPUTS       = False
 
-PLOT_CREATE_MEAN_V1     = True
-PLOT_CREATE_MEAN_V2     = True
-PLOT_CREATE_SIMILAR_V1  = True
-PLOT_CREATE_SIMILAR_V2  = True
-PLOT_CREATE_MULTI_V1    = True
-PLOT_CREATE_MULTI_V2    = True
+PLOT_CREATE_MEAN_V1     = False
+PLOT_CREATE_MEAN_V2     = False
+PLOT_CREATE_SIMILAR_V1  = False
+PLOT_CREATE_SIMILAR_V2  = False
+PLOT_CREATE_MULTI_V1    = False
+PLOT_CREATE_MULTI_V2    = False
 
-PLOT_PARETO_FRONTIER_V1 = True
-PLOT_PARETO_FRONTIER_V2 = True
+PLOT_PARETO_FRONTIER_V1 = False
+PLOT_PARETO_FRONTIER_V2 = False
+
+PLOT_DEBUG_FUNCTION     = True
 
 def plot_func(data, method_name, file_name=None, yscale=None, plot_error=True):
     assert len(data) == (iter_per_ratio * len(random_ratios))
@@ -380,9 +382,120 @@ def compress_outputs():
         with open("{}.pkl".format(key), "wb") as outFile:
             pickle.dump(dump_data, outFile)
 
+def plot_debug_func(file_name=None):
+    # data = [TN_AA, FP_AA, FN_AA, TP_AA, TN_C, FP_C, FN_C, TP_C]
+    def helper_bias1(data):
+        # |(FPR_AA/FNR_AA) - (FPR_C/FNR_C)|
+        FPR_AA = data[1] / (data[1] + data[0])
+        FNR_AA = data[2] / (data[2] + data[3])
+        FPR_C  = data[5] / (data[5] + data[4])
+        FNR_C  = data[6] / (data[6] + data[7])
+        if FNR_AA == 0 or FNR_C == 0: return [-1] # mark error situation
+        bias = (FPR_AA / FNR_AA) - (FPR_C / FNR_C)
+        return [abs(bias)]
+    def helper_bias2(data):
+        # |(FPR_AA/FPR_C) - (FNR_AA/FNR_C)|
+        FPR_AA = data[1] / (data[1] + data[0])
+        FNR_AA = data[2] / (data[2] + data[3])
+        FPR_C  = data[5] / (data[5] + data[4])
+        FNR_C  = data[6] / (data[6] + data[7])
+        if FNR_C == 0 or FPR_C == 0: return [-1] # mark error situation
+        bias = (FPR_AA / FPR_C) - (FNR_AA / FNR_C)
+        return [abs(bias)]
+    def helper_acc(data):
+        # (TP + TN) / (TP + TN + FP + FN)
+        acc_AA  = (data[3] + data[0]) / (data[0] + data[1] + data[2] + data[3])
+        acc_C   = (data[7] + data[4]) / (data[4] + data[5] + data[6] + data[7])
+        acc_all = (data[3] + data[0] + data[7] + data[4]) / sum(data)
+        return [acc_AA, acc_C, acc_all]
+    def helper_precision(data):
+        # TP / (TP + FP)
+        p_AA = data[3] / (data[3] + data[1]) if (data[3] + data[1]) != 0 else False
+        p_C  = data[7] / (data[7] + data[5]) if (data[7] + data[5]) != 0 else False
+        return [p_AA, p_C]
+    def helper_recall(data):
+        # TP / (TP + FN)
+        r_AA = data[3] / (data[3] + data[2])
+        r_C  = data[7] / (data[7] + data[6])
+        return [r_AA, r_C]
+    def helper_f1(data):
+        # f1 score  = 2 * (precision * recall) / (recall + precision)
+        precision_AA = data[3] / (data[3] + data[1]) if (data[3] + data[1]) != 0 else 0
+        precision_C  = data[7] / (data[7] + data[5]) if (data[7] + data[5]) != 0 else 0
+        recall_AA    = data[3] / (data[3] + data[2])
+        recall_C     = data[7] / (data[7] + data[6])
+        if (recall_AA + precision_AA) == 0 or (recall_C + precision_C) == 0:
+            return [False, False] # mark error situation
+        f1_AA        = 2 * (precision_AA * recall_AA) / (recall_AA + precision_AA)
+        f1_C         = 2 * (precision_C * recall_C) / (recall_C + precision_C)
+        return [f1_AA, f1_C]
+    classifiers = ["KNN", "LinearSVC", "SVC", "Forest", "LogReg", "Tree", "MLP"]
+    if not os.path.exists("debug_data.pkl"):
+        raise FileNotFoundError("debug_data.pkl not found")
+    with open("debug_data.pkl", "rb") as inFile:
+        debug_data = pickle.load(inFile)
+        assert len(debug_data) == len(random_ratios)
+    fig, axes = plt.subplots(12, len(classifiers), figsize=(8*len(classifiers), 4*12))
+    plot_colors = ["#1f77b4", "#ff7f0e", "#2ca02c", "#d62728", "#9467bd", "#8c564b", "#e377c2", "#7f7f7f", "#bcbd22", "#17becf"]
+    for i in range(len(classifiers)):
+        clf = classifiers[i]
+        clf_data = [x[clf] for x in debug_data]
+        plot_data = {
+            "bias1": [],
+            "bias2": [],
+            "acc_AA": [],
+            "acc_C": [],
+            "acc_all": [],
+            "precision_AA": [],
+            "recall_AA": [],
+            "f1_AA": [],
+            "precision_C": [],
+            "recall_C": [],
+            "f1_C": [],
+            "f1_avg": []
+        }
+        for mm in range(len(random_ratios)):
+            bias1, bias2, acc_AA, acc_C, acc_all, p_AA, p_C, r_AA, r_C, f1_AA, f1_C, f1_avg = [],[],[],[],[],[],[],[],[],[],[],[]
+            for dd in clf_data[mm]:
+                result = [
+                    helper_bias1(dd),
+                    helper_bias2(dd),
+                    helper_acc(dd),
+                    helper_precision(dd),
+                    helper_recall(dd),
+                    helper_f1(dd)
+                ]
+                result = [ss for tt in result for ss in tt]
+                if result[0] > 0 and result[1] > 0 and result[5] and result[6] and result[9] and result[10]:
+                    bias1.append(result[0]); bias2.append(result[1])
+                    acc_AA.append(result[2]); acc_C.append(result[3]); acc_all.append(result[4])
+                    p_AA.append(result[5]); p_C.append(result[6])
+                    r_AA.append(result[7]); r_C.append(result[8])
+                    f1_AA.append(result[9]); f1_C.append(result[10]); f1_avg.append((result[9]+result[10])/2)
+            plot_data["bias1"].append(np.mean(bias1)); plot_data["bias2"].append(np.mean(bias2))
+            plot_data["acc_AA"].append(np.mean(acc_AA)); plot_data["acc_C"].append(np.mean(acc_C)); plot_data["acc_all"].append(np.mean(acc_all))
+            plot_data["precision_AA"].append(np.mean(p_AA)); plot_data["precision_C"].append(np.mean(p_C))
+            plot_data["recall_AA"].append(np.mean(r_AA)); plot_data["recall_C"].append(np.mean(r_C))
+            plot_data["f1_AA"].append(np.mean(f1_AA)); plot_data["f1_C"].append(np.mean(f1_C)); plot_data["f1_avg"].append(np.mean(f1_avg))
+        for j, name in enumerate(list(plot_data.keys())):
+            axes[j, i].plot(random_ratios, plot_data[name], label=clf, color=plot_colors[i])
+            axes[j, i].scatter(random_ratios, plot_data[name], s=3)
+            axes[j, i].set_ylabel(name)
+            axes[j, i].set_xticks(np.arange(0.0, 1.0, 0.05))
+            axes[j, i].legend(loc="best")
+    fig.tight_layout()
+    fig.suptitle("Debug Plot")
+    plt.subplots_adjust(top=0.96)
+    if file_name:
+        plt.savefig(file_name, transparent=False, bbox_inches='tight', pad_inches=0.1)
+    plt.show()
+
 if __name__=="__main__":
     if TRANSFORM_OUTPUTS:
         compress_outputs()
+
+    if PLOT_DEBUG_FUNCTION:
+        plot_debug_func(file_name=os.path.join("ratio_analysis_plots", "debug_plot_mean_v1.png"))
 
     if not os.path.exists("ratio_analysis_plots"):
         os.makedirs("ratio_analysis_plots")
