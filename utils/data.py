@@ -298,7 +298,7 @@ def create_titanic_dataset(print_time=False):
     data = pd.read_csv(os.path.join("dataset", "titanic", "train.csv"))
     X = data.drop(["Survived"], axis=1)
     y = data[["Survived"]].copy().to_numpy().ravel()
-    protected_features = ["sex"]
+    protected_features = ["Sex"]
     if print_time:
         print("Performance Monitor: ({:.4f}s) ".format(time.process_time() - tt) + inspect.stack()[0][3])
     return Dataset("titanic", X, y, protected_features=protected_features)
