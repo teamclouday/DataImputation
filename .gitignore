@@ -4,3 +4,4 @@ condor_outputs/*
 **pycache**
 *.pkl
 */*.csv
+.vscode/*
