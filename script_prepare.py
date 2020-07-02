@@ -3,12 +3,12 @@
 import os
 import json
 import time
+import warnings
+warnings.filterwarnings('ignore')
+
 import numpy as np
 import pandas as pd
 from utils.data import Dataset, create_adult_dataset, create_compas_dataset, create_titanic_dataset
-
-import warnings
-warnings.filterwarnings('ignore')
 
 from sklearn.model_selection import GridSearchCV
 from sklearn.neighbors import KNeighborsClassifier
