@@ -8,6 +8,7 @@ os.environ["OMP_NUM_THREADS"] = '1'
 os.environ["NUMEXPR_NUM_THREADS"] = '1'
 import sys
 import time
+import json
 import pickle
 import numpy as np
 import pandas as pd
@@ -17,7 +18,7 @@ from functools import partial
 import warnings
 warnings.filterwarnings('ignore')
 
-from utils.data import create_compas_dataset, Dataset
+from utils.data import create_compas_dataset, create_adult_dataset, create_titanic_dataset, Dataset
 from utils.generator import gen_complete_random
 from utils.completer import complete_by_mean_col, complete_by_mean_col_v2, complete_by_multi, complete_by_multi_v2, complete_by_similar_row, complete_by_similar_row_v2
 
@@ -32,14 +33,25 @@ from sklearn.metrics import confusion_matrix
 
 from imblearn.over_sampling import SVMSMOTE
 
-RUN_MEAN_V1     = False
-RUN_MEAN_V2     = False
-RUN_SIMILAR_V1  = False
-RUN_SIMILAR_V2  = False
-RUN_MULTI_V1    = False
-RUN_MULTI_V2    = False
+RUN_MEAN_V1     = True
+RUN_MEAN_V2     = True
+RUN_SIMILAR_V1  = True
+RUN_SIMILAR_V2  = True
+RUN_MULTI_V1    = True
+RUN_MULTI_V2    = True
 
-RUN_DEBUG       = True
+RUN_DEBUG       = False
+
+NAME_DATA = {
+    "adult": 1,
+    "compas": 2,
+    "titanic": 3,
+}
+NAME_TARGET = {
+    "acc": 1,
+    "f1": 2,
+}
+PARAMS = None
 
 #define functions
 
@@ -134,57 +146,22 @@ def compute_confusion_matrix(X_train, y_train, X_test, y_test, clf, protected_fe
     result = matrix_AA.ravel().tolist() + matrix_C.ravel().tolist()
     return result
 
-def test_imputation(X, y, protected_features, completer_func=None, multi=False, debug=False):
+def test_imputation(X, y, protected_features, completer_func=None, multi=False):
     # X is pandas dataframe
     # y is numpy array,
     # protected_features is list
     # completer func is the imputation function
+    global PARAMS
     clfs = { # define all the classifiers with best parameters
-        "KNN": KNeighborsClassifier(n_neighbors=2, leaf_size=5),
-        "LinearSVC": LinearSVC(dual=False, tol=0.001, C=0.1, max_iter=1000),
-        "SVC": SVC(tol=0.0001, C=10, max_iter=-1),
-        "Forest": RandomForestClassifier(n_estimators=100, max_depth=50, min_samples_leaf=5),
-        "LogReg": LogisticRegression(tol=1e-5, C=10, max_iter=100),
-        "Tree": DecisionTreeClassifier(max_depth=10, max_leaf_nodes=100, min_samples_leaf=1),
-        "MLP": MLPClassifier(alpha=0.0001, learning_rate_init=0.01, max_iter=500),
+        "KNN": KNeighborsClassifier(n_neighbors=PARAMS["KNN"]["n_neighbors"], leaf_size=PARAMS["KNN"]["leaf_size"]),
+        "LinearSVC": LinearSVC(dual=False, tol=PARAMS["LinearSVC"]["tol"], C=PARAMS["LinearSVC"]["C"], max_iter=PARAMS["LinearSVC"]["max_iter"]),
+        "SVC": SVC(tol=PARAMS["SVC"]["tol"], C=PARAMS["SVC"]["C"], max_iter=PARAMS["SVC"]["max_iter"]),
+        "Forest": RandomForestClassifier(n_estimators=PARAMS["Forest"]["n_estimators"], max_depth=PARAMS["Forest"]["max_depth"], min_samples_leaf=PARAMS["Forest"]["min_samples_leaf"]),
+        "LogReg": LogisticRegression(tol=PARAMS["LogReg"]["tol"], C=PARAMS["LogReg"]["C"], max_iter=PARAMS["LogReg"]["max_iter"]),
+        "Tree": DecisionTreeClassifier(max_depth=PARAMS["Tree"]["max_depth"], max_leaf_nodes=PARAMS["Tree"]["max_leaf_nodes"], min_samples_leaf=PARAMS["Tree"]["min_samples_leaf"]),
+        "MLP": MLPClassifier(alpha=PARAMS["MLP"]["alpha"], learning_rate_init=PARAMS["MLP"]["learning_rate_init"], max_iter=PARAMS["MLP"]["max_iter"], hidden_layer_sizes=PARAMS["MLP"]["hidden_layer_sizes"]),
     }
     rawdata_cv = { # save each raw confusion matrix output cv
-        "KNN": [],
-        "LinearSVC": [],
-        "SVC": [],
-        "Forest": [],
-        "LogReg": [],
-        "Tree": [],
-        "MLP": [],
-    }
-    acc_cv = { # save each accuracy output cv
-        "KNN": [],
-        "LinearSVC": [],
-        "SVC": [],
-        "Forest": [],
-        "LogReg": [],
-        "Tree": [],
-        "MLP": [],
-    }
-    f1_cv = { # save each f1 score outputs cv
-        "KNN": [],
-        "LinearSVC": [],
-        "SVC": [],
-        "Forest": [],
-        "LogReg": [],
-        "Tree": [],
-        "MLP": [],
-    }
-    bias1_cv = { # save each bias 1 outputs cv
-        "KNN": [],
-        "LinearSVC": [],
-        "SVC": [],
-        "Forest": [],
-        "LogReg": [],
-        "Tree": [],
-        "MLP": [],
-    }
-    bias2_cv = { # save each bias 2 outputs cv
         "KNN": [],
         "LinearSVC": [],
         "SVC": [],
@@ -213,27 +190,24 @@ def test_imputation(X, y, protected_features, completer_func=None, multi=False, 
         # get result for each classifier
         for clf_name, clf in clfs.items():
             result = compute_confusion_matrix(X_train, y_train, X_test, y_test, clf, protected_features, multi=multi)
-            if debug:
-                rawdata_cv[clf_name].append(result)
-                continue
-            acc_cv[clf_name].append(acc(result))
-            f1_cv[clf_name].append(f1score(result))
-            bias1_cv[clf_name].append(bias1(result))
-            bias2_cv[clf_name].append(bias2(result))
+            rawdata_cv[clf_name].append(result)
         fold += 1
-    if debug:
-        return rawdata_cv
-    return (acc_cv, bias1_cv, bias2_cv, f1_cv)
+    return rawdata_cv
 
 # prepare data
 
-data = create_compas_dataset()
-data_compas_complete = data.copy()
-tmp_concat = pd.concat([data_compas_complete.X, pd.DataFrame(data_compas_complete.y, columns=["_TARGET_"])], axis=1)
-tmp_concat.dropna(inplace=True)
-tmp_concat.reset_index(drop=True, inplace=True)
-data_compas_complete.X = tmp_concat.drop(columns=["_TARGET_"]).copy()
-data_compas_complete.y = tmp_concat["_TARGET_"].copy().to_numpy().ravel()
+data_complete = None
+if RUN_DEBUG:
+    data = create_compas_dataset()
+    data_complete = data.copy()
+    tmp_concat = pd.concat([data_complete.X, pd.DataFrame(data_complete.y, columns=["_TARGET_"])], axis=1)
+    tmp_concat.dropna(inplace=True)
+    tmp_concat.reset_index(drop=True, inplace=True)
+    data_complete.X = tmp_concat.drop(columns=["_TARGET_"]).copy()
+    data_complete.y = tmp_concat["_TARGET_"].copy().to_numpy().ravel()
+    with open("params_acc.json", "r") as inFile:
+        PARAMS = json.load(inFile)
+    PARAMS = PARAMS["compas"]
 
 random_ratios = np.linspace(0.0, 1.0, num=20, endpoint=False)
 
@@ -241,54 +215,96 @@ MAX_PROCESS_COUNT = multiprocessing.cpu_count()
 
 # define single task functions
 
-def complete_debug_task(idx):
-    data_sim = gen_complete_random(data_compas_complete, random_ratio=random_ratios[idx], print_all=False)
-    result = test_imputation(data_sim.X.copy(), data_sim.y.copy(),
-                             data_sim.protected, complete_by_mean_col, multi=False, debug=True)
-    return result
-
 def complete_mean_task(idx):
-    data_sim = gen_complete_random(data_compas_complete, random_ratio=random_ratios[idx], print_all=False)
+    global data_complete
+    data_sim = gen_complete_random(data_complete, random_ratio=random_ratios[idx], print_all=False)
     result = test_imputation(data_sim.X.copy(), data_sim.y.copy(),
                              data_sim.protected, complete_by_mean_col, multi=False)
     return result
 
 def complete_mean_v2_task(idx):
-    data_sim = gen_complete_random(data_compas_complete, random_ratio=random_ratios[idx], print_all=False)
+    global data_complete
+    data_sim = gen_complete_random(data_complete, random_ratio=random_ratios[idx], print_all=False)
     result = test_imputation(data_sim.X.copy(), data_sim.y.copy(),
                              data_sim.protected, partial(complete_by_mean_col_v2, target_feature="race"), multi=False)
     return result
 
 def complete_similar_task(idx):
-    data_sim = gen_complete_random(data_compas_complete, random_ratio=random_ratios[idx], print_all=False)
+    global data_complete
+    data_sim = gen_complete_random(data_complete, random_ratio=random_ratios[idx], print_all=False)
     result = test_imputation(data_sim.X.copy(), data_sim.y.copy(),
                              data_sim.protected, complete_by_similar_row, multi=False)
     return result
 
 def complete_similar_v2_task(idx):
-    data_sim = gen_complete_random(data_compas_complete, random_ratio=random_ratios[idx], print_all=False)
+    global data_complete
+    data_sim = gen_complete_random(data_complete, random_ratio=random_ratios[idx], print_all=False)
     result = test_imputation(data_sim.X.copy(), data_sim.y.copy(),
                              data_sim.protected, partial(complete_by_similar_row_v2, target_feature="race"), multi=False)
     return result
 
 def complete_multi_task(idx):
-    data_sim = gen_complete_random(data_compas_complete, random_ratio=random_ratios[idx], print_all=False)
+    global data_complete
+    data_sim = gen_complete_random(data_complete, random_ratio=random_ratios[idx], print_all=False)
     result = test_imputation(data_sim.X.copy(), data_sim.y.copy(),
                              data_sim.protected, complete_by_multi, multi=True)
     return result
 
 def complete_multi_v2_task(idx):
-    data_sim = gen_complete_random(data_compas_complete, random_ratio=random_ratios[idx], print_all=False)
+    global data_complete
+    data_sim = gen_complete_random(data_complete, random_ratio=random_ratios[idx], print_all=False)
     result = test_imputation(data_sim.X.copy(), data_sim.y.copy(),
                              data_sim.protected, partial(complete_by_multi_v2, target_feature="race"), multi=True)
     return result
 
 if __name__ == "__main__":
+    global data_complete, PARAMS
+
     if not RUN_DEBUG:
         if not os.path.exists("condor_outputs"):
             os.makedirs("condor_outputs")
-        if len(sys.argv) < 2:
-            raise Exception("should have argument for task id")
+            for tt in list(NAME_TARGET.keys()):
+                if not os.path.exists(os.path.join("condor_outputs", tt)):
+                    os.makedirs(os.path.join("condor_outputs", tt))
+                for dd in list(NAME_DATA.keys()):
+                    if not os.path.exists(os.path.join("condor_outputs", tt, dd)):
+                        os.makedirs(os.path.join("condor_outputs", tt, dd))
+        if len(sys.argv) < 4:
+            raise Exception("should have argument for task id, data id, target id")
+        id_data = int(sys.argv[2])
+        id_target = int(sys.argv[3])
+        if id_target == NAME_TARGET["acc"]:
+            targetName = "acc"
+            fileName = "params_acc.json"
+        elif id_target == NAME_TARGET["f1"]:
+            targetName = "f1"
+            fileName = "params_f1.json"
+        else: raise ValueError("target id is wrong")
+        if id_data == NAME_DATA["adult"]:
+            dataName = "adult"
+            data_complete = create_adult_dataset()
+        elif id_data == NAME_DATA["compas"]:
+            dataName = "compas"
+            data_complete = create_compas_dataset()
+            tmp_concat = pd.concat([data_complete.X, pd.DataFrame(data_complete.y, columns=["_TARGET_"])], axis=1)
+            tmp_concat.dropna(inplace=True)
+            tmp_concat.reset_index(drop=True, inplace=True)
+            data_complete.X = tmp_concat.drop(columns=["_TARGET_"]).copy()
+            data_complete.y = tmp_concat["_TARGET_"].copy().to_numpy().ravel()
+        elif id_data == NAME_DATA["titanic"]:
+            dataName = "titanic"
+            data_complete = create_titanic_dataset()
+            data_complete.X.drop(columns=["Cabin"], inplace=True)
+            tmp_concat = pd.concat([data_complete.X, pd.DataFrame(data_complete.y, columns=["_TARGET_"])], axis=1)
+            tmp_concat.dropna(inplace=True)
+            tmp_concat.reset_index(drop=True, inplace=True)
+            data_complete.X = tmp_concat.drop(columns=["_TARGET_"]).copy()
+            data_complete.y = tmp_concat["_TARGET_"].copy().to_numpy().ravel()
+        else: raise ValueError("data id is wrong")
+        with open(fileName, "r") as inFile:
+            PARAMS = json.load(inFile)
+        PARAMS = PARAMS[dataName]
+        print("Script ID: {}, Dataset Name: {}, Target Name: {}".format(sys.argv[1], dataName, targetName))
 
     final_result = {}
     start_time = time.time()
@@ -350,7 +366,7 @@ if __name__ == "__main__":
 
     # save outputs
     if not RUN_DEBUG:
-        with open(os.path.join("condor_outputs", "output_{:0>4}.pkl".format(sys.argv[1])), "wb") as outFile:
+        with open(os.path.join("condor_outputs", targetName, dataName, "output_{:0>4}.pkl".format(sys.argv[1])), "wb") as outFile:
             pickle.dump(final_result, outFile)
 
         print("All tasks complete in {:.2f}hr".format((time.time() - total_time) / 3600))
@@ -360,7 +376,7 @@ if __name__ == "__main__":
         print("Now running debug task (mean_v1)")
         MAX_PROCESS_COUNT = (MAX_PROCESS_COUNT - 1) if MAX_PROCESS_COUNT > 1 else 1
         with Pool(processes=MAX_PROCESS_COUNT) as pool:
-            final_result = list(tqdm.tqdm(pool.imap(complete_debug_task, range(len(random_ratios))), total=len(random_ratios)))
+            final_result = list(tqdm.tqdm(pool.imap(complete_mean_task, range(len(random_ratios))), total=len(random_ratios)))
         print("Task complete in {:.2f}min".format((time.time() - start_time) / 60))
 
         with open("debug_data.pkl", "wb") as outFile:
