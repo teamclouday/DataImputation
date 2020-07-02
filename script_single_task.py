@@ -225,10 +225,10 @@ def complete_mean_task(idx):
     return result
 
 def complete_mean_v2_task(idx):
-    global data_complete
+    global data_complete, PARAMS_DATA
     data_sim = gen_complete_random(data_complete, random_ratio=random_ratios[idx], print_all=False)
     result = test_imputation(data_sim.X.copy(), data_sim.y.copy(),
-                             data_sim.protected, partial(complete_by_mean_col_v2, target_feature="race"), multi=False)
+                             data_sim.protected, partial(complete_by_mean_col_v2, target_feature=PARAMS_DATA["target"]), multi=False)
     return result
 
 def complete_similar_task(idx):
@@ -239,10 +239,10 @@ def complete_similar_task(idx):
     return result
 
 def complete_similar_v2_task(idx):
-    global data_complete
+    global data_complete, PARAMS_DATA
     data_sim = gen_complete_random(data_complete, random_ratio=random_ratios[idx], print_all=False)
     result = test_imputation(data_sim.X.copy(), data_sim.y.copy(),
-                             data_sim.protected, partial(complete_by_similar_row_v2, target_feature="race"), multi=False)
+                             data_sim.protected, partial(complete_by_similar_row_v2, target_feature=PARAMS_DATA["target"]), multi=False)
     return result
 
 def complete_multi_task(idx):
@@ -253,10 +253,10 @@ def complete_multi_task(idx):
     return result
 
 def complete_multi_v2_task(idx):
-    global data_complete
+    global data_complete, PARAMS_DATA
     data_sim = gen_complete_random(data_complete, random_ratio=random_ratios[idx], print_all=False)
     result = test_imputation(data_sim.X.copy(), data_sim.y.copy(),
-                             data_sim.protected, partial(complete_by_multi_v2, target_feature="race"), multi=True)
+                             data_sim.protected, partial(complete_by_multi_v2, target_feature=PARAMS_DATA["target"]), multi=True)
     return result
 
 # argv[1] = process id
