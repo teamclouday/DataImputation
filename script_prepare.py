@@ -121,7 +121,7 @@ def param_search(datasets, metrics, json_file=None):
             search = GridSearchCV(model, params[clf], n_jobs=-1, cv=10, scoring=scoring)
             start_time = time.time()
             search.fit(X_res, y_res)
-            print("Search finished in {:.2f}min, best score = {}".format((time.time() - start_time) / 60), search.best_score_)
+            print("Search finished in {:.2f}min, best score = {}".format((time.time() - start_time) / 60, search.best_score_))
             results[d_name][clf] = search.best_params_
     if json_file:
         with open(json_file, "w") as outFile:
