@@ -258,8 +258,6 @@ def complete_multi_v2_task(idx):
     return result
 
 if __name__ == "__main__":
-    global data_complete, PARAMS
-
     if not RUN_DEBUG:
         if not os.path.exists("condor_outputs"):
             os.makedirs("condor_outputs")
