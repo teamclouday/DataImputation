@@ -52,30 +52,31 @@ NAME_TARGET = {
     "f1": 2,
 }
 PARAMS = None
+PARAMS_DATA = None
 
 #define functions
 
-# [TN_AA, FP_AA, FN_AA, TP_AA, TN_C, FP_C, FN_C, TP_C]
+# [TN_A, FP_A, FN_A, TP_A, TN_B, FP_B, FN_B, TP_B]
 def bias1(data):
     # input should be data from compute_confusion_matrix
-    # bias 1 = |(FPR_AA/FNR_AA) - (FPR_C/FNR_C)|
-    FPR_AA = data[1] / (data[1] + data[0])
-    FNR_AA = data[2] / (data[2] + data[3])
-    FPR_C  = data[5] / (data[5] + data[4])
-    FNR_C  = data[6] / (data[6] + data[7])
-    if FNR_AA == 0 or FNR_C == 0: return -1 # mark error situation
-    bias = (FPR_AA / FNR_AA) - (FPR_C / FNR_C)
+    # bias 1 = |(FPR_A/FNR_A) - (FPR_B/FNR_B)|
+    FPR_A = data[1] / (data[1] + data[0])
+    FNR_A = data[2] / (data[2] + data[3])
+    FPR_B  = data[5] / (data[5] + data[4])
+    FNR_B  = data[6] / (data[6] + data[7])
+    if FNR_A == 0 or FNR_B == 0: return -1 # mark error situation
+    bias = (FPR_A / FNR_A) - (FPR_B / FNR_B)
     return abs(bias)
 
 def bias2(data):
     # input should be data from compute_confusion_matrix
-    # bias 2 = |(FPR_AA/FPR_C) - (FNR_AA/FNR_C)|
-    FPR_AA = data[1] / (data[1] + data[0])
-    FNR_AA = data[2] / (data[2] + data[3])
-    FPR_C  = data[5] / (data[5] + data[4])
-    FNR_C  = data[6] / (data[6] + data[7])
-    if FNR_C == 0 or FPR_C == 0: return -1 # mark error situation
-    bias = (FPR_AA / FPR_C) - (FNR_AA / FNR_C)
+    # bias 2 = |(FPR_A/FPR_B) - (FNR_A/FNR_B)|
+    FPR_A = data[1] / (data[1] + data[0])
+    FNR_A = data[2] / (data[2] + data[3])
+    FPR_B  = data[5] / (data[5] + data[4])
+    FNR_B  = data[6] / (data[6] + data[7])
+    if FNR_A == 0 or FPR_B == 0: return -1 # mark error situation
+    bias = (FPR_A / FPR_B) - (FNR_A / FNR_B)
     return abs(bias)
 
 def acc(data):
@@ -91,15 +92,15 @@ def f1score(data):
     # precision = TP / (TP + FP)
     # recall    = TP / (TP + FN)
     # f1 score  = 2 * (precision * recall) / (recall + precision)
-    precision_AA = data[3] / (data[3] + data[1]) if (data[3] + data[1]) != 0 else 0
-    precision_C  = data[7] / (data[7] + data[5]) if (data[7] + data[5]) != 0 else 0
-    recall_AA    = data[3] / (data[3] + data[2])
-    recall_C     = data[7] / (data[7] + data[6])
-    if (recall_AA + precision_AA) == 0 or (recall_C + precision_C) == 0:
+    precision_A = data[3] / (data[3] + data[1]) if (data[3] + data[1]) != 0 else 0
+    precision_B = data[7] / (data[7] + data[5]) if (data[7] + data[5]) != 0 else 0
+    recall_A    = data[3] / (data[3] + data[2])
+    recall_B    = data[7] / (data[7] + data[6])
+    if (recall_A + precision_A) == 0 or (recall_B + precision_B) == 0:
         return [None] # mark error situation
-    f1_AA        = 2 * (precision_AA * recall_AA) / (recall_AA + precision_AA)
-    f1_C         = 2 * (precision_C * recall_C) / (recall_C + precision_C)
-    return [f1_AA, f1_C]
+    f1_A = 2 * (precision_A * recall_A) / (recall_A + precision_A)
+    f1_B = 2 * (precision_B * recall_B) / (recall_B + precision_B)
+    return [f1_A, f1_B]
 
 def helper_freq(array):
     """simple helper function to return the most frequent number in an array"""
@@ -111,39 +112,40 @@ def compute_confusion_matrix(X_train, y_train, X_test, y_test, clf, protected_fe
     # y are numpy array
     # clf is a sklearn classifier
     # protected_features is list
+    global PARAMS_DATA
     smote = SVMSMOTE(random_state=22)
     if not multi:
         X_train = X_train.drop(columns=protected_features).copy().to_numpy()
         X_train_res, y_train_res = smote.fit_resample(X_train, y_train)
         clf.fit(X_train_res, y_train_res)
-        X_test_AA = X_test[X_test["race"] == "African-American"].drop(columns=protected_features).to_numpy()
-        X_test_C = X_test[X_test["race"] == "Caucasian"].drop(columns=protected_features).to_numpy()
-        y_test_AA = y_test[X_test[X_test["race"] == "African-American"].index.tolist()]
-        y_test_C = y_test[X_test[X_test["race"] == "Caucasian"].index.tolist()]
-        matrix_AA = confusion_matrix(y_test_AA, clf.predict(X_test_AA))
-        matrix_C = confusion_matrix(y_test_C, clf.predict(X_test_C))
+        X_test_A = X_test[X_test[PARAMS_DATA["target"]] == PARAMS_DATA["A"]].drop(columns=protected_features).to_numpy()
+        X_test_B = X_test[X_test[PARAMS_DATA["target"]] == PARAMS_DATA["B"]].drop(columns=protected_features).to_numpy()
+        y_test_A = y_test[X_test[X_test[PARAMS_DATA["target"]] == PARAMS_DATA["A"]].index.tolist()]
+        y_test_B = y_test[X_test[X_test[PARAMS_DATA["target"]] == PARAMS_DATA["B"]].index.tolist()]
+        matrix_A = confusion_matrix(y_test_A, clf.predict(X_test_A))
+        matrix_B = confusion_matrix(y_test_B, clf.predict(X_test_B))
     else:
-        prediction_AA = []
-        prediction_C = []
+        prediction_A = []
+        prediction_B = []
         X_test_first = X_test[0]
-        y_test_AA = y_test[X_test_first[X_test_first["race"] == "African-American"].index.tolist()]
-        y_test_C = y_test[X_test_first[X_test_first["race"] == "Caucasian"].index.tolist()]
+        y_test_A = y_test[X_test_first[X_test_first[PARAMS_DATA["target"]] == PARAMS_DATA["A"]].index.tolist()]
+        y_test_B = y_test[X_test_first[X_test_first[PARAMS_DATA["target"]] == PARAMS_DATA["B"]].index.tolist()]
         for X_train_m in X_train:
             X_train_m = X_train_m.drop(columns=protected_features).copy().to_numpy()
             X_train_res, y_train_res = smote.fit_resample(X_train_m, y_train)
             clf.fit(X_train_res, y_train_res)
             for X_test_m in X_test:
-                X_test_AA = X_test_m[X_test_m["race"] == "African-American"].drop(columns=protected_features).to_numpy()
-                X_test_C = X_test_m[X_test_m["race"] == "Caucasian"].drop(columns=protected_features).to_numpy()
-                prediction_AA.append(clf.predict(X_test_AA))
-                prediction_C.append(clf.predict(X_test_C))
+                X_test_A = X_test_m[X_test_m[PARAMS_DATA["target"]] == PARAMS_DATA["A"]].drop(columns=protected_features).to_numpy()
+                X_test_B = X_test_m[X_test_m[PARAMS_DATA["target"]] == PARAMS_DATA["B"]].drop(columns=protected_features).to_numpy()
+                prediction_A.append(clf.predict(X_test_A))
+                prediction_B.append(clf.predict(X_test_B))
         # compute final predictions by voting
-        prediction_AA = np.apply_along_axis(helper_freq, 0, np.array(prediction_AA))
-        prediction_C = np.apply_along_axis(helper_freq, 0, np.array(prediction_C))
-        matrix_AA = confusion_matrix(y_test_AA, prediction_AA)
-        matrix_C = confusion_matrix(y_test_C, prediction_C)
-    # [TN_AA, FP_AA, FN_AA, TP_AA, TN_C, FP_C, FN_C, TP_C]
-    result = matrix_AA.ravel().tolist() + matrix_C.ravel().tolist()
+        prediction_A = np.apply_along_axis(helper_freq, 0, np.array(prediction_A))
+        prediction_B = np.apply_along_axis(helper_freq, 0, np.array(prediction_B))
+        matrix_A = confusion_matrix(y_test_A, prediction_A)
+        matrix_B = confusion_matrix(y_test_B, prediction_B)
+    # [TN_A, FP_A, FN_A, TP_A, TN_B, FP_B, FN_B, TP_B]
+    result = matrix_A.ravel().tolist() + matrix_B.ravel().tolist()
     return result
 
 def test_imputation(X, y, protected_features, completer_func=None, multi=False):
@@ -302,6 +304,9 @@ if __name__ == "__main__":
         with open(fileName, "r") as inFile:
             PARAMS = json.load(inFile)
         PARAMS = PARAMS[dataName]
+        with open("params_datasets.json", "r") as inFile:
+            PARAMS_DATA = json.load(inFile)
+        PARAMS_DATA = PARAMS_DATA[dataName]
         print("Script ID: {}, Dataset Name: {}, Target Name: {}".format(sys.argv[1], dataName, targetName))
 
     final_result = {}

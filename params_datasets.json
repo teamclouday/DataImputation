@@ -1,0 +1,17 @@
+{
+    "adult": {
+        "target": "sex",
+        "A": "Male",
+        "B": "Female"
+    },
+    "compas": {
+        "target": "race",
+        "A": "African-American",
+        "B": "Caucasian"
+    },
+    "titanic": {
+        "target": "Sex",
+        "A": "male",
+        "B": "female"
+    }
+}
