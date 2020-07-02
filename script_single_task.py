@@ -297,7 +297,6 @@ if __name__ == "__main__":
         elif id_data == NAME_DATA["titanic"]:
             dataName = "titanic"
             data_complete = create_titanic_dataset()
-            data_complete.X.drop(columns=["Cabin"], inplace=True)
             tmp_concat = pd.concat([data_complete.X, pd.DataFrame(data_complete.y, columns=["_TARGET_"])], axis=1)
             tmp_concat.dropna(inplace=True)
             tmp_concat.reset_index(drop=True, inplace=True)
