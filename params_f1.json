@@ -1,0 +1,113 @@
+{
+    "adult": {
+        "KNN": {
+            "leaf_size": 10,
+            "n_neighbors": 5
+        },
+        "LinearSVC": {
+            "C": 0.01,
+            "max_iter": 1000,
+            "tol": 1e-05
+        },
+        "SVC": {
+            "C": 0.01,
+            "max_iter": 10000,
+            "tol": 1e-05
+        },
+        "Forest": {
+            "max_depth": 50,
+            "min_samples_leaf": 1,
+            "n_estimators": 200
+        },
+        "LogReg": {
+            "C": 100.0,
+            "max_iter": 500,
+            "tol": 1e-06
+        },
+        "Tree": {
+            "max_depth": 10,
+            "max_leaf_nodes": 1000,
+            "min_samples_leaf": 1
+        },
+        "MLP": {
+            "alpha": 1e-05,
+            "hidden_layer_sizes": [10],
+            "learning_rate_init": 0.0001,
+            "max_iter": 1000
+        }
+    },
+    "compas": {
+        "KNN": {
+            "leaf_size": 5,
+            "n_neighbors": 5
+        },
+        "LinearSVC": {
+            "C": 10,
+            "max_iter": 1000,
+            "tol": 1e-06
+        },
+        "SVC": {
+            "C": 10,
+            "max_iter": 5000,
+            "tol": 1e-05
+        },
+        "Forest": {
+            "max_depth": 50,
+            "min_samples_leaf": 5,
+            "n_estimators": 200
+        },
+        "LogReg": {
+            "C": 0.01,
+            "max_iter": 500,
+            "tol": 1e-06
+        },
+        "Tree": {
+            "max_depth": 10,
+            "max_leaf_nodes": 100,
+            "min_samples_leaf": 1
+        },
+        "MLP": {
+            "alpha": 0.0001,
+            "hidden_layer_sizes": [1000],
+            "learning_rate_init": 0.01,
+            "max_iter": 500
+        }
+    },
+    "titanic": {
+        "KNN": {
+            "leaf_size": 5,
+            "n_neighbors": 5
+        },
+        "LinearSVC": {
+            "C": 1,
+            "max_iter": 1000,
+            "tol": 0.0001
+        },
+        "SVC": {
+            "C": 100,
+            "max_iter": 5000,
+            "tol": 0.1
+        },
+        "Forest": {
+            "max_depth": 50,
+            "min_samples_leaf": 50,
+            "n_estimators": 200
+        },
+        "LogReg": {
+            "C": 100.0,
+            "max_iter": 1000,
+            "tol": 1e-06
+        },
+        "Tree": {
+            "max_depth": null,
+            "max_leaf_nodes": 10,
+            "min_samples_leaf": 5
+        },
+        "MLP": {
+            "alpha": 1e-05,
+            "hidden_layer_sizes": [10],
+            "learning_rate_init": 0.01,
+            "max_iter": 1000
+        }
+    }
+}
