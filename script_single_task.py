@@ -259,16 +259,19 @@ def complete_multi_v2_task(idx):
                              data_sim.protected, partial(complete_by_multi_v2, target_feature="race"), multi=True)
     return result
 
+# argv[1] = process id
+# argv[2] = data id
+# argv[3] = target id
 if __name__ == "__main__":
     if not RUN_DEBUG:
         if not os.path.exists("condor_outputs"):
             os.makedirs("condor_outputs")
-            for tt in list(NAME_TARGET.keys()):
-                if not os.path.exists(os.path.join("condor_outputs", tt)):
-                    os.makedirs(os.path.join("condor_outputs", tt))
-                for dd in list(NAME_DATA.keys()):
-                    if not os.path.exists(os.path.join("condor_outputs", tt, dd)):
-                        os.makedirs(os.path.join("condor_outputs", tt, dd))
+        for tt in list(NAME_TARGET.keys()):
+            if not os.path.exists(os.path.join("condor_outputs", tt)):
+                os.makedirs(os.path.join("condor_outputs", tt))
+            for dd in list(NAME_DATA.keys()):
+                if not os.path.exists(os.path.join("condor_outputs", tt, dd)):
+                    os.makedirs(os.path.join("condor_outputs", tt, dd))
         if len(sys.argv) < 4:
             raise Exception("should have argument for task id, data id, target id")
         id_data = int(sys.argv[2])
