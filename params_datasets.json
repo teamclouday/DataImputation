@@ -1,8 +1,8 @@
 {
     "adult": {
         "target": "sex",
-        "A": "Male",
-        "B": "Female"
+        "A": " Male",
+        "B": " Female"
     },
     "compas": {
         "target": "race",
