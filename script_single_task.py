@@ -226,7 +226,7 @@ def complete_mean_task(idx):
 
 def complete_mean_v2_task(idx):
     global data_complete, PARAMS_DATA
-    data_sim = gen_complete_random(data_complete, random_ratio=random_ratios[idx], print_all=False, target_feature=PARAMS_DATA["target"])
+    data_sim = gen_complete_random(data_complete, random_ratio=random_ratios[idx], print_all=False)
     result = test_imputation(data_sim.X.copy(), data_sim.y.copy(),
                              data_sim.protected, partial(complete_by_mean_col_v2, target_feature=PARAMS_DATA["target"]), multi=False)
     return result
@@ -240,7 +240,7 @@ def complete_similar_task(idx):
 
 def complete_similar_v2_task(idx):
     global data_complete, PARAMS_DATA
-    data_sim = gen_complete_random(data_complete, random_ratio=random_ratios[idx], print_all=False, target_feature=PARAMS_DATA["target"])
+    data_sim = gen_complete_random(data_complete, random_ratio=random_ratios[idx], print_all=False)
     result = test_imputation(data_sim.X.copy(), data_sim.y.copy(),
                              data_sim.protected, partial(complete_by_similar_row_v2, target_feature=PARAMS_DATA["target"]), multi=False)
     return result
@@ -254,7 +254,7 @@ def complete_multi_task(idx):
 
 def complete_multi_v2_task(idx):
     global data_complete, PARAMS_DATA
-    data_sim = gen_complete_random(data_complete, random_ratio=random_ratios[idx], print_all=False, target_feature=PARAMS_DATA["target"])
+    data_sim = gen_complete_random(data_complete, random_ratio=random_ratios[idx], print_all=False)
     result = test_imputation(data_sim.X.copy(), data_sim.y.copy(),
                              data_sim.protected, partial(complete_by_multi_v2, target_feature=PARAMS_DATA["target"]), multi=True)
     return result

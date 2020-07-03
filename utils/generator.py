@@ -15,7 +15,7 @@ from utils.data import *
 # IMPORTANT: leave at least one value for each column
 # IMPORTANT: skip the protected features
 # return the converted dataset object
-def gen_complete_random(data, random_ratio=0.2, print_time=False, print_all=True, target_feature=None):
+def gen_complete_random(data, random_ratio=0.2, print_time=False, print_all=True):
     if print_time:
         tt = time.process_time()
     if random_ratio > 0.5:
@@ -30,38 +30,14 @@ def gen_complete_random(data, random_ratio=0.2, print_time=False, print_all=True
         sys.exit(1)
     random_ratio = random_ratio ** 0.5
     num_rows, num_cols = X_data.shape
-    if target_feature:
-        assert target_feature in data.protected
-        target_unique_values = data.X[target_feature].unique().tolist()
-        assert len(target_unique_values) > 0
-        parts = []
-        for value in target_unique_values:
-            data_target = data.X[data.X[target_feature] == value].drop(columns=data.protected).copy()
-            num_rows = data_target.shape[0]
-            row_rand = np.random.permutation(num_rows)
-            row_rand = row_rand[:math.floor(num_rows*random_ratio)]
-            for row in row_rand:
-                col_rand = np.random.permutation(num_cols)
-                col_rand = col_rand[:math.floor(num_cols*random_ratio)]
-                for col in col_rand:
-                    if data_target.iloc[:, col].isnull().sum() < (num_rows - 1):
-                        data_target.iloc[row, col] = np.nan
-            parts.append(data_target)
-        X_data = parts[0]
-        idx = 1
-        while idx < len(parts):
-            X_data = pd.concat([X_data, parts[idx]], axis=0)
-            idx += 1
-        X_data = X_data.sort_index()
-    else:
-        row_rand = np.random.permutation(num_rows)
-        row_rand = row_rand[:math.floor(num_rows*random_ratio)]
-        for row in row_rand:
-            col_rand = np.random.permutation(num_cols)
-            col_rand = col_rand[:math.floor(num_cols*random_ratio)]
-            for col in col_rand:
-                if X_data.iloc[:, col].isnull().sum() < (num_rows - 1):
-                    X_data.iloc[row, col] = np.nan
+    row_rand = np.random.permutation(num_rows)
+    row_rand = row_rand[:math.floor(num_rows*random_ratio)]
+    for row in row_rand:
+        col_rand = np.random.permutation(num_cols)
+        col_rand = col_rand[:math.floor(num_cols*random_ratio)]
+        for col in col_rand:
+            if X_data.iloc[:, col].isnull().sum() < (num_rows - 1):
+                X_data.iloc[row, col] = np.nan
     if print_all:
         print("gen_complete_random: {0} NaN values have been inserted".format(X_data.isnull().sum().sum()))
     if len(data.protected) > 0:
@@ -85,7 +61,7 @@ def gen_complete_random(data, random_ratio=0.2, print_time=False, print_all=True
 # IMPORTANT: leave at least one value for each column
 # IMPORTANT: skip the protected features
 # return the Dataset object
-def gen_random(data, random_ratio=0.2, random_cols=[], print_time=False, print_all=True, target_feature=None):
+def gen_random(data, random_ratio=0.2, random_cols=[], print_time=False, print_all=True):
     if print_time:
         tt = time.process_time()
     if random_ratio > 0.5:
@@ -104,34 +80,12 @@ def gen_random(data, random_ratio=0.2, random_cols=[], print_time=False, print_a
         random_cols = np.random.permutation(num_cols)
         random_cols = random_cols[:math.floor(num_cols*random_ratio)]
     ratio_rows = random_ratio ** 2 / (len(random_cols) / num_cols)
-    if target_feature:
-        assert target_feature in data.protected
-        target_unique_values = data.X[target_feature].unique().tolist()
-        assert len(target_unique_values) > 0
-        parts = []
-        for value in target_unique_values:
-            data_target = data.X[data.X[target_feature] == value].drop(columns=data.protected).copy()
-            num_rows = data_target.shape[0]
-            row_rand = np.random.permutation(num_rows)
-            row_rand = row_rand[:math.floor(num_rows*ratio_rows)]
-            for row in row_rand:
-                for col in random_cols:
-                    if data_target.iloc[:, col].isnull().sum() < (num_rows - 1):
-                        data_target.iloc[row, col] = np.nan
-            parts.append(data_target)
-        X_data = parts[0]
-        idx = 1
-        while idx < len(parts):
-            X_data = pd.concat([X_data, parts[idx]], axis=0)
-            idx += 1
-        X_data = X_data.sort_index()
-    else:
-        random_rows = np.random.permutation(num_rows)
-        random_rows = random_rows[:math.floor(num_rows*ratio_rows)]
-        for row in random_rows:
-            for col in random_cols:
-                if X_data.iloc[:, col].isnull().sum() < (num_rows - 1):
-                    X_data.iloc[row, col] = np.nan
+    random_rows = np.random.permutation(num_rows)
+    random_rows = random_rows[:math.floor(num_rows*ratio_rows)]
+    for row in random_rows:
+        for col in random_cols:
+            if X_data.iloc[:, col].isnull().sum() < (num_rows - 1):
+                X_data.iloc[row, col] = np.nan
     if print_all:
         print("gen_random: {0} NaN values have been inserted".format(X_data.isnull().sum().sum()))
     if len(data.protected) > 0:
