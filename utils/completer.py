@@ -43,6 +43,9 @@ def complete_by_mean_col_v2(data, print_time=False, target_feature=None):
         assert target_feature in data.protected
         target_unique_values = data.X[target_feature].unique().tolist()
         assert len(target_unique_values) > 0
+        if len(target_unique_values) < 2:
+            print("Warning: complete_by_mean_col_v2: only one unique value found for target feature")
+            return complete_by_mean_col(data, print_time=print_time)
         imputed_parts = []
         for value in target_unique_values:
             data_train = data.X[data.X[target_feature] != value].drop(columns=data.protected).copy()
@@ -59,10 +62,7 @@ def complete_by_mean_col_v2(data, print_time=False, target_feature=None):
         data.X = data_X.sort_index()
     else:
         print("Warning: You're using V2 mean imputation, but didn't set a value for target_feature. Will perform V1.")
-        data_protected = data.X[data.protected].copy()
-        data_unprotected = data.X.drop(columns=data.protected).copy()
-        data_unprotected = data_unprotected.fillna(data_unprotected.mean()).astype(data.types.drop(data.protected))
-        data.X = pd.concat([data_unprotected, data_protected], axis=1)
+        return complete_by_mean_col(data, print_time=print_time)
 
     if print_time:
         print("Performance Monitor: ({:.4f}s) ".format(time.process_time() - tt) + inspect.stack()[0][3])
@@ -142,6 +142,9 @@ def complete_by_similar_row_v2(data, print_time=False, K=5, target_feature=None)
         assert target_feature in data.protected
         target_unique_values = data.X[target_feature].unique().tolist()
         assert len(target_unique_values) > 0
+        if len(target_unique_values) < 2:
+            print("Warning: complete_by_similar_row_v2: only one unique value found for target feature")
+            return complete_by_similar_row(data, print_time=print_time, K=K)
         imputed_parts = []
         for value in target_unique_values:
             imputer = KNNImputer(n_neighbors=K, weights="uniform")
@@ -160,11 +163,7 @@ def complete_by_similar_row_v2(data, print_time=False, K=5, target_feature=None)
         data.X = data_X.sort_index()
     else:
         print("Warning: You're using V2 similar imputation, but didn't set a value for target_feature. Will perform V1.")
-        data_protected = data.X[data.protected].copy()
-        data_unprotected = data.X.drop(columns=data.protected).copy()
-        imputer = KNNImputer(n_neighbors=K, weights="uniform")
-        data_unprotected = pd.DataFrame(imputer.fit_transform(data_unprotected), columns=data_unprotected.columns)
-        data.X = pd.concat([data_unprotected, data_protected], axis=1)
+        return complete_by_similar_row(data, print_time=print_time, K=K)
 
     if print_time:
         print("Performance Monitor: ({:.4f}s) ".format(time.process_time() - tt) + inspect.stack()[0][3])
@@ -216,6 +215,9 @@ def complete_by_multi_v2(data, print_time=False, num_outputs=5, target_feature=N
         assert target_feature in data.protected
         target_unique_values = data.X[target_feature].unique().tolist()
         assert len(target_unique_values) > 0
+        if len(target_unique_values) < 2:
+            print("Warning: complete_by_multi_v2: only one unique value found for target feature")
+            return complete_by_multi(data, print_time=print_time, num_outputs=num_outputs)
         imputer = IterativeImputer(max_iter=50, sample_posterior=True)
         for i in range(num_outputs):
             data_copy = data.copy()
@@ -237,14 +239,7 @@ def complete_by_multi_v2(data, print_time=False, num_outputs=5, target_feature=N
             data_new.append(data_copy)
     else:
         print("Warning: You're using V2 multiple imputation, but didn't set a value for target_feature. Will perform V1.")
-        imputer = IterativeImputer(max_iter=50, sample_posterior=True)
-        for i in range(num_outputs):
-            data_copy = data.copy()
-            data_protected = data_copy.X[data_copy.protected].copy()
-            data_unprotected = data_copy.X.drop(columns=data_copy.protected).copy()
-            data_unprotected = pd.DataFrame(imputer.fit_transform(data_unprotected), columns=data_unprotected.columns)
-            data_copy.X = pd.concat([data_unprotected, data_protected], axis=1)
-            data_new.append(data_copy)
+        return complete_by_multi(data, print_time=print_time, num_outputs=num_outputs)
 
     if print_time:
         print("Performance Monitor: ({:.4f}s) ".format(time.process_time() - tt) + inspect.stack()[0][3])
