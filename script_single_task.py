@@ -182,11 +182,35 @@ def test_imputation(X, y, protected_features, completer_func=None, multi=False):
         if completer_func:
         # do imputations on training set and test set individually
             data_incomplete = Dataset("tmp", X_train, y_train, auto_convert=False, protected_features=protected_features)
-            data_complete = completer_func(data_incomplete)
+            try:
+                data_complete = completer_func(data_incomplete)
+            except Exception as e:
+                print(e)
+                for clf_name in clfs.keys():
+                    rawdata_cv[clf_name].append([])
+                fold += 1
+                continue
+            if ((not multi) and data_complete.X.isnull().sum().sum() > 0) or (multi and sum([x.isnull().sum().sum() for x in data_complete]) > 0):
+                for clf_name in clfs.keys():
+                    rawdata_cv[clf_name].append([])
+                fold += 1
+                continue
             X_train = [m.X.copy() for m in data_complete] if multi else data_complete.X.copy()
             y_train = data_complete[0].y.copy() if multi else data_complete.y.copy()
             data_incomplete = Dataset("tmp", X_test, y_test, auto_convert=False, protected_features=protected_features)
-            data_complete = completer_func(data_incomplete)
+            try:
+                data_complete = completer_func(data_incomplete)
+            except Exception as e:
+                print(e)
+                for clf_name in clfs.keys():
+                    rawdata_cv[clf_name].append([])
+                fold += 1
+                continue
+            if ((not multi) and data_complete.X.isnull().sum().sum() > 0) or (multi and sum([x.isnull().sum().sum() for x in data_complete]) > 0):
+                for clf_name in clfs.keys():
+                    rawdata_cv[clf_name].append([])
+                fold += 1
+                continue
             X_test = [m.X.copy() for m in data_complete] if multi else data_complete.X.copy()
             y_test = data_complete[0].y.copy() if multi else data_complete.y.copy()
         # get result for each classifier
