@@ -206,7 +206,7 @@ def test_imputation(X, y, protected_features, completer_func=None, multi=False):
                     rawdata_cv[clf_name].append([])
                 fold += 1
                 continue
-            if ((not multi) and data_complete.X.isnull().sum().sum() > 0) or (multi and sum([x.isnull().sum().sum() for x in data_complete]) > 0):
+            if ((not multi) and data_complete.X.isnull().sum().sum() > 0) or (multi and sum([dd.X.isnull().sum().sum() for dd in data_complete]) > 0):
                 for clf_name in clfs.keys():
                     rawdata_cv[clf_name].append([])
                 fold += 1
