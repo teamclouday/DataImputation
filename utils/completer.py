@@ -53,7 +53,7 @@ def complete_by_mean_col_v2(data, print_time=False, target_feature=None):
             data_unprotected = data.X[data.X[target_feature] == value].drop(columns=data.protected).copy()
             data_unprotected = data_unprotected.fillna(data_train.mean()).astype(data.types.drop(data.protected))
             if data_unprotected.isnull().sum().sum() > 0:
-                data_unprotected.fillna(data_unprotected.mean()).astype(data.types.drop(data.protected))
+                data_unprotected = data_unprotected.fillna(data_unprotected.mean()).astype(data.types.drop(data.protected))
             imputed_parts.append(pd.concat([data_unprotected, data_protected], axis=1))
         data_X = imputed_parts[0]
         idx = 1
