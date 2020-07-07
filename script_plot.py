@@ -45,6 +45,7 @@ def plot_func(data, method_name, file_name=None, yscale=None, plot_error=True):
     plot_bias2 = {}
     plot_acc = {}
     plot_f1 = {}
+    counter = 0
     for clf in classifiers:
         plot_bias1[clf] = [[], []] # [[actual averaged data], [data for error bar]]
         plot_bias2[clf] = [[], []]
@@ -67,12 +68,15 @@ def plot_func(data, method_name, file_name=None, yscale=None, plot_error=True):
                         w = f1score(cf_m)
                     except Exception as e:
                         print("Error: {}".format(e))
+                        counter += 1
                         continue
                     if (y > 0) and (z > 0) and len(w) == 2:
                         tmp_data_processed[0].append(x)
                         tmp_data_processed[1].append(y)
                         tmp_data_processed[2].append(z)
                         tmp_data_processed[3].append(np.mean(w))
+                    else:
+                        counter += 1
                 data_processed[0].append(np.mean(tmp_data_processed[0]))
                 data_processed[1].append(np.mean(tmp_data_processed[1]))
                 data_processed[2].append(np.mean(tmp_data_processed[2]))
@@ -85,6 +89,8 @@ def plot_func(data, method_name, file_name=None, yscale=None, plot_error=True):
             plot_bias2[clf][1].append(np.std(data_processed[2]))
             plot_f1[clf][0].append(np.mean(data_processed[3]))
             plot_f1[clf][1].append(np.std(data_processed[3]))
+    if counter > 0:
+        print("Warning: out of {} folds, {} are dropped".format(len(data)*len(classifiers)*10, counter))
     plot_gap = 0.002
     fig, axes = plt.subplots(4, figsize=(10, 20))
     # axes[0] shows bias1
