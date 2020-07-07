@@ -28,7 +28,7 @@ from sklearn.ensemble import RandomForestClassifier
 from sklearn.linear_model import LogisticRegression
 from sklearn.tree import DecisionTreeClassifier
 from sklearn.neural_network import MLPClassifier
-from sklearn.model_selection import KFold
+from sklearn.model_selection import StratifiedShuffleSplit
 from sklearn.metrics import confusion_matrix
 
 from imblearn.over_sampling import SVMSMOTE
@@ -172,9 +172,9 @@ def test_imputation(X, y, protected_features, completer_func=None, multi=False):
         "Tree": [],
         "MLP": [],
     }
-    kf = KFold(n_splits=10, shuffle=True)
+    kf = StratifiedShuffleSplit(n_splits=10)
     fold = 1
-    for train_idx, test_idx in kf.split(X):
+    for train_idx, test_idx in kf.split(X, y):
         X_train, X_test = X.iloc[train_idx], X.iloc[test_idx]
         y_train, y_test = y[train_idx], y[test_idx]
         X_test = X_test.reset_index(drop=True)
