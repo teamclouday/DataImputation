@@ -8,32 +8,39 @@ import numpy as np
 import matplotlib.pyplot as plt
 from matplotlib.lines import Line2D
 
-from script_single_task import random_ratios, RUN_MEAN_V1, RUN_MEAN_V2, RUN_MULTI_V1, RUN_MULTI_V2, RUN_SIMILAR_V1, RUN_SIMILAR_V2
+from script_single_task import random_ratios
+from script_single_task import RUN_MEAN_V1, RUN_MEAN_V2, RUN_MULTI_V1, RUN_MULTI_V2, RUN_SIMILAR_V1, RUN_SIMILAR_V2
+from script_single_task import acc, f1score, bias1, bias2
 
-iter_per_ratio = 300
+iter_per_ratio = 200
 
-TRANSFORM_OUTPUTS       = False
+NAME_DATASETS = ["adult", "compas", "titanic"]
+NAME_TARGETS  = ["acc", "f1"]
 
-PLOT_CREATE_MEAN_V1     = False
-PLOT_CREATE_MEAN_V2     = False
-PLOT_CREATE_SIMILAR_V1  = False
-PLOT_CREATE_SIMILAR_V2  = False
-PLOT_CREATE_MULTI_V1    = False
-PLOT_CREATE_MULTI_V2    = False
+PLOT_ADULT_ACC          = False
+PLOT_ADULT_F1           = False
+PLOT_COMPAS_ACC         = False
+PLOT_COMPAS_F1          = False
+PLOT_TITANIC_ACC        = True
+PLOT_TITANIC_F1         = False
 
-PLOT_PARETO_FRONTIER_V1 = False
-PLOT_PARETO_FRONTIER_V2 = False
+TRANSFORM_OUTPUTS       = True
 
-PLOT_DEBUG_FUNCTION     = True
+PLOT_CREATE_MEAN_V1     = True
+PLOT_CREATE_MEAN_V2     = True
+PLOT_CREATE_SIMILAR_V1  = True
+PLOT_CREATE_SIMILAR_V2  = True
+PLOT_CREATE_MULTI_V1    = True
+PLOT_CREATE_MULTI_V2    = True
+
+PLOT_PARETO_FRONTIER_V1 = True
+PLOT_PARETO_FRONTIER_V2 = True
+
+PLOT_DEBUG_FUNCTION     = False
 
 def plot_func(data, method_name, file_name=None, yscale=None, plot_error=True):
     assert len(data) == (iter_per_ratio * len(random_ratios))
     classifiers = ["KNN", "LinearSVC", "SVC", "Forest", "LogReg", "Tree", "MLP"]
-    d_acc   = [x[0] for x in data]
-    d_bias1 = [x[1] for x in data]
-    d_bias2 = [x[2] for x in data]
-    d_f1    = [x[3] for x in data]
-    assert len(d_acc) == len(d_bias1) == len(d_bias2) == len(d_f1)
     plot_bias1 = {}
     plot_bias2 = {}
     plot_acc = {}
@@ -43,20 +50,24 @@ def plot_func(data, method_name, file_name=None, yscale=None, plot_error=True):
         plot_bias2[clf] = [[], []]
         plot_acc[clf]   = [[], []]
         plot_f1[clf]    = [[], []]
-    for i in range(0, len(d_acc), iter_per_ratio):
-        i_acc = d_acc[i:(i+iter_per_ratio)]
-        i_bias1 = d_bias1[i:(i+iter_per_ratio)]
-        i_bias2 = d_bias2[i:(i+iter_per_ratio)]
-        i_f1 = d_f1[i:(i+iter_per_ratio)]
+    for i in range(0, len(data), iter_per_ratio):
+        i_data = data[i:(i+iter_per_ratio)]
         for clf in classifiers:
-            clf_acc = [x[clf] for x in i_acc]
-            clf_bias1 = [x[clf] for x in i_bias1]
-            clf_bias2 = [x[clf] for x in i_bias2]
-            clf_f1 = [x[clf] for x in i_f1]
+            clf_data = [x[clf] for x in i_data]
             data_processed = [[], [], [], []] # [[acc avg], [bias1], [bias2], [f1 score]], remove -1, [None] cases
-            for xx,yy,zz,ww in zip(clf_acc, clf_bias1, clf_bias2, clf_f1):
+            for cf_matrices in clf_data:
                 tmp_data_processed = [[], [], [], []] #  [[acc each fold], [bias1], [bias2], [f1 score]], remove -1, [None] cases
-                for x,y,z,w in zip(xx, yy, zz, ww):
+                for cf_m in cf_matrices:
+                    if len(cf_m) < 1:
+                        continue
+                    try:
+                        x = acc(cf_m)
+                        y = bias1(cf_m)
+                        z = bias2(cf_m)
+                        w = f1score(cf_m)
+                    except Exception as e:
+                        print("Error: {}".format(e))
+                        continue
                     if (y > 0) and (z > 0) and len(w) == 2:
                         tmp_data_processed[0].append(x)
                         tmp_data_processed[1].append(y)
@@ -167,17 +178,27 @@ def plot_func_pareto_front(data, title, file_name=None, y_scale=None, switch=Fal
         d_data_multi_v1     = data_multi_v1[i:(i+iter_per_ratio)]
         d_data_multi_v2     = data_multi_v2[i:(i+iter_per_ratio)]
         for clf in classifiers:
-            clf_data_mean_v1    = [(x[0][clf], x[1][clf], x[2][clf], x[3][clf]) for x in d_data_mean_v1]
-            clf_data_mean_v2    = [(x[0][clf], x[1][clf], x[2][clf], x[3][clf]) for x in d_data_mean_v2]
-            clf_data_similar_v1 = [(x[0][clf], x[1][clf], x[2][clf], x[3][clf]) for x in d_data_similar_v1]
-            clf_data_similar_v2 = [(x[0][clf], x[1][clf], x[2][clf], x[3][clf]) for x in d_data_similar_v2]
-            clf_data_multi_v1   = [(x[0][clf], x[1][clf], x[2][clf], x[3][clf]) for x in d_data_multi_v1]
-            clf_data_multi_v2   = [(x[0][clf], x[1][clf], x[2][clf], x[3][clf]) for x in d_data_multi_v2]
+            clf_data_mean_v1    = [x[clf] for x in d_data_mean_v1]
+            clf_data_mean_v2    = [x[clf] for x in d_data_mean_v2]
+            clf_data_similar_v1 = [x[clf] for x in d_data_similar_v1]
+            clf_data_similar_v2 = [x[clf] for x in d_data_similar_v2]
+            clf_data_multi_v1   = [x[clf] for x in d_data_multi_v1]
+            clf_data_multi_v2   = [x[clf] for x in d_data_multi_v2]
             # process mean_v1 method
             data_processed = [[], [], [], []] # [[acc], [bias1], [bias2], [f1 score]]
-            for xx, yy, zz, ww in clf_data_mean_v1:
+            for cf_matrices in clf_data_mean_v1:
                 tmp_processed = [[], [], [], []] # [[acc], [bias1], [bias2], [f1 score]]
-                for x, y, z, w in zip(xx, yy, zz, ww):
+                for cf_m in cf_matrices:
+                    if len(cf_m) < 1:
+                        continue
+                    try:
+                        x = acc(cf_m)
+                        y = bias1(cf_m)
+                        z = bias2(cf_m)
+                        w = f1score(cf_m)
+                    except Exception as e:
+                        print("Error: {}".format(e))
+                        continue
                     if (y > 0) and (z > 0) and len(w) == 2:
                         tmp_processed[0].append(x)
                         tmp_processed[1].append(y)
@@ -193,9 +214,19 @@ def plot_func_pareto_front(data, title, file_name=None, y_scale=None, switch=Fal
             plot_data_mean_v1[clf][3].append(np.mean(data_processed[3]))
             # process mean_v2 method
             data_processed = [[], [], [], []] # [[acc], [bias1], [bias2], [f1 score]]
-            for xx, yy, zz, ww in clf_data_mean_v2:
+            for cf_matrices in clf_data_mean_v2:
                 tmp_processed = [[], [], [], []] # [[acc], [bias1], [bias2], [f1 score]]
-                for x, y, z, w in zip(xx, yy, zz, ww):
+                for cf_m in cf_matrices:
+                    if len(cf_m) < 1:
+                        continue
+                    try:
+                        x = acc(cf_m)
+                        y = bias1(cf_m)
+                        z = bias2(cf_m)
+                        w = f1score(cf_m)
+                    except Exception as e:
+                        print("Error: {}".format(e))
+                        continue
                     if (y > 0) and (z > 0) and len(w) == 2:
                         tmp_processed[0].append(x)
                         tmp_processed[1].append(y)
@@ -211,9 +242,19 @@ def plot_func_pareto_front(data, title, file_name=None, y_scale=None, switch=Fal
             plot_data_mean_v2[clf][3].append(np.mean(data_processed[3]))
             # process similar_v1 method
             data_processed = [[], [], [], []] # [[acc], [bias1], [bias2], [f1 score]]
-            for xx, yy, zz, ww in clf_data_similar_v1:
+            for cf_matrices in clf_data_similar_v1:
                 tmp_processed = [[], [], [], []] # [[acc], [bias1], [bias2], [f1 score]]
-                for x, y, z, w in zip(xx, yy, zz, ww):
+                for cf_m in cf_matrices:
+                    if len(cf_m) < 1:
+                        continue
+                    try:
+                        x = acc(cf_m)
+                        y = bias1(cf_m)
+                        z = bias2(cf_m)
+                        w = f1score(cf_m)
+                    except Exception as e:
+                        print("Error: {}".format(e))
+                        continue
                     if (y > 0) and (z > 0) and len(w) == 2:
                         tmp_processed[0].append(x)
                         tmp_processed[1].append(y)
@@ -229,9 +270,19 @@ def plot_func_pareto_front(data, title, file_name=None, y_scale=None, switch=Fal
             plot_data_similar_v1[clf][3].append(np.mean(data_processed[3]))
             # process similar_v2 method
             data_processed = [[], [], [], []] # [[acc], [bias1], [bias2], [f1 score]]
-            for xx, yy, zz, ww in clf_data_similar_v2:
+            for cf_matrices in clf_data_similar_v2:
                 tmp_processed = [[], [], [], []] # [[acc], [bias1], [bias2], [f1 score]]
-                for x, y, z, w in zip(xx, yy, zz, ww):
+                for cf_m in cf_matrices:
+                    if len(cf_m) < 1:
+                        continue
+                    try:
+                        x = acc(cf_m)
+                        y = bias1(cf_m)
+                        z = bias2(cf_m)
+                        w = f1score(cf_m)
+                    except Exception as e:
+                        print("Error: {}".format(e))
+                        continue
                     if (y > 0) and (z > 0) and len(w) == 2:
                         tmp_processed[0].append(x)
                         tmp_processed[1].append(y)
@@ -247,9 +298,19 @@ def plot_func_pareto_front(data, title, file_name=None, y_scale=None, switch=Fal
             plot_data_similar_v2[clf][3].append(np.mean(data_processed[3]))
             # process multi_v1 method
             data_processed = [[], [], [], []] # [[acc], [bias1], [bias2], [f1 score]]
-            for xx, yy, zz, ww in clf_data_multi_v1:
+            for cf_matrices in clf_data_multi_v1:
                 tmp_processed = [[], [], [], []] # [[acc], [bias1], [bias2], [f1 score]]
-                for x, y, z, w in zip(xx, yy, zz, ww):
+                for cf_m in cf_matrices:
+                    if len(cf_m) < 1:
+                        continue
+                    try:
+                        x = acc(cf_m)
+                        y = bias1(cf_m)
+                        z = bias2(cf_m)
+                        w = f1score(cf_m)
+                    except Exception as e:
+                        print("Error: {}".format(e))
+                        continue
                     if (y > 0) and (z > 0) and len(w) == 2:
                         tmp_processed[0].append(x)
                         tmp_processed[1].append(y)
@@ -265,9 +326,19 @@ def plot_func_pareto_front(data, title, file_name=None, y_scale=None, switch=Fal
             plot_data_multi_v1[clf][3].append(np.mean(data_processed[3]))
             # process multi_v2 method
             data_processed = [[], [], [], []] # [[acc], [bias1], [bias2], [f1 score]]
-            for xx, yy, zz, ww in clf_data_multi_v2:
+            for cf_matrices in clf_data_multi_v2:
                 tmp_processed = [[], [], [], []] # [[acc], [bias1], [bias2], [f1 score]]
-                for x, y, z, w in zip(xx, yy, zz, ww):
+                for cf_m in cf_matrices:
+                    if len(cf_m) < 1:
+                        continue
+                    try:
+                        x = acc(cf_m)
+                        y = bias1(cf_m)
+                        z = bias2(cf_m)
+                        w = f1score(cf_m)
+                    except Exception as e:
+                        print("Error: {}".format(e))
+                        continue
                     if (y > 0) and (z > 0) and len(w) == 2:
                         tmp_processed[0].append(x)
                         tmp_processed[1].append(y)
@@ -358,29 +429,37 @@ def plot_func_pareto_front(data, title, file_name=None, y_scale=None, switch=Fal
     plt.show()
 
 def compress_outputs():
-    if not os.path.exists("condor_outputs"):
-        raise Exception("condor_outputs folder not found!")
-    final_results = {}
-    if RUN_MEAN_V1: final_results["mean_v1"] = [[] for _ in range(len(random_ratios))]
-    if RUN_MEAN_V2: final_results["mean_v2"] = [[] for _ in range(len(random_ratios))]
-    if RUN_SIMILAR_V1: final_results["similar_v1"] = [[] for _ in range(len(random_ratios))]
-    if RUN_SIMILAR_V2: final_results["similar_v2"] = [[] for _ in range(len(random_ratios))]
-    if RUN_MULTI_V1: final_results["multi_v1"] = [[] for _ in range(len(random_ratios))]
-    if RUN_MULTI_V2: final_results["multi_v2"] = [[] for _ in range(len(random_ratios))]
-    # load data
-    for i in range(iter_per_ratio):
-        with open(os.path.join("condor_outputs", "output_{:0>4}.pkl".format(i)), "rb") as inFile:
-            output_data = pickle.load(inFile)
-        for key, value in output_data.items():
-            assert key in final_results.keys()
-            for j in range(len(random_ratios)):
-                final_results[key][j].append(value[j])
-    # dump data
-    for key in final_results.keys():
-        dump_data = final_results[key]
-        dump_data = [i for m in dump_data for i in m] # unpack list of list
-        with open("{}.pkl".format(key), "wb") as outFile:
-            pickle.dump(dump_data, outFile)
+    for tt in NAME_TARGETS:
+        for dd in NAME_DATASETS:
+            if not os.path.exists(os.path.join("condor_outputs", tt, dd)):
+                raise Exception("{} folder not found!".format(os.path.join("condor_outputs", tt, dd)))
+            final_results = {}
+            if RUN_MEAN_V1: final_results["mean_v1"] = [[] for _ in range(len(random_ratios))]
+            if RUN_MEAN_V2: final_results["mean_v2"] = [[] for _ in range(len(random_ratios))]
+            if RUN_SIMILAR_V1: final_results["similar_v1"] = [[] for _ in range(len(random_ratios))]
+            if RUN_SIMILAR_V2: final_results["similar_v2"] = [[] for _ in range(len(random_ratios))]
+            if RUN_MULTI_V1: final_results["multi_v1"] = [[] for _ in range(len(random_ratios))]
+            if RUN_MULTI_V2: final_results["multi_v2"] = [[] for _ in range(len(random_ratios))]
+            load_complete = True
+            # load data
+            for i in range(iter_per_ratio):
+                if not os.path.exists(os.path.join("condor_outputs", tt, dd, "output_{:0>4}.pkl".format(i))):
+                    print("{} file not found, will skip this folder".format(os.path.join("condor_outputs", tt, dd, "output_{:0>4}.pkl".format(i))))
+                    load_complete = False
+                    break
+                with open(os.path.join("condor_outputs", tt, dd, "output_{:0>4}.pkl".format(i)), "rb") as inFile:
+                    output_data = pickle.load(inFile)
+                for key, value in output_data.items():
+                    assert key in final_results.keys()
+                    for j in range(len(random_ratios)):
+                        final_results[key][j].append(value[j])
+            # dump data
+            if load_complete:
+                for key in final_results.keys():
+                    dump_data = final_results[key]
+                    dump_data = [i for m in dump_data for i in m] # unpack list of list
+                    with open(os.path.join("condor_outputs", tt, dd, "{}.pkl".format(key)), "wb") as outFile:
+                        pickle.dump(dump_data, outFile)
 
 def plot_debug_func(file_name=None):
     # data = [TN_AA, FP_AA, FN_AA, TP_AA, TN_C, FP_C, FN_C, TP_C]
@@ -490,81 +569,108 @@ def plot_debug_func(file_name=None):
         plt.savefig(file_name, transparent=False, bbox_inches='tight', pad_inches=0.1)
     plt.show()
 
+def plot_all(data_folder, plot_folder, name):
+    # generate plot for mean_v1.pkl
+    if os.path.exists(os.path.join(data_folder, "mean_v1.pkl")) and PLOT_CREATE_MEAN_V1:
+        print("Generating plot for mean_v1.pkl ({})".format(name))
+        with open(os.path.join(data_folder, "mean_v1.pkl"), "rb") as inFile:
+            data = pickle.load(inFile)
+        plot_func(data, "Complete by Mean V1 ({})".format(name), os.path.join(plot_folder, "ratio_mean_v1.png"))
+        plot_func(data, "Complete by Mean V1 ({})".format(name), os.path.join(plot_folder, "ratio_mean_v1_scaled.png"), yscale="log")
+    # generate plot for mean_v2.pkl
+    if os.path.exists(os.path.join(data_folder, "mean_v2.pkl")) and PLOT_CREATE_MEAN_V1:
+        print("Generating plot for mean_v2.pkl ({})".format(name))
+        with open(os.path.join(data_folder, "mean_v2.pkl"), "rb") as inFile:
+            data = pickle.load(inFile)
+        plot_func(data, "Complete by Mean V2 ({})".format(name), os.path.join(plot_folder, "ratio_mean_v2.png"))
+        plot_func(data, "Complete by Mean V2 ({})".format(name), os.path.join(plot_folder, "ratio_mean_v2_scaled.png"), yscale="log")
+    # generate plot for similar_v1.pkl
+    if os.path.exists(os.path.join(data_folder, "similar_v1.pkl")) and PLOT_CREATE_SIMILAR_V1:
+        print("Generating plot for similar_v1.pkl ({})".format(name))
+        with open(os.path.join(data_folder, "similar_v1.pkl"), "rb") as inFile:
+            data = pickle.load(inFile)
+        plot_func(data, "Complete by Similar V1 ({})".format(name), os.path.join(plot_folder, "ratio_similar_v1.png"))
+        plot_func(data, "Complete by Similar V1 ({})".format(name), os.path.join(plot_folder, "ratio_similar_v1_scaled.png"), yscale="log")
+    # generate plot for similar_v2.pkl
+    if os.path.exists(os.path.join(data_folder, "similar_v2.pkl")) and PLOT_CREATE_SIMILAR_V2:
+        print("Generating plot for similar_v2.pkl ({})".format(name))
+        with open(os.path.join(data_folder, "similar_v2.pkl"), "rb") as inFile:
+            data = pickle.load(inFile)
+        plot_func(data, "Complete by Similar V2 ({})".format(name), os.path.join(plot_folder, "ratio_similar_v2.png"))
+        plot_func(data, "Complete by Similar V2 ({})".format(name), os.path.join(plot_folder, "ratio_similar_v2_scaled.png"), yscale="log")
+    # generate plot for multi_v1.pkl
+    if os.path.exists(os.path.join(data_folder, "multi_v1.pkl")) and PLOT_CREATE_MULTI_V1:
+        print("Generating plot for multi_v1.pkl ({})".format(name))
+        with open(os.path.join(data_folder, "multi_v1.pkl"), "rb") as inFile:
+            data = pickle.load(inFile)
+        plot_func(data, "Complete by Multiple Imputation V1 ({})".format(name), os.path.join(plot_folder, "ratio_multi_v1.png"))
+        plot_func(data, "Complete by Multiple Imputation V1 ({})".format(name), os.path.join(plot_folder, "ratio_multi_v1_scaled.png"), yscale="log")
+    # generate plot for multi_v2.pkl
+    if os.path.exists(os.path.join(data_folder, "multi_v2.pkl")) and PLOT_CREATE_MULTI_V1:
+        print("Generating plot for multi_v2.pkl ({})".format(name))
+        with open(os.path.join(data_folder, "multi_v2.pkl"), "rb") as inFile:
+            data = pickle.load(inFile)
+        plot_func(data, "Complete by Multiple Imputation V2 ({})".format(name), os.path.join(plot_folder, "ratio_multi_v2.png"))
+        plot_func(data, "Complete by Multiple Imputation V2 ({})".format(name), os.path.join(plot_folder, "ratio_multi_v2_scaled.png"), yscale="log")
+    # generate pareto front plots
+    if  os.path.exists(os.path.join(data_folder, "mean_v1.pkl")) and \
+        os.path.exists(os.path.join(data_folder, "mean_v2.pkl")) and \
+        os.path.exists(os.path.join(data_folder, "similar_v1.pkl")) and \
+        os.path.exists(os.path.join(data_folder, "similar_v2.pkl")) and \
+        os.path.exists(os.path.join(data_folder, "multi_v1.pkl")) and \
+        os.path.exists(os.path.join(data_folder, "multi_v2.pkl")) and \
+        (PLOT_PARETO_FRONTIER_V1 or PLOT_PARETO_FRONTIER_V2):
+        data = {}
+        with open(os.path.join(data_folder, "mean_v1.pkl"), "rb") as inFile:
+            data["mean_v1"] = pickle.load(inFile)
+        with open(os.path.join(data_folder, "mean_v2.pkl"), "rb") as inFile:
+            data["mean_v2"] = pickle.load(inFile)
+        with open(os.path.join(data_folder, "similar_v1.pkl"), "rb") as inFile:
+            data["similar_v1"] = pickle.load(inFile)
+        with open(os.path.join(data_folder, "similar_v2.pkl"), "rb") as inFile:
+            data["similar_v2"] = pickle.load(inFile)
+        with open(os.path.join(data_folder, "multi_v1.pkl"), "rb") as inFile:
+            data["multi_v1"] = pickle.load(inFile)
+        with open(os.path.join(data_folder, "multi_v2.pkl"), "rb") as inFile:
+            data["multi_v2"] = pickle.load(inFile)
+        if PLOT_PARETO_FRONTIER_V1:
+            print("Generate plots for pareto front V1 ({})".format(name))
+            plot_func_pareto_front(data, "Pareto Front (Accuracy) ({})".format(name), os.path.join(plot_folder, "pareto_front_v1.png"))
+            plot_func_pareto_front(data, "Pareto Front (Accuracy) ({})".format(name), os.path.join(plot_folder, "pareto_front_scaled_v1.png"), y_scale="log")
+            plot_func_pareto_front(data, "Pareto Front (Accuracy) ({})".format(name), os.path.join(plot_folder, "pareto_front_v1_switched.png"), switch=True)
+            plot_func_pareto_front(data, "Pareto Front (Accuracy) ({})".format(name), os.path.join(plot_folder, "pareto_front_scaled_v1_switched.png"), y_scale="log", switch=True)
+        if PLOT_PARETO_FRONTIER_V2:
+            print("Generate plots for pareto front V2")
+            plot_func_pareto_front(data, "Pareto Front (F1 Score) ({})".format(name), os.path.join(plot_folder, "pareto_front_v2.png"), x_acc=False)
+            plot_func_pareto_front(data, "Pareto Front (F1 Score) ({})".format(name), os.path.join(plot_folder, "pareto_front_scaled_v2.png"), y_scale="log", x_acc=False)
+            plot_func_pareto_front(data, "Pareto Front (F1 Score) ({})".format(name), os.path.join(plot_folder, "pareto_front_v2_switched.png"), switch=True, x_acc=False)
+            plot_func_pareto_front(data, "Pareto Front (F1 Score) ({})".format(name), os.path.join(plot_folder, "pareto_front_scaled_v2_switched.png"), y_scale="log", switch=True, x_acc=False)
+
 if __name__=="__main__":
+    if not os.path.exists("ratio_analysis_plots"):
+        os.makedirs("ratio_analysis_plots")
+    for tt in NAME_TARGETS:
+        if not os.path.exists(os.path.join("ratio_analysis_plots", tt)):
+            os.makedirs(os.path.join("ratio_analysis_plots", tt))
+            for dd in NAME_DATASETS:
+                if not os.path.exists(os.path.join("ratio_analysis_plots", tt, dd)):
+                    os.makedirs(os.path.join("ratio_analysis_plots", tt, dd))
+
     if TRANSFORM_OUTPUTS:
         compress_outputs()
 
     if PLOT_DEBUG_FUNCTION:
         plot_debug_func(file_name=os.path.join("ratio_analysis_plots", "debug_plot_mean_v1.png"))
 
-    if not os.path.exists("ratio_analysis_plots"):
-        os.makedirs("ratio_analysis_plots")
-    # generate plot for mean_v1.pkl
-    if os.path.exists("mean_v1.pkl") and PLOT_CREATE_MEAN_V1:
-        print("Generating plot for mean_v1.pkl")
-        with open("mean_v1.pkl", "rb") as inFile:
-            data = pickle.load(inFile)
-        plot_func(data, "Complete by Mean V1", "ratio_analysis_plots/ratio_mean_v1.png")
-        plot_func(data, "Complete by Mean V1", "ratio_analysis_plots/ratio_mean_v1_scaled.png", yscale="log")
-    # generate plot for mean_v2.pkl
-    if os.path.exists("mean_v2.pkl") and PLOT_CREATE_MEAN_V1:
-        print("Generating plot for mean_v2.pkl")
-        with open("mean_v2.pkl", "rb") as inFile:
-            data = pickle.load(inFile)
-        plot_func(data, "Complete by Mean V2", "ratio_analysis_plots/ratio_mean_v2.png")
-        plot_func(data, "Complete by Mean V2", "ratio_analysis_plots/ratio_mean_v2_scaled.png", yscale="log")
-    # generate plot for similar_v1.pkl
-    if os.path.exists("similar_v1.pkl") and PLOT_CREATE_SIMILAR_V1:
-        print("Generating plot for similar_v1.pkl")
-        with open("similar_v1.pkl", "rb") as inFile:
-            data = pickle.load(inFile)
-        plot_func(data, "Complete by Similar V1", "ratio_analysis_plots/ratio_similar_v1.png")
-        plot_func(data, "Complete by Similar V1", "ratio_analysis_plots/ratio_similar_v1_scaled.png", yscale="log")
-    # generate plot for similar_v2.pkl
-    if os.path.exists("similar_v2.pkl") and PLOT_CREATE_SIMILAR_V2:
-        print("Generating plot for similar_v2.pkl")
-        with open("similar_v2.pkl", "rb") as inFile:
-            data = pickle.load(inFile)
-        plot_func(data, "Complete by Similar V2", "ratio_analysis_plots/ratio_similar_v2.png")
-        plot_func(data, "Complete by Similar V2", "ratio_analysis_plots/ratio_similar_v2_scaled.png", yscale="log")
-    # generate plot for multi_v1.pkl
-    if os.path.exists("multi_v1.pkl") and PLOT_CREATE_MULTI_V1:
-        print("Generating plot for multi_v1.pkl")
-        with open("multi_v1.pkl", "rb") as inFile:
-            data = pickle.load(inFile)
-        plot_func(data, "Complete by Multiple Imputation V1", "ratio_analysis_plots/ratio_multi_v1.png")
-        plot_func(data, "Complete by Multiple Imputation V1", "ratio_analysis_plots/ratio_multi_v1_scaled.png", yscale="log")
-    # generate plot for multi_v2.pkl
-    if os.path.exists("multi_v2.pkl") and PLOT_CREATE_MULTI_V1:
-        print("Generating plot for multi_v2.pkl")
-        with open("multi_v2.pkl", "rb") as inFile:
-            data = pickle.load(inFile)
-        plot_func(data, "Complete by Multiple Imputation V2", "ratio_analysis_plots/ratio_multi_v2.png")
-        plot_func(data, "Complete by Multiple Imputation V2", "ratio_analysis_plots/ratio_multi_v2_scaled.png", yscale="log")
-    # generate pareto front plots
-    if os.path.exists("mean_v1.pkl") and os.path.exists("mean_v2.pkl") and os.path.exists("similar_v1.pkl") and os.path.exists("similar_v2.pkl") and os.path.exists("multi_v1.pkl") and os.path.exists("multi_v2.pkl") and (PLOT_PARETO_FRONTIER_V1 or PLOT_PARETO_FRONTIER_V2):
-        data = {}
-        with open("mean_v1.pkl", "rb") as inFile:
-            data["mean_v1"] = pickle.load(inFile)
-        with open("mean_v2.pkl", "rb") as inFile:
-            data["mean_v2"] = pickle.load(inFile)
-        with open("similar_v1.pkl", "rb") as inFile:
-            data["similar_v1"] = pickle.load(inFile)
-        with open("similar_v2.pkl", "rb") as inFile:
-            data["similar_v2"] = pickle.load(inFile)
-        with open("multi_v1.pkl", "rb") as inFile:
-            data["multi_v1"] = pickle.load(inFile)
-        with open("multi_v2.pkl", "rb") as inFile:
-            data["multi_v2"] = pickle.load(inFile)
-        if PLOT_PARETO_FRONTIER_V1:
-            print("Generate plots for pareto front V1")
-            plot_func_pareto_front(data, "Pareto Front (Accuracy)", "ratio_analysis_plots/pareto_front_v1.png")
-            plot_func_pareto_front(data, "Pareto Front (Accuracy)", "ratio_analysis_plots/pareto_front_scaled_v1.png", y_scale="log")
-            plot_func_pareto_front(data, "Pareto Front (Accuracy)", "ratio_analysis_plots/pareto_front_v1_switched.png", switch=True)
-            plot_func_pareto_front(data, "Pareto Front (Accuracy)", "ratio_analysis_plots/pareto_front_scaled_v1_switched.png", y_scale="log", switch=True)
-        if PLOT_PARETO_FRONTIER_V2:
-            print("Generate plots for pareto front V2")
-            plot_func_pareto_front(data, "Pareto Front (F1 Score)", "ratio_analysis_plots/pareto_front_v2.png", x_acc=False)
-            plot_func_pareto_front(data, "Pareto Front (F1 Score)", "ratio_analysis_plots/pareto_front_scaled_v2.png", y_scale="log", x_acc=False)
-            plot_func_pareto_front(data, "Pareto Front (F1 Score)", "ratio_analysis_plots/pareto_front_v2_switched.png", switch=True, x_acc=False)
-            plot_func_pareto_front(data, "Pareto Front (F1 Score)", "ratio_analysis_plots/pareto_front_scaled_v2_switched.png", y_scale="log", switch=True, x_acc=False)
+    if PLOT_ADULT_ACC:
+        plot_all(os.path.join("condor_outputs", "acc", "adult"), os.path.join("ratio_analysis_plots", "acc", "adult"), "adult acc")
+    if PLOT_ADULT_F1:
+        plot_all(os.path.join("condor_outputs", "f1", "adult"), os.path.join("ratio_analysis_plots", "f1", "adult"), "adult f1")
+    if PLOT_COMPAS_ACC:
+        plot_all(os.path.join("condor_outputs", "acc", "compas"), os.path.join("ratio_analysis_plots", "acc", "compas"), "compas acc")
+    if PLOT_COMPAS_F1:
+        plot_all(os.path.join("condor_outputs", "f1", "compas"), os.path.join("ratio_analysis_plots", "f1", "compas"), "compas f1")
+    if PLOT_TITANIC_ACC:
+        plot_all(os.path.join("condor_outputs", "acc", "titanic"), os.path.join("ratio_analysis_plots", "acc", "titanic"), "titanic acc")
+    if PLOT_TITANIC_F1:
+        plot_all(os.path.join("condor_outputs", "f1", "titanic"), os.path.join("ratio_analysis_plots", "f1", "titanic"), "titanic f1")
