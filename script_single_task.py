@@ -75,7 +75,7 @@ def bias2(data):
     FNR_A = data[2] / (data[2] + data[3])
     FPR_B  = data[5] / (data[5] + data[4])
     FNR_B  = data[6] / (data[6] + data[7])
-    if FNR_A == 0 or FPR_B == 0: return -1 # mark error situation
+    if FNR_B == 0 or FPR_B == 0: return -1 # mark error situation
     bias = (FPR_A / FPR_B) - (FNR_A / FNR_B)
     return abs(bias)
 
