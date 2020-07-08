@@ -76,7 +76,7 @@
     "titanic": {
         "KNN": {
             "leaf_size": 5,
-            "n_neighbors": 2
+            "n_neighbors": 100
         },
         "LinearSVC": {
             "C": 1,
@@ -84,30 +84,30 @@
             "tol": 0.0001
         },
         "SVC": {
-            "C": 10,
+            "C": 1,
             "max_iter": 1000,
-            "tol": 0.01
+            "tol": 0.1
         },
         "Forest": {
-            "max_depth": null,
-            "min_samples_leaf": 10,
-            "n_estimators": 100
+            "max_depth": 50,
+            "min_samples_leaf": 1,
+            "n_estimators": 50
         },
         "LogReg": {
-            "C": 100.0,
+            "C": 0.1,
             "max_iter": 1000,
             "tol": 1e-06
         },
         "Tree": {
             "max_depth": null,
             "max_leaf_nodes": 10,
-            "min_samples_leaf": 5
+            "min_samples_leaf": 10
         },
         "MLP": {
-            "alpha": 0.0001,
-            "hidden_layer_sizes": [1000],
-            "learning_rate_init": 0.01,
-            "max_iter": 200
+            "alpha": 0.001,
+            "hidden_layer_sizes": [10],
+            "learning_rate_init": 0.001,
+            "max_iter": 1000
         }
     }
 }
