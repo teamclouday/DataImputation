@@ -5,6 +5,7 @@ import json
 import time
 import warnings
 warnings.filterwarnings('ignore')
+os.environ["PYTHONWARNINGS"] = "ignore"
 
 import numpy as np
 import pandas as pd
@@ -46,7 +47,6 @@ def prepare_datasets():
     results["adult"] = a_data
     # titanic dataset
     t_data = create_titanic_dataset()
-    t_data.X.drop(columns=["Cabin"], inplace=True)
     tmp_concat = pd.concat([t_data.X, pd.DataFrame(t_data.y, columns=["_TARGET_"])], axis=1)
     tmp_concat.dropna(inplace=True)
     tmp_concat.reset_index(drop=True, inplace=True)
