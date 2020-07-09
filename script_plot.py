@@ -652,7 +652,7 @@ def plot_all(data_folder, plot_folder, name):
             plot_func_pareto_front(data, "Pareto Front (Accuracy) ({})".format(name), os.path.join(plot_folder, "pareto_front_v1_switched.png"), switch=True)
             plot_func_pareto_front(data, "Pareto Front (Accuracy) ({})".format(name), os.path.join(plot_folder, "pareto_front_scaled_v1_switched.png"), y_scale="log", switch=True)
         if PLOT_PARETO_FRONTIER_V2:
-            print("Generate plots for pareto front V2")
+            print("Generate plots for pareto front V2 ({})".format(name))
             plot_func_pareto_front(data, "Pareto Front (F1 Score) ({})".format(name), os.path.join(plot_folder, "pareto_front_v2.png"), x_acc=False)
             plot_func_pareto_front(data, "Pareto Front (F1 Score) ({})".format(name), os.path.join(plot_folder, "pareto_front_scaled_v2.png"), y_scale="log", x_acc=False)
             plot_func_pareto_front(data, "Pareto Front (F1 Score) ({})".format(name), os.path.join(plot_folder, "pareto_front_v2_switched.png"), switch=True, x_acc=False)
