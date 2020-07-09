@@ -296,7 +296,7 @@ def create_titanic_dataset(print_time=False):
     if print_time:
         tt = time.process_time()
     data = pd.read_csv(os.path.join("dataset", "titanic", "train.csv"))
-    X = data.drop(["Survived", "Cabin"], axis=1)
+    X = data.drop(["Survived", "Cabin", "PassengerId", "Ticket"], axis=1)
     X["Name"] = X["Name"].apply(lambda x: x.split(",")[1].split()[0])
     y = data[["Survived"]].copy().to_numpy().ravel()
     protected_features = ["Sex"]
