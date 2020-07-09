@@ -5,3 +5,4 @@ condor_outputs/*
 *.pkl
 */*.csv
 .vscode/*
+nouse/*
