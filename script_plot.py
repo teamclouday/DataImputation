@@ -19,10 +19,10 @@ NAME_TARGETS  = ["acc", "f1"]
 
 PLOT_ADULT_ACC          = False
 PLOT_ADULT_F1           = False
-PLOT_COMPAS_ACC         = False
+PLOT_COMPAS_ACC         = True
 PLOT_COMPAS_F1          = False
 PLOT_TITANIC_ACC        = False
-PLOT_TITANIC_F1         = True
+PLOT_TITANIC_F1         = False
 
 TRANSFORM_OUTPUTS       = True
 
@@ -447,6 +447,12 @@ def compress_outputs():
             if RUN_MULTI_V1: final_results["multi_v1"] = [[] for _ in range(len(random_ratios))]
             if RUN_MULTI_V2: final_results["multi_v2"] = [[] for _ in range(len(random_ratios))]
             load_complete = True
+            need_reload = False
+            for key in final_results.keys():
+                if not os.path.exists(os.path.join("condor_outputs", tt, dd, "{}.pkl".format(key))):
+                    need_reload = True
+            if not need_reload:
+                continue
             # load data
             for i in range(iter_per_ratio):
                 if not os.path.exists(os.path.join("condor_outputs", tt, dd, "output_{:0>4}.pkl".format(i))):
