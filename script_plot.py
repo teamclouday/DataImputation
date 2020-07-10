@@ -19,9 +19,9 @@ NAME_TARGETS  = ["acc", "f1"]
 
 PLOT_ADULT_ACC          = False
 PLOT_ADULT_F1           = False
-PLOT_COMPAS_ACC         = True
+PLOT_COMPAS_ACC         = False
 PLOT_COMPAS_F1          = False
-PLOT_TITANIC_ACC        = False
+PLOT_TITANIC_ACC        = True
 PLOT_TITANIC_F1         = False
 
 TRANSFORM_OUTPUTS       = True
