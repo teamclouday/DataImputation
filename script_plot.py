@@ -17,12 +17,14 @@ iter_per_ratio = 200
 NAME_DATASETS = ["adult", "compas", "titanic"]
 NAME_TARGETS  = ["acc", "f1"]
 
+INCOMPLETE_MODE = False
+
 PLOT_ADULT_ACC          = False
 PLOT_ADULT_F1           = False
 PLOT_COMPAS_ACC         = False
-PLOT_COMPAS_F1          = False
+PLOT_COMPAS_F1          = True
 PLOT_TITANIC_ACC        = False
-PLOT_TITANIC_F1         = True
+PLOT_TITANIC_F1         = False
 
 TRANSFORM_OUTPUTS       = True
 
@@ -39,7 +41,8 @@ PLOT_PARETO_FRONTIER_V2 = True
 PLOT_DEBUG_FUNCTION     = False
 
 def plot_func(data, method_name, file_name=None, yscale=None, plot_error=True):
-    assert len(data) == (iter_per_ratio * len(random_ratios))
+    if not INCOMPLETE_MODE:
+        assert len(data) == (iter_per_ratio * len(random_ratios))
     classifiers = ["KNN", "LinearSVC", "SVC", "Forest", "LogReg", "Tree", "MLP"]
     plot_bias1 = {}
     plot_bias2 = {}
@@ -51,8 +54,9 @@ def plot_func(data, method_name, file_name=None, yscale=None, plot_error=True):
         plot_bias2[clf] = [[], []]
         plot_acc[clf]   = [[], []]
         plot_f1[clf]    = [[], []]
-    for i in range(0, len(data), iter_per_ratio):
-        i_data = data[i:(i+iter_per_ratio)]
+    iterations = int(len(data) / len(random_ratios))
+    for i in range(0, len(data), iterations):
+        i_data = data[i:(i+iterations)]
         for clf in classifiers:
             clf_data = [x[clf] for x in i_data]
             data_processed = [[], [], [], []] # [[acc avg], [bias1], [bias2], [f1 score]], remove -1, [None] cases
@@ -161,7 +165,8 @@ def plot_func_pareto_front(data, title, file_name=None, y_scale=None, switch=Fal
     plot_colors = ["red", "green", "blue", "gold", "darkorange", "grey", "purple"]
     plot_markers = ["o", "s", "*", "^", "P", "v", "X"]
     ratio_dot_size      = [(x+1)*3 for x in range(len(random_ratios))]
-    assert len(data_mean_v1) == len(data_mean_v2) == len(data_similar_v1) == len(data_similar_v2) == len(data_multi_v1) == len(data_multi_v2) == (iter_per_ratio * len(random_ratios))
+    if not INCOMPLETE_MODE:
+        assert len(data_mean_v1) == len(data_mean_v2) == len(data_similar_v1) == len(data_similar_v2) == len(data_multi_v1) == len(data_multi_v2) == (iter_per_ratio * len(random_ratios))
     # prepare data for plotting
     plot_data_mean_v1       = {}
     plot_data_mean_v2       = {}
@@ -176,13 +181,14 @@ def plot_func_pareto_front(data, title, file_name=None, y_scale=None, switch=Fal
         plot_data_similar_v2[clf]   = ([], [], [], [])
         plot_data_multi_v1[clf]     = ([], [], [], [])
         plot_data_multi_v2[clf]     = ([], [], [], [])
-    for i in range(0, len(data_mean_v1), iter_per_ratio):
-        d_data_mean_v1      = data_mean_v1[i:(i+iter_per_ratio)]
-        d_data_mean_v2      = data_mean_v2[i:(i+iter_per_ratio)]
-        d_data_similar_v1   = data_similar_v1[i:(i+iter_per_ratio)]
-        d_data_similar_v2   = data_similar_v2[i:(i+iter_per_ratio)]
-        d_data_multi_v1     = data_multi_v1[i:(i+iter_per_ratio)]
-        d_data_multi_v2     = data_multi_v2[i:(i+iter_per_ratio)]
+    iterations = int(len(data_mean_v1) / len(random_ratios))
+    for i in range(0, len(data_mean_v1), iterations):
+        d_data_mean_v1      = data_mean_v1[i:(i+iterations)]
+        d_data_mean_v2      = data_mean_v2[i:(i+iterations)]
+        d_data_similar_v1   = data_similar_v1[i:(i+iterations)]
+        d_data_similar_v2   = data_similar_v2[i:(i+iterations)]
+        d_data_multi_v1     = data_multi_v1[i:(i+iterations)]
+        d_data_multi_v2     = data_multi_v2[i:(i+iterations)]
         for clf in classifiers:
             clf_data_mean_v1    = [x[clf] for x in d_data_mean_v1]
             clf_data_mean_v2    = [x[clf] for x in d_data_mean_v2]
@@ -456,9 +462,12 @@ def compress_outputs():
             # load data
             for i in range(iter_per_ratio):
                 if not os.path.exists(os.path.join("condor_outputs", tt, dd, "output_{:0>4}.pkl".format(i))):
-                    print("{} file not found, will skip this folder".format(os.path.join("condor_outputs", tt, dd, "output_{:0>4}.pkl".format(i))))
-                    load_complete = False
-                    break
+                    if INCOMPLETE_MODE:
+                        continue
+                    else:
+                        print("{} file not found, will skip this folder".format(os.path.join("condor_outputs", tt, dd, "output_{:0>4}.pkl".format(i))))
+                        load_complete = False
+                        break
                 with open(os.path.join("condor_outputs", tt, dd, "output_{:0>4}.pkl".format(i)), "rb") as inFile:
                     output_data = pickle.load(inFile)
                 for key, value in output_data.items():
@@ -468,6 +477,8 @@ def compress_outputs():
             # dump data
             if load_complete:
                 for key in final_results.keys():
+                    if INCOMPLETE_MODE and len(final_results[key][i]) < 1:
+                        continue
                     dump_data = final_results[key]
                     dump_data = [i for m in dump_data for i in m] # unpack list of list
                     with open(os.path.join("condor_outputs", tt, dd, "{}.pkl".format(key)), "wb") as outFile:
