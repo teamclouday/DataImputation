@@ -17,12 +17,12 @@ iter_per_ratio = 200
 NAME_DATASETS = ["adult", "compas", "titanic"]
 NAME_TARGETS  = ["acc", "f1"]
 
-INCOMPLETE_MODE = False
+INCOMPLETE_MODE = True
 
-PLOT_ADULT_ACC          = False
+PLOT_ADULT_ACC          = True
 PLOT_ADULT_F1           = False
 PLOT_COMPAS_ACC         = False
-PLOT_COMPAS_F1          = True
+PLOT_COMPAS_F1          = False
 PLOT_TITANIC_ACC        = False
 PLOT_TITANIC_F1         = False
 
@@ -477,7 +477,7 @@ def compress_outputs():
             # dump data
             if load_complete:
                 for key in final_results.keys():
-                    if INCOMPLETE_MODE and len(final_results[key][i]) < 1:
+                    if INCOMPLETE_MODE and len(final_results[key][0]) < 1:
                         continue
                     dump_data = final_results[key]
                     dump_data = [i for m in dump_data for i in m] # unpack list of list
