@@ -19,8 +19,8 @@ NAME_TARGETS  = ["acc", "f1"]
 
 INCOMPLETE_MODE = False
 
-PLOT_ADULT_ACC          = False
-PLOT_ADULT_F1           = True
+PLOT_ADULT_ACC          = True
+PLOT_ADULT_F1           = False
 PLOT_COMPAS_ACC         = False
 PLOT_COMPAS_F1          = False
 PLOT_TITANIC_ACC        = False
