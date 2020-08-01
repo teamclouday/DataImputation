@@ -1,15 +1,17 @@
-disparate impact
-https://pypi.org/project/fairml/
-https://scholar.google.com/
-1. existing measures of bias
-2. other class balancing techniques
-3. what techniques are currently used to remove bias
-4. techniques to preprocess data to remove bias (pre-processing, processing, post-processing the results)
-
-https://onlinelibrary.wiley.com/doi/book/10.1002/9780470316696
-MAR, MCAR, NMAR
-
-https://arxiv.org/pdf/1810.01943.pdf
-
-https://arxiv.org/pdf/1801.07593.pdf
-http://krvarshney.github.io/pubs/SattigeriHCV_safeml2019.pdf
+Target Datasets
+1. UCI Adult Dataset
+   Size: 48842 income records
+2. German Credit Dataset
+   Size: 1000 credit records
+3. Pilot Parliaments Benchmark Dataset
+   Size: 1270 images
+4. WinoBias Dataset
+   Size: 3160 sentences
+5. Communities and Crime Dataset
+   1994 crime records
+6. COMPAS Dataset
+   18610 crime records
+7. Recidivism in Juvenile Justice Dataset
+   4753 crime records
+8. Diversity in Faces Dataset
+   1 million images
