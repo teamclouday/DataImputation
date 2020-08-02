@@ -113,25 +113,59 @@ def _dataset_download_titanic(folder):
         zipF.extractall(folder)
     print("Titanic dataset is downloaded")
 
+# download german credit dataset
+def _dataset_download_german(folder):
+    URL_PATH = "https://archive.ics.uci.edu/ml/machine-learning-databases/statlog/german/"
+    FILE_NAMES = ["german.data", "german.data-numeric", "german.doc"]
+    if not os.path.exists(folder):
+        os.makedirs(folder)
+    for name in FILE_NAMES:
+        urllib.request.urlretrieve(URL_PATH + name, os.path.join(folder, name))
+    print("German credit dataset is downloaded")
+
+# download communities and crime dataset
+def _dataset_download_communities(folder):
+    URL_PATH = "http://archive.ics.uci.edu/ml/machine-learning-databases/communities/"
+    FILE_NAMES = ["communities.data", "communities.names"]
+    if not os.path.exists(folder):
+        os.makedirs(folder)
+    for name in FILE_NAMES:
+        urllib.request.urlretrieve(URL_PATH + name, os.path.join(folder, name))
+    print("Communities and crime dataset is downloaded")
+
+# download Recidivism in juvenile justice dataset
+def _dataset_download_juvenile(folder):
+    FILE_PATH = "http://cejfe.gencat.cat/web/.content/home/recerca/opendata/jjuvenil/reincidenciaJusticiaMenors/reincidenciaJusticiaMenors.xlsx"
+    if not os.path.exists(folder):
+        os.makedirs(folder)
+    urllib.request.urlretrieve(FILE_PATH, os.path.join(folder, "reincidenciaJusticiaMenors.xlsx"))
+    print("Recidivism in juvenile justice dataset is downloaded")
+
 # function that checks for existence of datasets
 def dataset_prepare():
     dataset_folders = [
-        os.path.join("dataset", "iris"),
-        os.path.join("dataset", "bank"),
+        #os.path.join("dataset", "iris"),
+        #os.path.join("dataset", "bank"),
         os.path.join("dataset", "adult"),
         os.path.join("dataset", "compas"),
-        os.path.join("dataset", "heart"),
-        os.path.join("dataset", "drug"),
+        #os.path.join("dataset", "heart"),
+        #os.path.join("dataset", "drug"),
         os.path.join("dataset", "titanic"),
+        os.path.join("dataset", "german"),
+        os.path.join("dataset", "communities"),
+        os.path.join("dataset", "juvenile"),
     ]
     load_functions = [
-        _dataset_download_iris,
-        _dataset_download_bank,
+        #_dataset_download_iris,
+        #_dataset_download_bank,
         _dataset_download_adult,
         _dataset_download_compas,
-        _dataset_download_heart,
-        _dataset_download_drug,
+        #_dataset_download_heart,
+        #_dataset_download_drug,
         _dataset_download_titanic,
+        _dataset_download_german,
+        _dataset_download_communities,
+        _dataset_download_juvenile,
     ]
     for folder, func in zip(dataset_folders, load_functions):
         if not os.path.exists(folder):
@@ -304,8 +338,88 @@ def create_titanic_dataset(print_time=False):
         print("Performance Monitor: ({:.4f}s) ".format(time.process_time() - tt) + inspect.stack()[0][3])
     return Dataset("titanic", X, y, protected_features=protected_features)
 
+def create_german_dataset(print_time=False):
+    if print_time:
+        tt = time.process_time()
+    names = [
+        "Status_account", "Duration_month", "Credit_history", "Purpose", "Credit_amount",
+        "Savings_account", "Employment_since", "Installment_rate", "Personal_status_sex",
+        "Debtors_guarantors", "Residence_since", "Property", "Age", "Installment_plans",
+        "Housing", "Number_credits", "Job", "Num_liable_people", "Telephone", "Foreign",
+        "Target"
+    ]
+    data = pd.read_csv(os.path.join("dataset", "german", "german.data"), names=names, sep=" ")
+    X = data.drop(["Target"], axis=1).copy()
+    y = data[["Target"]].copy().to_numpy().ravel()
+    protected_features = ["Personal_status_sex"]
+    if print_time:
+        print("Performance Monitor: ({:.4f}s) ".format(time.process_time() - tt) + inspect.stack()[0][3])
+    return Dataset("german", X, y, protected_features=protected_features)
+
+def create_communities_dataset(print_time=False):
+    if print_time:
+        tt = time.process_time()
+    names = [
+        'state', 'county', 'community', 'communityname', 'fold', 'population', 'householdsize',
+        'racepctblack', 'racePctWhite', 'racePctAsian', 'racePctHisp', 'agePct12t21', 'agePct12t29',
+        'agePct16t24', 'agePct65up', 'numbUrban', 'pctUrban', 'medIncome', 'pctWWage', 'pctWFarmSelf',
+        'pctWInvInc', 'pctWSocSec', 'pctWPubAsst', 'pctWRetire', 'medFamInc', 'perCapInc',
+        'whitePerCap', 'blackPerCap', 'indianPerCap', 'AsianPerCap', 'OtherPerCap', 'HispPerCap',
+        'NumUnderPov', 'PctPopUnderPov', 'PctLess9thGrade', 'PctNotHSGrad', 'PctBSorMore',
+        'PctUnemployed', 'PctEmploy', 'PctEmplManu', 'PctEmplProfServ', 'PctOccupManu', 'PctOccupMgmtProf',
+        'MalePctDivorce', 'MalePctNevMarr', 'FemalePctDiv', 'TotalPctDiv', 'PersPerFam', 'PctFam2Par',
+        'PctKids2Par', 'PctYoungKids2Par', 'PctTeen2Par', 'PctWorkMomYoungKids', 'PctWorkMom',
+        'NumIlleg', 'PctIlleg', 'NumImmig', 'PctImmigRecent', 'PctImmigRec5', 'PctImmigRec8',
+        'PctImmigRec10', 'PctRecentImmig', 'PctRecImmig5', 'PctRecImmig8', 'PctRecImmig10',
+        'PctSpeakEnglOnly', 'PctNotSpeakEnglWell', 'PctLargHouseFam', 'PctLargHouseOccup', 'PersPerOccupHous',
+        'PersPerOwnOccHous', 'PersPerRentOccHous', 'PctPersOwnOccup', 'PctPersDenseHous', 'PctHousLess3BR',
+        'MedNumBR', 'HousVacant', 'PctHousOccup', 'PctHousOwnOcc', 'PctVacantBoarded', 'PctVacMore6Mos',
+        'MedYrHousBuilt', 'PctHousNoPhone', 'PctWOFullPlumb', 'OwnOccLowQuart', 'OwnOccMedVal', 'OwnOccHiQuart',
+        'RentLowQ', 'RentMedian', 'RentHighQ', 'MedRent', 'MedRentPctHousInc', 'MedOwnCostPctInc',
+        'MedOwnCostPctIncNoMtg', 'NumInShelters', 'NumStreet', 'PctForeignBorn', 'PctBornSameState',
+        'PctSameHouse85', 'PctSameCity85', 'PctSameState85', 'LemasSwornFT', 'LemasSwFTPerPop',
+        'LemasSwFTFieldOps', 'LemasSwFTFieldPerPop', 'LemasTotalReq', 'LemasTotReqPerPop', 'PolicReqPerOffic',
+        'PolicPerPop', 'RacialMatchCommPol', 'PctPolicWhite', 'PctPolicBlack', 'PctPolicHisp',
+        'PctPolicAsian', 'PctPolicMinor', 'OfficAssgnDrugUnits', 'NumKindsDrugsSeiz', 'PolicAveOTWorked',
+        'LandArea', 'PopDens', 'PctUsePubTrans', 'PolicCars', 'PolicOperBudg', 'LemasPctPolicOnPatr',
+        'LemasGangUnitDeploy', 'LemasPctOfficDrugUn', 'PolicBudgPerPop', 'ViolentCrimesPerPop'
+    ]
+    data = pd.read_csv(os.path.join("dataset", "communities", "communities.data"), names=names)
+
+    print("Communities dataset needs some pre-processing!")
+
+    X = data.drop(["ViolentCrimesPerPop"], axis=1).copy()
+    y = data[["ViolentCrimesPerPop"]].copy().to_numpy().ravel()
+    protected_features = []
+
+    if print_time:
+        print("Performance Monitor: ({:.4f}s) ".format(time.process_time() - tt) + inspect.stack()[0][3])
+    return Dataset("communities", X, y, protected_features=protected_features)
+
+def create_juvenile_dataset(print_time=False):
+    if print_time:
+        tt = time.process_time()
+    data = pd.ExcelFile(os.path.join("dataset", "juvenile", "reincidenciaJusticiaMenors.xlsx"))
+    data = data.parse(data.sheet_names)
+
+    print("Juvenile dataset needs some pre-processing!")
+
+    X = data.drop(["V132_REINCIDENCIA_2013"], axis=1).copy()
+    y = data[["V132_REINCIDENCIA_2013"]].copy().to_numpy().ravel()
+    protected_features = []
+
+    if print_time:
+        print("Performance Monitor: ({:.4f}s) ".format(time.process_time() - tt) + inspect.stack()[0][3])
+    return Dataset("juvenile", X, y, protected_features=protected_features)
+
 class Dataset:
     def __init__(self, name, X, y, auto_convert=True, types=None, convert_all=False, protected_features=[], encoders=None):
+        # auto_convert: whether to label-encode categorical values
+        # types: original data types for X
+        # convert_all:  whether to label-encode all attributes (both numerical and categorical)
+        # protected_features: pre-defined protected features
+        # encoders: list => [X_encoders, y_encoder]
+        #           store label encoders for X and y features
         self.name = name
         self.X = X
         if self.X.drop(protected_features, axis=1).isnull().sum().sum() > 0:
