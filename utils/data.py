@@ -135,14 +135,16 @@ def _dataset_download_communities(folder):
 
 # download Recidivism in juvenile justice dataset
 def _dataset_download_juvenile(folder):
-    FILE_PATH = "http://cejfe.gencat.cat/web/.content/home/recerca/opendata/jjuvenil/reincidenciaJusticiaMenors/reincidenciaJusticiaMenors.xlsx"
+    URL_PATH = "http://cejfe.gencat.cat/web/.content/home/recerca/opendata/jjuvenil/reincidenciaJusticiaMenors/"
+    FILE_NAMES = ["reincidenciaJusticiaMenors.xlsx", "recidivismJuvenileJustice_variables_EN.pdf"]
     if not os.path.exists(folder):
         os.makedirs(folder)
-    urllib.request.urlretrieve(FILE_PATH, os.path.join(folder, "reincidenciaJusticiaMenors.xlsx"))
+    for name in FILE_NAMES:
+        urllib.request.urlretrieve(URL_PATH + name, os.path.join(folder, name))
     print("Recidivism in juvenile justice dataset is downloaded")
 
 # function that checks for existence of datasets
-def dataset_prepare():
+def dataset_prepare(force_download=False):
     dataset_folders = [
         #os.path.join("dataset", "iris"),
         #os.path.join("dataset", "bank"),
@@ -168,7 +170,10 @@ def dataset_prepare():
         _dataset_download_juvenile,
     ]
     for folder, func in zip(dataset_folders, load_functions):
-        if not os.path.exists(folder):
+        if not force_download:
+            if not os.path.exists(folder):
+                func(folder)
+        else:
             func(folder)
 
 # create a dataset for testing
