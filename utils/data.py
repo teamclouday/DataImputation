@@ -389,13 +389,27 @@ def create_communities_dataset(print_time=False):
         'LandArea', 'PopDens', 'PctUsePubTrans', 'PolicCars', 'PolicOperBudg', 'LemasPctPolicOnPatr',
         'LemasGangUnitDeploy', 'LemasPctOfficDrugUn', 'PolicBudgPerPop', 'ViolentCrimesPerPop'
     ]
-    data = pd.read_csv(os.path.join("dataset", "communities", "communities.data"), names=names)
+    data = pd.read_csv(os.path.join("dataset", "communities", "communities.data"), names=names, na_values=["?"])
 
-    print("Communities dataset needs some pre-processing!")
+    # remove unpredictive attributes
+    data = data.drop(["state", "county", "community", "communityname", "fold"], axis=1)
+    # remove attributes with too many missing values
+    data = data.drop(['LemasSwornFT', 'LemasSwFTPerPop', 'LemasSwFTFieldOps', 'LemasSwFTFieldPerPop',
+        'LemasTotalReq', 'LemasTotReqPerPop', 'PolicReqPerOffic', 'PolicPerPop', 'RacialMatchCommPol',
+        'PctPolicWhite', 'PctPolicBlack', 'PctPolicHisp', 'PctPolicAsian', 'PctPolicMinor',
+        'OfficAssgnDrugUnits', 'NumKindsDrugsSeiz', 'PolicAveOTWorked', 'PolicCars', 'PolicOperBudg',
+        'LemasPctPolicOnPatr', 'LemasGangUnitDeploy', 'PolicBudgPerPop'], axis=1)
+    
+    def helper_max(array, names):
+        return [names[np.argmax(dd)] for dd in array]
+    # combine race percentage attributes
+    data["race_c"] = helper_max(data[["racepctblack", "racePctWhite", "racePctAsian", "racePctHisp"]].to_numpy(), ["black", "white", "asian", "hispanic"])
+    data = data.drop(["racepctblack", "racePctWhite", "racePctAsian", "racePctHisp"], axis=1)
 
     X = data.drop(["ViolentCrimesPerPop"], axis=1).copy()
-    y = data[["ViolentCrimesPerPop"]].copy().to_numpy().ravel()
-    protected_features = []
+    y_mean = data["ViolentCrimesPerPop"].mean()
+    y = data["ViolentCrimesPerPop"].apply(lambda m: "Violent" if m >= y_mean else "Harmless").to_numpy().ravel()
+    protected_features = ["race_c"]
 
     if print_time:
         print("Performance Monitor: ({:.4f}s) ".format(time.process_time() - tt) + inspect.stack()[0][3])
@@ -404,10 +418,20 @@ def create_communities_dataset(print_time=False):
 def create_juvenile_dataset(print_time=False):
     if print_time:
         tt = time.process_time()
-    data = pd.ExcelFile(os.path.join("dataset", "juvenile", "reincidenciaJusticiaMenors.xlsx"))
-    data = data.parse(data.sheet_names)
+    data = pd.read_excel(os.path.join("dataset", "juvenile", "reincidenciaJusticiaMenors.xlsx"), index_col=None)
 
-    print("Juvenile dataset needs some pre-processing!")
+    # remove attributes with too many missing values
+    data = data[['id','V1_sexe','V2_estranger','V3_nacionalitat','V5_edat_fet_agrupat','V6_provincia',
+        'V7_comarca','V8_edat_fet','V9_edat_final_programa','V10_data_naixement','V11_antecedents',
+        'V13_nombre_fets_agrupat','V14_fet','V15_fet_agrupat','V16_fet_violencia','V17_fet_tipus',
+        'V19_fets_desagrupats','V21_fet_nombre','V22_data_fet','V23_territori','V24_programa',
+        'V25_programa_mesura','V27_durada_programa_agrupat','V28_temps_inici','V29_durada_programa',
+        'V30_data_inici_programa','V31_data_fi_programa','V115_reincidencia_2015','V122_rein_fet_2013',
+        'V132_REINCIDENCIA_2013']]
+    # remove unpredictive attributes
+    data = data.drop(['id', 'V7_comarca', 'V10_data_naixement'], axis=1)
+
+    print("juvenile dataset needs more pre-processing")
 
     X = data.drop(["V132_REINCIDENCIA_2013"], axis=1).copy()
     y = data[["V132_REINCIDENCIA_2013"]].copy().to_numpy().ravel()
