@@ -421,21 +421,22 @@ def create_juvenile_dataset(print_time=False):
     data = pd.read_excel(os.path.join("dataset", "juvenile", "reincidenciaJusticiaMenors.xlsx"), index_col=None)
 
     # remove attributes with too many missing values
-    data = data[['id','V1_sexe','V2_estranger','V3_nacionalitat','V5_edat_fet_agrupat','V6_provincia',
-        'V7_comarca','V8_edat_fet','V9_edat_final_programa','V10_data_naixement','V11_antecedents',
-        'V13_nombre_fets_agrupat','V14_fet','V15_fet_agrupat','V16_fet_violencia','V17_fet_tipus',
-        'V19_fets_desagrupats','V21_fet_nombre','V22_data_fet','V23_territori','V24_programa',
-        'V25_programa_mesura','V27_durada_programa_agrupat','V28_temps_inici','V29_durada_programa',
-        'V30_data_inici_programa','V31_data_fi_programa','V115_reincidencia_2015','V122_rein_fet_2013',
-        'V132_REINCIDENCIA_2013']]
+    # data = data[['id','V1_sexe','V2_estranger','V3_nacionalitat','V5_edat_fet_agrupat','V6_provincia',
+    #     'V7_comarca','V8_edat_fet','V9_edat_final_programa','V10_data_naixement','V11_antecedents',
+    #     'V13_nombre_fets_agrupat','V14_fet','V15_fet_agrupat','V16_fet_violencia','V17_fet_tipus',
+    #     'V19_fets_desagrupats','V21_fet_nombre','V22_data_fet','V23_territori','V24_programa',
+    #     'V25_programa_mesura','V27_durada_programa_agrupat','V28_temps_inici','V29_durada_programa',
+    #     'V30_data_inici_programa','V31_data_fi_programa','V115_reincidencia_2015','V122_rein_fet_2013',
+    #     'V132_REINCIDENCIA_2013']]
+    data = data[[a for a,b in data.isnull().sum().to_dict().items() if b <= len(data)/2]]
     # remove unpredictive attributes
     data = data.drop(['id', 'V7_comarca', 'V10_data_naixement'], axis=1)
-
-    print("juvenile dataset needs more pre-processing")
+    # remove recidivism variables
+    data = data.drop(['V115_reincidencia_2015','V122_rein_fet_2013'], axis=1)
 
     X = data.drop(["V132_REINCIDENCIA_2013"], axis=1).copy()
     y = data[["V132_REINCIDENCIA_2013"]].copy().to_numpy().ravel()
-    protected_features = []
+    protected_features = ['V1_sexe']
 
     if print_time:
         print("Performance Monitor: ({:.4f}s) ".format(time.process_time() - tt) + inspect.stack()[0][3])
