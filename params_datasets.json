@@ -13,5 +13,20 @@
         "target": "Sex",
         "A": "male",
         "B": "female"
+    },
+    "german": {
+        "target": "Personal_status_sex",
+        "A": "male",
+        "B": "female"
+    },
+    "communities": {
+        "target": "race_c",
+        "A": "black",
+        "B": "white"
+    },
+    "juvenile": {
+        "target": "V1_sexe",
+        "A": "Home",
+        "B": "Dona"
     }
 }
