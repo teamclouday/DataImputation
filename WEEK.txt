@@ -1,5 +1,10 @@
-Group 1 fraction of actual positives that are classified as positive - 
-Group 0 fraction of actual positives that are classified as positive
-+
-|Group 1 fraction of actual negatives that are classified as positive - 
-Group 0 fraction of actual negatives that are classified as positive|
+Equal Opportunity: the groups should have the same FPR
+same TPR
+equal opportunity to go free when you are guilty
+equal opportunity to be sentenced when you are innocent
+Pr(AA is labeled as low risk when he is actually high risk) =
+Pr(Caucasian is labeled as low risk when actually high risk) 
+Pr(AA is labeled as high risk when he is low risk) = 
+Pr(Caucasian is labeled as high risk when actually low risk)
+bias = |LHS - RHS|
+A*|LHS - RHS of first type| + B*|LHS - RHS of second type|
