@@ -354,6 +354,8 @@ def create_german_dataset(print_time=False):
         "Target"
     ]
     data = pd.read_csv(os.path.join("dataset", "german", "german.data"), names=names, sep=" ")
+    # combine sex data
+    data["Personal_status_sex"] = data["Personal_status_sex"].apply(lambda x: "male" if x in ["A91", "A93", "A94"] else "female")
     X = data.drop(["Target"], axis=1).copy()
     y = data[["Target"]].copy().to_numpy().ravel()
     protected_features = ["Personal_status_sex"]
@@ -430,7 +432,8 @@ def create_juvenile_dataset(print_time=False):
     #     'V132_REINCIDENCIA_2013']]
     data = data[[a for a,b in data.isnull().sum().to_dict().items() if b <= len(data)/2]]
     # remove unpredictive attributes
-    data = data.drop(['id', 'V7_comarca', 'V10_data_naixement'], axis=1)
+    data = data.drop(['id', 'V7_comarca', 'V10_data_naixement',
+        'V30_data_inici_programa', 'V31_data_fi_programa'], axis=1)
     # remove recidivism variables
     data = data.drop(['V115_reincidencia_2015','V122_rein_fet_2013'], axis=1)
 
