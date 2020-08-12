@@ -211,10 +211,12 @@ def create_adult_dataset(print_time=False):
         "hours-per-week",
         "native-country"
     ]
-    protected_features = ["education", "marital-status", "race", "sex"]
+    protected_features = ["marital-status", "race", "sex"]
     data = pd.read_csv(os.path.join("dataset", "adult", "adult.data"), header=None)
     X = data.iloc[:, :-1].copy()
     X.columns = names
+    # remove unpredictive columns
+    X = X.drop(["fnlwgt", "capital-gain", "capital-loss", "native-country"], axis=1).copy()
     y = data.iloc[:, -1].copy()
     if print_time:
         print("Performance Monitor: ({:.4f}s) ".format(time.process_time() - tt) + inspect.stack()[0][3])
@@ -319,7 +321,7 @@ def create_compas_dataset(print_time=False):
               "juv_misd_count",
               "juv_fel_count",
               "juv_other_count",
-              "c_charge_desc",
+              # "c_charge_desc",
               "days_b_screening_arrest",
               "sex",
               "race"]].copy()
@@ -356,7 +358,17 @@ def create_german_dataset(print_time=False):
     data = pd.read_csv(os.path.join("dataset", "german", "german.data"), names=names, sep=" ")
     # combine sex data
     data["Personal_status_sex"] = data["Personal_status_sex"].apply(lambda x: "male" if x in ["A91", "A93", "A94"] else "female")
-    X = data.drop(["Target"], axis=1).copy()
+    # categorize credit amount data
+    def helper_amount(amount):
+        if amount < 1500:
+            return "(0,1500)"
+        if amount < 2500:
+            return "[1500,2500)"
+        if amount < 5000:
+            return "[2500,5000)"
+        return "[5000,)"
+    data["Credit_amount_c"] = data["Credit_amount"].apply(lambda x: helper_amount(x))
+    X = data.drop(["Credit_amount", "Target"], axis=1).copy()
     y = data[["Target"]].copy().to_numpy().ravel()
     protected_features = ["Personal_status_sex"]
     if print_time:
