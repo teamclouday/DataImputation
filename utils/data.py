@@ -211,7 +211,11 @@ def create_adult_dataset(print_time=False):
         "hours-per-week",
         "native-country"
     ]
-    protected_features = ["marital-status", "race", "sex"]
+    protected_features = [
+        #"marital-status",
+        #"race",
+        "sex"
+    ]
     data = pd.read_csv(os.path.join("dataset", "adult", "adult.data"), header=None)
     X = data.iloc[:, :-1].copy()
     X.columns = names
@@ -328,7 +332,10 @@ def create_compas_dataset(print_time=False):
     X["length_of_stay"] = pd.to_datetime(data["c_jail_out"]) - pd.to_datetime(data["c_jail_in"])
     X["length_of_stay"] = X["length_of_stay"] / pd.Timedelta(hours=1)
     y = data[["is_recid"]].copy().to_numpy().ravel()
-    protected_features = ["race", "sex"]
+    protected_features = [
+        "race",
+        #"sex"
+    ]
     if print_time:
         print("Performance Monitor: ({:.4f}s) ".format(time.process_time() - tt) + inspect.stack()[0][3])
     return Dataset("compas", X, y, protected_features=protected_features)
