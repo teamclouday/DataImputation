@@ -1,11 +1,14 @@
 # script for preparing necessary data for single tasks
 
 import os
+os.environ["MKL_NUM_THREADS"] = '1'
+os.environ["OMP_NUM_THREADS"] = '1'
+os.environ["NUMEXPR_NUM_THREADS"] = '1'
+os.environ["PYTHONWARNINGS"] = "ignore"
 import json
 import time
 import warnings
 warnings.filterwarnings('ignore')
-os.environ["PYTHONWARNINGS"] = "ignore"
 
 import numpy as np
 import pandas as pd
