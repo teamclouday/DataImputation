@@ -9,7 +9,7 @@ os.environ["PYTHONWARNINGS"] = "ignore"
 
 import numpy as np
 import pandas as pd
-from utils.data import Dataset, create_adult_dataset, create_compas_dataset, create_titanic_dataset
+from utils.data import Dataset, create_adult_dataset, create_compas_dataset, create_titanic_dataset, create_communities_dataset, create_german_dataset, create_juvenile_dataset
 
 from sklearn.model_selection import GridSearchCV
 from sklearn.neighbors import KNeighborsClassifier
@@ -19,7 +19,7 @@ from sklearn.linear_model import LogisticRegression
 from sklearn.tree import DecisionTreeClassifier
 from sklearn.neural_network import MLPClassifier
 
-from imblearn.over_sampling import SVMSMOTE
+from imblearn.over_sampling import SMOTE
 
 # define enum
 target_metrics = {
@@ -32,7 +32,10 @@ def prepare_datasets():
     results = {
         "adult": None,
         "compas": None,
-        "titanic": None
+        "titanic": None,
+        "communities": None,
+        "german": None,
+        "juvenile": None
     }
     # compas dataset
     c_data = create_compas_dataset()
@@ -53,18 +56,37 @@ def prepare_datasets():
     t_data.X = tmp_concat.drop(columns=["_TARGET_"]).copy()
     t_data.y = tmp_concat["_TARGET_"].copy().to_numpy().ravel()
     results["titanic"] = t_data
+    # communities dataset
+    cm_data = create_communities_dataset()
+    tmp_concat = pd.concat([cm_data.X, pd.DataFrame(cm_data.y, columns=["_TARGET_"])], axis=1)
+    tmp_concat.dropna(inplace=True)
+    tmp_concat.reset_index(drop=True, inplace=True)
+    cm_data.X = tmp_concat.drop(columns=["_TARGET_"]).copy()
+    cm_data.y = tmp_concat["_TARGET_"].copy().to_numpy().ravel()
+    results["communities"] = cm_data
+    # german dataset
+    g_data = create_german_dataset()
+    results["german"] = g_data
+    # juvenile dataset
+    j_data = create_juvenile_dataset()
+    tmp_concat = pd.concat([j_data.X, pd.DataFrame(j_data.y, columns=["_TARGET_"])], axis=1)
+    tmp_concat.dropna(inplace=True)
+    tmp_concat.reset_index(drop=True, inplace=True)
+    j_data.X = tmp_concat.drop(columns=["_TARGET_"]).copy()
+    j_data.y = tmp_concat["_TARGET_"].copy().to_numpy().ravel()
+    results["juvenile"] = j_data
     return results
 
 # run parameter searching and save data
 def param_search(datasets, metrics, json_file=None):
     params = {
         "KNN": {
-            "n_neighbors": [2, 5, 10, 50, 100, 500],
+            "n_neighbors": [2, 5, 10, 50, 100],
             "leaf_size": [5, 10, 30, 50, 100],
         },
         "LinearSVC": {
             "tol": [1e-6, 1e-5, 1e-4, 1e-3, 1e-2],
-            "C": [0.01, 0.1, 1, 10, 100],
+            "C": [0.01, 0.1, 1, 10],
             "max_iter": [1000, 5000, 10000],
         },
         "SVC": {
@@ -88,7 +110,7 @@ def param_search(datasets, metrics, json_file=None):
             "min_samples_leaf": [1, 5, 10, 50],
         },
         "MLP": {
-            "hidden_layer_sizes": [(10,), (100,), (1000,)],
+            "hidden_layer_sizes": [(10,), (100,), (500,)],
             "alpha": [1e-5, 1e-4, 1e-3],
             "learning_rate_init": [1e-4, 1e-3, 1e-2],
             "max_iter": [200, 500, 1000],
@@ -104,7 +126,7 @@ def param_search(datasets, metrics, json_file=None):
         "MLP": MLPClassifier(),
     }
     results = {}
-    smote = SVMSMOTE(random_state=22)
+    smote = SMOTE()
     if metrics == target_metrics["acc"]: scoring = "accuracy"
     elif metrics == target_metrics["f1"]: scoring = "f1"
     else: raise ValueError("metrics is not the correct value")
