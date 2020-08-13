@@ -29,7 +29,7 @@ from sklearn.linear_model import LogisticRegression
 from sklearn.tree import DecisionTreeClassifier
 from sklearn.neural_network import MLPClassifier
 from sklearn.model_selection import StratifiedShuffleSplit
-from sklearn.metrics import confusion_matrix
+from sklearn.metrics import confusion_matrix, accuracy_score
 
 from imblearn.over_sampling import SMOTE
 
@@ -105,12 +105,21 @@ def f1score(data):
     f1_B = 2 * (precision_B * recall_B) / (recall_B + precision_B)
     return [f1_A, f1_B]
 
-def newBias(data):
+def newBias(data, A=1, B=1):
     # Pr(AA is labeled as low risk when he is actually high risk) = Pr(Caucasian is labeled as low risk when actually high risk) 
     # Pr(AA is labeled as high risk when he is low risk) =  Pr(Caucasian is labeled as high risk when actually low risk)
     # bias = |LHS - RHS|
     # A*|LHS - RHS of first type| + B*|LHS - RHS of second type|
-    pass
+    # A*|FPR_A - FPR_B| + B*|FNR_A - FNR_C|
+    FPR_A = data[1] / (data[1] + data[0])
+    FNR_A = data[2] / (data[2] + data[3])
+    FPR_B  = data[5] / (data[5] + data[4])
+    FNR_B  = data[6] / (data[6] + data[7])
+    bias = A*abs(FPR_A - FPR_B) + B*abs(FNR_A - FNR_B)
+    return bias
+
+def actualAcc(y_pred, y_true):
+    return accuracy_score(y_true, y_pred)
 
 def helper_freq(array):
     """simple helper function to return the most frequent number in an array"""
@@ -124,6 +133,7 @@ def compute_confusion_matrix(X_train, y_train, X_test, y_test, clf, protected_fe
     # protected_features is list
     global PARAMS_DATA
     smote = SMOTE()
+    result_acc = -1
     if not multi:
         X_train = X_train.drop(columns=protected_features).copy().to_numpy()
         X_train_res, y_train_res = smote.fit_resample(X_train, y_train)
@@ -134,9 +144,11 @@ def compute_confusion_matrix(X_train, y_train, X_test, y_test, clf, protected_fe
         y_test_B = y_test[X_test[X_test[PARAMS_DATA["target"]] == PARAMS_DATA["B"]].index.tolist()]
         matrix_A = confusion_matrix(y_test_A, clf.predict(X_test_A))
         matrix_B = confusion_matrix(y_test_B, clf.predict(X_test_B))
+        result_acc = actualAcc(clf.predict(X_test), y_test)
     else:
         prediction_A = []
         prediction_B = []
+        predictions = []
         X_test_first = X_test[0]
         y_test_A = y_test[X_test_first[X_test_first[PARAMS_DATA["target"]] == PARAMS_DATA["A"]].index.tolist()]
         y_test_B = y_test[X_test_first[X_test_first[PARAMS_DATA["target"]] == PARAMS_DATA["B"]].index.tolist()]
@@ -149,14 +161,17 @@ def compute_confusion_matrix(X_train, y_train, X_test, y_test, clf, protected_fe
                 X_test_B = X_test_m[X_test_m[PARAMS_DATA["target"]] == PARAMS_DATA["B"]].drop(columns=protected_features).to_numpy()
                 prediction_A.append(clf.predict(X_test_A))
                 prediction_B.append(clf.predict(X_test_B))
+                predictions.append(clf.predict(X_test))
         # compute final predictions by voting
+        predictions = np.apply_along_axis(helper_freq, 0, np.array(predictions))
         prediction_A = np.apply_along_axis(helper_freq, 0, np.array(prediction_A))
         prediction_B = np.apply_along_axis(helper_freq, 0, np.array(prediction_B))
         matrix_A = confusion_matrix(y_test_A, prediction_A)
         matrix_B = confusion_matrix(y_test_B, prediction_B)
+        result_acc = actualAcc(predictions, y_test)
     # [TN_A, FP_A, FN_A, TP_A, TN_B, FP_B, FN_B, TP_B]
     result = matrix_A.ravel().tolist() + matrix_B.ravel().tolist()
-    return result
+    return [result, result_acc]
 
 def test_imputation(X, y, protected_features, completer_func=None, multi=False):
     # X is pandas dataframe
