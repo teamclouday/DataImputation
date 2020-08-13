@@ -18,7 +18,7 @@ from functools import partial
 import warnings
 warnings.filterwarnings('ignore')
 
-from utils.data import create_compas_dataset, create_adult_dataset, create_titanic_dataset, Dataset
+from utils.data import create_compas_dataset, create_adult_dataset, create_titanic_dataset, create_communities_dataset, create_german_dataset, create_juvenile_dataset, Dataset
 from utils.generator import gen_complete_random
 from utils.completer import complete_by_mean_col, complete_by_mean_col_v2, complete_by_multi, complete_by_multi_v2, complete_by_similar_row, complete_by_similar_row_v2
 
@@ -31,7 +31,7 @@ from sklearn.neural_network import MLPClassifier
 from sklearn.model_selection import StratifiedShuffleSplit
 from sklearn.metrics import confusion_matrix
 
-from imblearn.over_sampling import SVMSMOTE
+from imblearn.over_sampling import SMOTE
 
 RUN_MEAN_V1     = True
 RUN_MEAN_V2     = True
@@ -46,6 +46,9 @@ NAME_DATA = {
     "adult": 1,
     "compas": 2,
     "titanic": 3,
+    "german": 4,
+    "communities": 5,
+    "juvenile": 6,
 }
 NAME_TARGET = {
     "acc": 1,
@@ -102,6 +105,13 @@ def f1score(data):
     f1_B = 2 * (precision_B * recall_B) / (recall_B + precision_B)
     return [f1_A, f1_B]
 
+def newBias(data):
+    # Pr(AA is labeled as low risk when he is actually high risk) = Pr(Caucasian is labeled as low risk when actually high risk) 
+    # Pr(AA is labeled as high risk when he is low risk) =  Pr(Caucasian is labeled as high risk when actually low risk)
+    # bias = |LHS - RHS|
+    # A*|LHS - RHS of first type| + B*|LHS - RHS of second type|
+    pass
+
 def helper_freq(array):
     """simple helper function to return the most frequent number in an array"""
     count = np.bincount(array)
@@ -113,7 +123,7 @@ def compute_confusion_matrix(X_train, y_train, X_test, y_test, clf, protected_fe
     # clf is a sklearn classifier
     # protected_features is list
     global PARAMS_DATA
-    smote = SVMSMOTE(random_state=22)
+    smote = SMOTE()
     if not multi:
         X_train = X_train.drop(columns=protected_features).copy().to_numpy()
         X_train_res, y_train_res = smote.fit_resample(X_train, y_train)
@@ -321,6 +331,25 @@ if __name__ == "__main__":
         elif id_data == NAME_DATA["titanic"]:
             dataName = "titanic"
             data_complete = create_titanic_dataset()
+            tmp_concat = pd.concat([data_complete.X, pd.DataFrame(data_complete.y, columns=["_TARGET_"])], axis=1)
+            tmp_concat.dropna(inplace=True)
+            tmp_concat.reset_index(drop=True, inplace=True)
+            data_complete.X = tmp_concat.drop(columns=["_TARGET_"]).copy()
+            data_complete.y = tmp_concat["_TARGET_"].copy().to_numpy().ravel()
+        elif id_data == NAME_DATA["german"]:
+            dataName = "german"
+            data_complete = create_german_dataset()
+        elif id_data == NAME_DATA["communities"]:
+            dataName = "communities"
+            data_complete = create_communities_dataset()
+            tmp_concat = pd.concat([data_complete.X, pd.DataFrame(data_complete.y, columns=["_TARGET_"])], axis=1)
+            tmp_concat.dropna(inplace=True)
+            tmp_concat.reset_index(drop=True, inplace=True)
+            data_complete.X = tmp_concat.drop(columns=["_TARGET_"]).copy()
+            data_complete.y = tmp_concat["_TARGET_"].copy().to_numpy().ravel()
+        elif id_data == NAME_DATA["juvenile"]:
+            dataName = "juvenile"
+            data_complete = create_juvenile_dataset()
             tmp_concat = pd.concat([data_complete.X, pd.DataFrame(data_complete.y, columns=["_TARGET_"])], axis=1)
             tmp_concat.dropna(inplace=True)
             tmp_concat.reset_index(drop=True, inplace=True)
