@@ -144,7 +144,7 @@ def compute_confusion_matrix(X_train, y_train, X_test, y_test, clf, protected_fe
         y_test_B = y_test[X_test[X_test[PARAMS_DATA["target"]] == PARAMS_DATA["B"]].index.tolist()]
         matrix_A = confusion_matrix(y_test_A, clf.predict(X_test_A))
         matrix_B = confusion_matrix(y_test_B, clf.predict(X_test_B))
-        result_acc = actualAcc(clf.predict(X_test), y_test)
+        result_acc = actualAcc(clf.predict(X_test.drop(columns=protected_features).to_numpy()), y_test)
     else:
         prediction_A = []
         prediction_B = []
@@ -161,7 +161,7 @@ def compute_confusion_matrix(X_train, y_train, X_test, y_test, clf, protected_fe
                 X_test_B = X_test_m[X_test_m[PARAMS_DATA["target"]] == PARAMS_DATA["B"]].drop(columns=protected_features).to_numpy()
                 prediction_A.append(clf.predict(X_test_A))
                 prediction_B.append(clf.predict(X_test_B))
-                predictions.append(clf.predict(X_test))
+                predictions.append(clf.predict(X_test.drop(columns=protected_features).to_numpy()))
         # compute final predictions by voting
         predictions = np.apply_along_axis(helper_freq, 0, np.array(predictions))
         prediction_A = np.apply_along_axis(helper_freq, 0, np.array(prediction_A))
