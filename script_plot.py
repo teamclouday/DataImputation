@@ -41,8 +41,9 @@ PLOT_CREATE_SIMILAR_V2  = True
 PLOT_CREATE_MULTI_V1    = True
 PLOT_CREATE_MULTI_V2    = True
 
-PLOT_PARETO_FRONTIER_V1 = True
-PLOT_PARETO_FRONTIER_V2 = True
+PLOT_PARETO_FRONTIER_ACC     = True
+PLOT_PARETO_FRONTIER_F1      = True
+PLOT_PARETO_FRONTIER_REALACC = True
 
 PLOT_DEBUG_FUNCTION     = False
 
@@ -198,7 +199,7 @@ def plot_func(data, method_name, file_name=None, yscale=None, plot_error=True):
     plt.pause(2)
     plt.close()
 
-def plot_func_pareto_front(data, title, file_name=None, y_scale=None, switch=False, x_acc=True):
+def plot_func_pareto_front(data, title, file_name=None, y_scale=None, switch=False, x_axis="acc"):
     # extract data
     data_mean_v1    = data["mean_v1"]
     data_mean_v2    = data["mean_v2"]
@@ -221,12 +222,12 @@ def plot_func_pareto_front(data, title, file_name=None, y_scale=None, switch=Fal
     plot_data_multi_v1      = {}
     plot_data_multi_v2      = {}
     for clf in classifiers:
-        plot_data_mean_v1[clf]      = ([], [], [], [], []) # [[acc_X], [bias1_Y], [bias2_Y], [f1_X], [newbias_Y]]
-        plot_data_mean_v2[clf]      = ([], [], [], [], [])
-        plot_data_similar_v1[clf]   = ([], [], [], [], [])
-        plot_data_similar_v2[clf]   = ([], [], [], [], [])
-        plot_data_multi_v1[clf]     = ([], [], [], [], [])
-        plot_data_multi_v2[clf]     = ([], [], [], [], [])
+        plot_data_mean_v1[clf]      = ([], [], [], [], [], []) # [[acc_X], [bias1_Y], [bias2_Y], [f1_X], [newbias_Y], [realacc_X]]
+        plot_data_mean_v2[clf]      = ([], [], [], [], [], [])
+        plot_data_similar_v1[clf]   = ([], [], [], [], [], [])
+        plot_data_similar_v2[clf]   = ([], [], [], [], [], [])
+        plot_data_multi_v1[clf]     = ([], [], [], [], [], [])
+        plot_data_multi_v2[clf]     = ([], [], [], [], [], [])
     iterations = int(len(data_mean_v1) / len(random_ratios))
     for i in range(0, len(data_mean_v1), iterations):
         d_data_mean_v1      = data_mean_v1[i:(i+iterations)]
@@ -243,9 +244,9 @@ def plot_func_pareto_front(data, title, file_name=None, y_scale=None, switch=Fal
             clf_data_multi_v1   = [x[clf] for x in d_data_multi_v1]
             clf_data_multi_v2   = [x[clf] for x in d_data_multi_v2]
             # process mean_v1 method
-            data_processed = [[], [], [], [], []] # [[acc], [bias1], [bias2], [f1 score], [new bias]]
+            data_processed = [[], [], [], [], [], []] # [[acc], [bias1], [bias2], [f1 score], [new bias], [real acc]]
             for cf_matrices in clf_data_mean_v1:
-                tmp_processed = [[], [], [], [], []] # [[acc], [bias1], [bias2], [f1 score], [new bias]]
+                tmp_processed = [[], [], [], [], [], []] # [[acc], [bias1], [bias2], [f1 score], [new bias], [real acc]]
                 for mm in cf_matrices:
                     if len(mm) < 1:
                         continue
@@ -265,20 +266,23 @@ def plot_func_pareto_front(data, title, file_name=None, y_scale=None, switch=Fal
                         tmp_processed[2].append(z)
                         tmp_processed[3].append(np.mean(w))
                         tmp_processed[4].append(k)
+                        tmp_processed[5].append(acc_m)
                 data_processed[0].append(np.mean(tmp_processed[0]))
                 data_processed[1].append(np.mean(tmp_processed[1]))
                 data_processed[2].append(np.mean(tmp_processed[2]))
                 data_processed[3].append(np.mean(tmp_processed[3]))
                 data_processed[4].append(np.mean(tmp_processed[4]))
+                data_processed[5].append(np.mean(tmp_processed[5]))
             plot_data_mean_v1[clf][0].append(np.mean(data_processed[0]))
             plot_data_mean_v1[clf][1].append(np.mean(data_processed[1]))
             plot_data_mean_v1[clf][2].append(np.mean(data_processed[2]))
             plot_data_mean_v1[clf][3].append(np.mean(data_processed[3]))
             plot_data_mean_v1[clf][4].append(np.mean(data_processed[4]))
+            plot_data_mean_v1[clf][5].append(np.mean(data_processed[5]))
             # process mean_v2 method
-            data_processed = [[], [], [], [], []] # [[acc], [bias1], [bias2], [f1 score], [new bias]]
+            data_processed = [[], [], [], [], [], []] # [[acc], [bias1], [bias2], [f1 score], [new bias], [real acc]]
             for cf_matrices in clf_data_mean_v2:
-                tmp_processed = [[], [], [], [], []] # [[acc], [bias1], [bias2], [f1 score], [new bias]]
+                tmp_processed = [[], [], [], [], [], []] # [[acc], [bias1], [bias2], [f1 score], [new bias], [real acc]]
                 for mm in cf_matrices:
                     if len(mm) < 1:
                         continue
@@ -298,20 +302,23 @@ def plot_func_pareto_front(data, title, file_name=None, y_scale=None, switch=Fal
                         tmp_processed[2].append(z)
                         tmp_processed[3].append(np.mean(w))
                         tmp_processed[4].append(k)
+                        tmp_processed[5].append(acc_m)
                 data_processed[0].append(np.mean(tmp_processed[0]))
                 data_processed[1].append(np.mean(tmp_processed[1]))
                 data_processed[2].append(np.mean(tmp_processed[2]))
                 data_processed[3].append(np.mean(tmp_processed[3]))
                 data_processed[4].append(np.mean(tmp_processed[4]))
+                data_processed[5].append(np.mean(tmp_processed[5]))
             plot_data_mean_v1[clf][0].append(np.mean(data_processed[0]))
             plot_data_mean_v1[clf][1].append(np.mean(data_processed[1]))
             plot_data_mean_v1[clf][2].append(np.mean(data_processed[2]))
             plot_data_mean_v1[clf][3].append(np.mean(data_processed[3]))
             plot_data_mean_v1[clf][4].append(np.mean(data_processed[4]))
+            plot_data_mean_v1[clf][5].append(np.mean(data_processed[5]))
             # process similar_v1 method
-            data_processed = [[], [], [], [], []] # [[acc], [bias1], [bias2], [f1 score], [new bias]]
+            data_processed = [[], [], [], [], [], []] # [[acc], [bias1], [bias2], [f1 score], [new bias], [real acc]]
             for cf_matrices in clf_data_similar_v1:
-                tmp_processed = [[], [], [], [], []] # [[acc], [bias1], [bias2], [f1 score], [new bias]]
+                tmp_processed = [[], [], [], [], [], []] # [[acc], [bias1], [bias2], [f1 score], [new bias], [real acc]]
                 for mm in cf_matrices:
                     if len(mm) < 1:
                         continue
@@ -331,20 +338,23 @@ def plot_func_pareto_front(data, title, file_name=None, y_scale=None, switch=Fal
                         tmp_processed[2].append(z)
                         tmp_processed[3].append(np.mean(w))
                         tmp_processed[4].append(k)
+                        tmp_processed[5].append(acc_m)
                 data_processed[0].append(np.mean(tmp_processed[0]))
                 data_processed[1].append(np.mean(tmp_processed[1]))
                 data_processed[2].append(np.mean(tmp_processed[2]))
                 data_processed[3].append(np.mean(tmp_processed[3]))
                 data_processed[4].append(np.mean(tmp_processed[4]))
+                data_processed[5].append(np.mean(tmp_processed[5]))
             plot_data_mean_v1[clf][0].append(np.mean(data_processed[0]))
             plot_data_mean_v1[clf][1].append(np.mean(data_processed[1]))
             plot_data_mean_v1[clf][2].append(np.mean(data_processed[2]))
             plot_data_mean_v1[clf][3].append(np.mean(data_processed[3]))
             plot_data_mean_v1[clf][4].append(np.mean(data_processed[4]))
+            plot_data_mean_v1[clf][5].append(np.mean(data_processed[5]))
             # process similar_v2 method
-            data_processed = [[], [], [], [], []] # [[acc], [bias1], [bias2], [f1 score], [new bias]]
+            data_processed = [[], [], [], [], [], []] # [[acc], [bias1], [bias2], [f1 score], [new bias], [real acc]]
             for cf_matrices in clf_data_similar_v2:
-                tmp_processed = [[], [], [], [], []] # [[acc], [bias1], [bias2], [f1 score], [new bias]]
+                tmp_processed = [[], [], [], [], [], []] # [[acc], [bias1], [bias2], [f1 score], [new bias], [real acc]]
                 for mm in cf_matrices:
                     if len(mm) < 1:
                         continue
@@ -364,20 +374,23 @@ def plot_func_pareto_front(data, title, file_name=None, y_scale=None, switch=Fal
                         tmp_processed[2].append(z)
                         tmp_processed[3].append(np.mean(w))
                         tmp_processed[4].append(k)
+                        tmp_processed[5].append(acc_m)
                 data_processed[0].append(np.mean(tmp_processed[0]))
                 data_processed[1].append(np.mean(tmp_processed[1]))
                 data_processed[2].append(np.mean(tmp_processed[2]))
                 data_processed[3].append(np.mean(tmp_processed[3]))
                 data_processed[4].append(np.mean(tmp_processed[4]))
+                data_processed[5].append(np.mean(tmp_processed[5]))
             plot_data_mean_v1[clf][0].append(np.mean(data_processed[0]))
             plot_data_mean_v1[clf][1].append(np.mean(data_processed[1]))
             plot_data_mean_v1[clf][2].append(np.mean(data_processed[2]))
             plot_data_mean_v1[clf][3].append(np.mean(data_processed[3]))
             plot_data_mean_v1[clf][4].append(np.mean(data_processed[4]))
+            plot_data_mean_v1[clf][5].append(np.mean(data_processed[5]))
             # process multi_v1 method
-            data_processed = [[], [], [], [], []] # [[acc], [bias1], [bias2], [f1 score], [new bias]]
+            data_processed = [[], [], [], [], [], []] # [[acc], [bias1], [bias2], [f1 score], [new bias], [real acc]]
             for cf_matrices in clf_data_multi_v1:
-                tmp_processed = [[], [], [], [], []] # [[acc], [bias1], [bias2], [f1 score], [new bias]]
+                tmp_processed = [[], [], [], [], [], []] # [[acc], [bias1], [bias2], [f1 score], [new bias], [real acc]]
                 for mm in cf_matrices:
                     if len(mm) < 1:
                         continue
@@ -397,20 +410,23 @@ def plot_func_pareto_front(data, title, file_name=None, y_scale=None, switch=Fal
                         tmp_processed[2].append(z)
                         tmp_processed[3].append(np.mean(w))
                         tmp_processed[4].append(k)
+                        tmp_processed[5].append(acc_m)
                 data_processed[0].append(np.mean(tmp_processed[0]))
                 data_processed[1].append(np.mean(tmp_processed[1]))
                 data_processed[2].append(np.mean(tmp_processed[2]))
                 data_processed[3].append(np.mean(tmp_processed[3]))
                 data_processed[4].append(np.mean(tmp_processed[4]))
+                data_processed[5].append(np.mean(tmp_processed[5]))
             plot_data_mean_v1[clf][0].append(np.mean(data_processed[0]))
             plot_data_mean_v1[clf][1].append(np.mean(data_processed[1]))
             plot_data_mean_v1[clf][2].append(np.mean(data_processed[2]))
             plot_data_mean_v1[clf][3].append(np.mean(data_processed[3]))
             plot_data_mean_v1[clf][4].append(np.mean(data_processed[4]))
+            plot_data_mean_v1[clf][5].append(np.mean(data_processed[5]))
             # process multi_v2 method
-            data_processed = [[], [], [], [], []] # [[acc], [bias1], [bias2], [f1 score], [new bias]]
+            data_processed = [[], [], [], [], [], []] # [[acc], [bias1], [bias2], [f1 score], [new bias], [real acc]]
             for cf_matrices in clf_data_multi_v2:
-                tmp_processed = [[], [], [], [], []] # [[acc], [bias1], [bias2], [f1 score], [new bias]]
+                tmp_processed = [[], [], [], [], [], []] # [[acc], [bias1], [bias2], [f1 score], [new bias], [real acc]]
                 for mm in cf_matrices:
                     if len(mm) < 1:
                         continue
@@ -430,25 +446,32 @@ def plot_func_pareto_front(data, title, file_name=None, y_scale=None, switch=Fal
                         tmp_processed[2].append(z)
                         tmp_processed[3].append(np.mean(w))
                         tmp_processed[4].append(k)
+                        tmp_processed[5].append(acc_m)
                 data_processed[0].append(np.mean(tmp_processed[0]))
                 data_processed[1].append(np.mean(tmp_processed[1]))
                 data_processed[2].append(np.mean(tmp_processed[2]))
                 data_processed[3].append(np.mean(tmp_processed[3]))
                 data_processed[4].append(np.mean(tmp_processed[4]))
+                data_processed[5].append(np.mean(tmp_processed[5]))
             plot_data_mean_v1[clf][0].append(np.mean(data_processed[0]))
             plot_data_mean_v1[clf][1].append(np.mean(data_processed[1]))
             plot_data_mean_v1[clf][2].append(np.mean(data_processed[2]))
             plot_data_mean_v1[clf][3].append(np.mean(data_processed[3]))
             plot_data_mean_v1[clf][4].append(np.mean(data_processed[4]))
+            plot_data_mean_v1[clf][5].append(np.mean(data_processed[5]))
     fig, axes = plt.subplots(3, figsize=(8, 18)) # axes[0] for bias1, axes[1] for bias2, axes[2] for new bias
-    if x_acc:
+    if x_axis == "acc":
         axes[0].set_xlabel("Confusion Matrix Accuracy")
         axes[1].set_xlabel("Confusion Matrix Accuracy")
         axes[2].set_xlabel("Confusion Matrix Accuracy")
-    else:
+    elif x_axis == "f1":
         axes[0].set_xlabel("Confusion Matrix F1 Score")
         axes[1].set_xlabel("Confusion Matrix F1 Score")
         axes[2].set_xlabel("Confusion Matrix F1 Score")
+    else:
+        axes[0].set_xlabel("Real Accuracy")
+        axes[1].set_xlabel("Real Accuracy")
+        axes[2].set_xlabel("Real Accuracy")
     axes[0].set_ylabel("Bias1 Values")
     axes[1].set_ylabel("Bias2 Values")
     axes[2].set_ylabel("New Bias Values")
@@ -456,54 +479,54 @@ def plot_func_pareto_front(data, title, file_name=None, y_scale=None, switch=Fal
     for clf, clf_c, clf_m in zip(classifiers, plot_colors, plot_markers):
         if switch:
             # plot for mean_v1 method
-            axes[0].scatter(plot_data_mean_v1[clf][0] if x_acc else plot_data_mean_v1[clf][3], plot_data_mean_v1[clf][1], c=plot_colors[0], s=ratio_dot_size, marker=clf_m, alpha=0.8)
-            axes[1].scatter(plot_data_mean_v1[clf][0] if x_acc else plot_data_mean_v1[clf][3], plot_data_mean_v1[clf][2], c=plot_colors[0], s=ratio_dot_size, marker=clf_m, alpha=0.8)
-            axes[2].scatter(plot_data_mean_v1[clf][0] if x_acc else plot_data_mean_v1[clf][3], plot_data_mean_v1[clf][4], c=plot_colors[0], s=ratio_dot_size, marker=clf_m, alpha=0.8)
+            axes[0].scatter(plot_data_mean_v1[clf][0] if x_axis == "acc" else plot_data_mean_v1[clf][3] if x_axis == "f1" else plot_data_mean_v1[clf][5], plot_data_mean_v1[clf][1], c=plot_colors[0], s=ratio_dot_size, marker=clf_m, alpha=0.8)
+            axes[1].scatter(plot_data_mean_v1[clf][0] if x_axis == "acc" else plot_data_mean_v1[clf][3] if x_axis == "f1" else plot_data_mean_v1[clf][5], plot_data_mean_v1[clf][2], c=plot_colors[0], s=ratio_dot_size, marker=clf_m, alpha=0.8)
+            axes[2].scatter(plot_data_mean_v1[clf][0] if x_axis == "acc" else plot_data_mean_v1[clf][3] if x_axis == "f1" else plot_data_mean_v1[clf][5], plot_data_mean_v1[clf][4], c=plot_colors[0], s=ratio_dot_size, marker=clf_m, alpha=0.8)
             # plot for mean_v2 method
-            axes[0].scatter(plot_data_mean_v2[clf][0] if x_acc else plot_data_mean_v2[clf][3], plot_data_mean_v2[clf][1], c=plot_colors[1], s=ratio_dot_size, marker=clf_m, alpha=0.8)
-            axes[1].scatter(plot_data_mean_v2[clf][0] if x_acc else plot_data_mean_v2[clf][3], plot_data_mean_v2[clf][2], c=plot_colors[1], s=ratio_dot_size, marker=clf_m, alpha=0.8)
-            axes[2].scatter(plot_data_mean_v2[clf][0] if x_acc else plot_data_mean_v2[clf][3], plot_data_mean_v2[clf][4], c=plot_colors[1], s=ratio_dot_size, marker=clf_m, alpha=0.8)
+            axes[0].scatter(plot_data_mean_v2[clf][0] if x_axis == "acc" else plot_data_mean_v2[clf][3] if x_axis == "f1" else plot_data_mean_v2[clf][5], plot_data_mean_v2[clf][1], c=plot_colors[1], s=ratio_dot_size, marker=clf_m, alpha=0.8)
+            axes[1].scatter(plot_data_mean_v2[clf][0] if x_axis == "acc" else plot_data_mean_v2[clf][3] if x_axis == "f1" else plot_data_mean_v2[clf][5], plot_data_mean_v2[clf][2], c=plot_colors[1], s=ratio_dot_size, marker=clf_m, alpha=0.8)
+            axes[2].scatter(plot_data_mean_v2[clf][0] if x_axis == "acc" else plot_data_mean_v2[clf][3] if x_axis == "f1" else plot_data_mean_v2[clf][5], plot_data_mean_v2[clf][4], c=plot_colors[1], s=ratio_dot_size, marker=clf_m, alpha=0.8)
             # plot for similar_v1 method
-            axes[0].scatter(plot_data_similar_v1[clf][0] if x_acc else plot_data_similar_v1[clf][3], plot_data_similar_v1[clf][1], c=plot_colors[2], s=ratio_dot_size, marker=clf_m, alpha=0.8)
-            axes[1].scatter(plot_data_similar_v1[clf][0] if x_acc else plot_data_similar_v1[clf][3], plot_data_similar_v1[clf][2], c=plot_colors[2], s=ratio_dot_size, marker=clf_m, alpha=0.8)
-            axes[2].scatter(plot_data_similar_v1[clf][0] if x_acc else plot_data_similar_v1[clf][3], plot_data_similar_v1[clf][4], c=plot_colors[2], s=ratio_dot_size, marker=clf_m, alpha=0.8)
+            axes[0].scatter(plot_data_similar_v1[clf][0] if x_axis == "acc" else plot_data_similar_v1[clf][3] if x_axis == "f1" else plot_data_similar_v1[clf][5], plot_data_similar_v1[clf][1], c=plot_colors[2], s=ratio_dot_size, marker=clf_m, alpha=0.8)
+            axes[1].scatter(plot_data_similar_v1[clf][0] if x_axis == "acc" else plot_data_similar_v1[clf][3] if x_axis == "f1" else plot_data_similar_v1[clf][5], plot_data_similar_v1[clf][2], c=plot_colors[2], s=ratio_dot_size, marker=clf_m, alpha=0.8)
+            axes[2].scatter(plot_data_similar_v1[clf][0] if x_axis == "acc" else plot_data_similar_v1[clf][3] if x_axis == "f1" else plot_data_similar_v1[clf][5], plot_data_similar_v1[clf][4], c=plot_colors[2], s=ratio_dot_size, marker=clf_m, alpha=0.8)
             # plot for similar_v2 method
-            axes[0].scatter(plot_data_similar_v2[clf][0] if x_acc else plot_data_similar_v2[clf][3], plot_data_similar_v2[clf][1], c=plot_colors[3], s=ratio_dot_size, marker=clf_m, alpha=0.8)
-            axes[1].scatter(plot_data_similar_v2[clf][0] if x_acc else plot_data_similar_v2[clf][3], plot_data_similar_v2[clf][2], c=plot_colors[3], s=ratio_dot_size, marker=clf_m, alpha=0.8)
-            axes[2].scatter(plot_data_similar_v2[clf][0] if x_acc else plot_data_similar_v2[clf][3], plot_data_similar_v2[clf][4], c=plot_colors[3], s=ratio_dot_size, marker=clf_m, alpha=0.8)
+            axes[0].scatter(plot_data_similar_v2[clf][0] if x_axis == "acc" else plot_data_similar_v2[clf][3] if x_axis == "f1" else plot_data_similar_v2[clf][5], plot_data_similar_v2[clf][1], c=plot_colors[3], s=ratio_dot_size, marker=clf_m, alpha=0.8)
+            axes[1].scatter(plot_data_similar_v2[clf][0] if x_axis == "acc" else plot_data_similar_v2[clf][3] if x_axis == "f1" else plot_data_similar_v2[clf][5], plot_data_similar_v2[clf][2], c=plot_colors[3], s=ratio_dot_size, marker=clf_m, alpha=0.8)
+            axes[2].scatter(plot_data_similar_v2[clf][0] if x_axis == "acc" else plot_data_similar_v2[clf][3] if x_axis == "f1" else plot_data_similar_v2[clf][5], plot_data_similar_v2[clf][4], c=plot_colors[3], s=ratio_dot_size, marker=clf_m, alpha=0.8)
             # plot for multi_v1 method
-            axes[0].scatter(plot_data_multi_v1[clf][0] if x_acc else plot_data_multi_v1[clf][3], plot_data_multi_v1[clf][1], c=plot_colors[4], s=ratio_dot_size, marker=clf_m, alpha=0.8)
-            axes[1].scatter(plot_data_multi_v1[clf][0] if x_acc else plot_data_multi_v1[clf][3], plot_data_multi_v1[clf][2], c=plot_colors[4], s=ratio_dot_size, marker=clf_m, alpha=0.8)
-            axes[2].scatter(plot_data_multi_v1[clf][0] if x_acc else plot_data_multi_v1[clf][3], plot_data_multi_v1[clf][4], c=plot_colors[4], s=ratio_dot_size, marker=clf_m, alpha=0.8)
+            axes[0].scatter(plot_data_multi_v1[clf][0] if x_axis == "acc" else plot_data_multi_v1[clf][3] if x_axis == "f1" else plot_data_multi_v1[clf][5], plot_data_multi_v1[clf][1], c=plot_colors[4], s=ratio_dot_size, marker=clf_m, alpha=0.8)
+            axes[1].scatter(plot_data_multi_v1[clf][0] if x_axis == "acc" else plot_data_multi_v1[clf][3] if x_axis == "f1" else plot_data_multi_v1[clf][5], plot_data_multi_v1[clf][2], c=plot_colors[4], s=ratio_dot_size, marker=clf_m, alpha=0.8)
+            axes[2].scatter(plot_data_multi_v1[clf][0] if x_axis == "acc" else plot_data_multi_v1[clf][3] if x_axis == "f1" else plot_data_multi_v1[clf][5], plot_data_multi_v1[clf][4], c=plot_colors[4], s=ratio_dot_size, marker=clf_m, alpha=0.8)
             # plot for multi_v2 method
-            axes[0].scatter(plot_data_multi_v2[clf][0] if x_acc else plot_data_multi_v2[clf][3], plot_data_multi_v2[clf][1], c=plot_colors[5], s=ratio_dot_size, marker=clf_m, alpha=0.8)
-            axes[1].scatter(plot_data_multi_v2[clf][0] if x_acc else plot_data_multi_v2[clf][3], plot_data_multi_v2[clf][2], c=plot_colors[5], s=ratio_dot_size, marker=clf_m, alpha=0.8)
-            axes[2].scatter(plot_data_multi_v2[clf][0] if x_acc else plot_data_multi_v2[clf][3], plot_data_multi_v2[clf][4], c=plot_colors[5], s=ratio_dot_size, marker=clf_m, alpha=0.8)
+            axes[0].scatter(plot_data_multi_v2[clf][0] if x_axis == "acc" else plot_data_multi_v2[clf][3] if x_axis == "f1" else plot_data_multi_v2[clf][5], plot_data_multi_v2[clf][1], c=plot_colors[5], s=ratio_dot_size, marker=clf_m, alpha=0.8)
+            axes[1].scatter(plot_data_multi_v2[clf][0] if x_axis == "acc" else plot_data_multi_v2[clf][3] if x_axis == "f1" else plot_data_multi_v2[clf][5], plot_data_multi_v2[clf][2], c=plot_colors[5], s=ratio_dot_size, marker=clf_m, alpha=0.8)
+            axes[2].scatter(plot_data_multi_v2[clf][0] if x_axis == "acc" else plot_data_multi_v2[clf][3] if x_axis == "f1" else plot_data_multi_v2[clf][5], plot_data_multi_v2[clf][4], c=plot_colors[5], s=ratio_dot_size, marker=clf_m, alpha=0.8)
         else:
             # plot for mean_v1 method
-            axes[0].scatter(plot_data_mean_v1[clf][0] if x_acc else plot_data_mean_v1[clf][3], plot_data_mean_v1[clf][1], c=clf_c, s=ratio_dot_size, marker=plot_markers[0], alpha=0.8)
-            axes[1].scatter(plot_data_mean_v1[clf][0] if x_acc else plot_data_mean_v1[clf][3], plot_data_mean_v1[clf][2], c=clf_c, s=ratio_dot_size, marker=plot_markers[0], alpha=0.8)
-            axes[2].scatter(plot_data_mean_v1[clf][0] if x_acc else plot_data_mean_v1[clf][3], plot_data_mean_v1[clf][4], c=clf_c, s=ratio_dot_size, marker=plot_markers[0], alpha=0.8)
+            axes[0].scatter(plot_data_mean_v1[clf][0] if x_axis == "acc" else plot_data_mean_v1[clf][3] if x_axis == "f1" else plot_data_mean_v1[clf][5], plot_data_mean_v1[clf][1], c=clf_c, s=ratio_dot_size, marker=plot_markers[0], alpha=0.8)
+            axes[1].scatter(plot_data_mean_v1[clf][0] if x_axis == "acc" else plot_data_mean_v1[clf][3] if x_axis == "f1" else plot_data_mean_v1[clf][5], plot_data_mean_v1[clf][2], c=clf_c, s=ratio_dot_size, marker=plot_markers[0], alpha=0.8)
+            axes[2].scatter(plot_data_mean_v1[clf][0] if x_axis == "acc" else plot_data_mean_v1[clf][3] if x_axis == "f1" else plot_data_mean_v1[clf][5], plot_data_mean_v1[clf][4], c=clf_c, s=ratio_dot_size, marker=plot_markers[0], alpha=0.8)
             # plot for mean_v2 method
-            axes[0].scatter(plot_data_mean_v2[clf][0] if x_acc else plot_data_mean_v2[clf][3], plot_data_mean_v2[clf][1], c=clf_c, s=ratio_dot_size, marker=plot_markers[1], alpha=0.8)
-            axes[1].scatter(plot_data_mean_v2[clf][0] if x_acc else plot_data_mean_v2[clf][3], plot_data_mean_v2[clf][2], c=clf_c, s=ratio_dot_size, marker=plot_markers[1], alpha=0.8)
-            axes[2].scatter(plot_data_mean_v2[clf][0] if x_acc else plot_data_mean_v2[clf][3], plot_data_mean_v2[clf][4], c=clf_c, s=ratio_dot_size, marker=plot_markers[1], alpha=0.8)
+            axes[0].scatter(plot_data_mean_v2[clf][0] if x_axis == "acc" else plot_data_mean_v2[clf][3] if x_axis == "f1" else plot_data_mean_v2[clf][5], plot_data_mean_v2[clf][1], c=clf_c, s=ratio_dot_size, marker=plot_markers[1], alpha=0.8)
+            axes[1].scatter(plot_data_mean_v2[clf][0] if x_axis == "acc" else plot_data_mean_v2[clf][3] if x_axis == "f1" else plot_data_mean_v2[clf][5], plot_data_mean_v2[clf][2], c=clf_c, s=ratio_dot_size, marker=plot_markers[1], alpha=0.8)
+            axes[2].scatter(plot_data_mean_v2[clf][0] if x_axis == "acc" else plot_data_mean_v2[clf][3] if x_axis == "f1" else plot_data_mean_v2[clf][5], plot_data_mean_v2[clf][4], c=clf_c, s=ratio_dot_size, marker=plot_markers[1], alpha=0.8)
             # plot for similar_v1 method
-            axes[0].scatter(plot_data_similar_v1[clf][0] if x_acc else plot_data_similar_v1[clf][3], plot_data_similar_v1[clf][1], c=clf_c, s=ratio_dot_size, marker=plot_markers[2], alpha=0.8)
-            axes[1].scatter(plot_data_similar_v1[clf][0] if x_acc else plot_data_similar_v1[clf][3], plot_data_similar_v1[clf][2], c=clf_c, s=ratio_dot_size, marker=plot_markers[2], alpha=0.8)
-            axes[2].scatter(plot_data_similar_v1[clf][0] if x_acc else plot_data_similar_v1[clf][3], plot_data_similar_v1[clf][4], c=clf_c, s=ratio_dot_size, marker=plot_markers[2], alpha=0.8)
+            axes[0].scatter(plot_data_similar_v1[clf][0] if x_axis == "acc" else plot_data_similar_v1[clf][3] if x_axis == "f1" else plot_data_similar_v1[clf][5], plot_data_similar_v1[clf][1], c=clf_c, s=ratio_dot_size, marker=plot_markers[2], alpha=0.8)
+            axes[1].scatter(plot_data_similar_v1[clf][0] if x_axis == "acc" else plot_data_similar_v1[clf][3] if x_axis == "f1" else plot_data_similar_v1[clf][5], plot_data_similar_v1[clf][2], c=clf_c, s=ratio_dot_size, marker=plot_markers[2], alpha=0.8)
+            axes[2].scatter(plot_data_similar_v1[clf][0] if x_axis == "acc" else plot_data_similar_v1[clf][3] if x_axis == "f1" else plot_data_similar_v1[clf][5], plot_data_similar_v1[clf][4], c=clf_c, s=ratio_dot_size, marker=plot_markers[2], alpha=0.8)
             # plot for similar_v2 method
-            axes[0].scatter(plot_data_similar_v2[clf][0] if x_acc else plot_data_similar_v2[clf][3], plot_data_similar_v2[clf][1], c=clf_c, s=ratio_dot_size, marker=plot_markers[3], alpha=0.8)
-            axes[1].scatter(plot_data_similar_v2[clf][0] if x_acc else plot_data_similar_v2[clf][3], plot_data_similar_v2[clf][2], c=clf_c, s=ratio_dot_size, marker=plot_markers[3], alpha=0.8)
-            axes[2].scatter(plot_data_similar_v2[clf][0] if x_acc else plot_data_similar_v2[clf][3], plot_data_similar_v2[clf][4], c=clf_c, s=ratio_dot_size, marker=plot_markers[3], alpha=0.8)
+            axes[0].scatter(plot_data_similar_v2[clf][0] if x_axis == "acc" else plot_data_similar_v2[clf][3] if x_axis == "f1" else plot_data_similar_v2[clf][5], plot_data_similar_v2[clf][1], c=clf_c, s=ratio_dot_size, marker=plot_markers[3], alpha=0.8)
+            axes[1].scatter(plot_data_similar_v2[clf][0] if x_axis == "acc" else plot_data_similar_v2[clf][3] if x_axis == "f1" else plot_data_similar_v2[clf][5], plot_data_similar_v2[clf][2], c=clf_c, s=ratio_dot_size, marker=plot_markers[3], alpha=0.8)
+            axes[2].scatter(plot_data_similar_v2[clf][0] if x_axis == "acc" else plot_data_similar_v2[clf][3] if x_axis == "f1" else plot_data_similar_v2[clf][5], plot_data_similar_v2[clf][4], c=clf_c, s=ratio_dot_size, marker=plot_markers[3], alpha=0.8)
             # plot for multi_v1 method
-            axes[0].scatter(plot_data_multi_v1[clf][0] if x_acc else plot_data_multi_v1[clf][3], plot_data_multi_v1[clf][1], c=clf_c, s=ratio_dot_size, marker=plot_markers[4], alpha=0.8)
-            axes[1].scatter(plot_data_multi_v1[clf][0] if x_acc else plot_data_multi_v1[clf][3], plot_data_multi_v1[clf][2], c=clf_c, s=ratio_dot_size, marker=plot_markers[4], alpha=0.8)
-            axes[2].scatter(plot_data_multi_v1[clf][0] if x_acc else plot_data_multi_v1[clf][3], plot_data_multi_v1[clf][4], c=clf_c, s=ratio_dot_size, marker=plot_markers[4], alpha=0.8)
+            axes[0].scatter(plot_data_multi_v1[clf][0] if x_axis == "acc" else plot_data_multi_v1[clf][3] if x_axis == "f1" else plot_data_multi_v1[clf][5], plot_data_multi_v1[clf][1], c=clf_c, s=ratio_dot_size, marker=plot_markers[4], alpha=0.8)
+            axes[1].scatter(plot_data_multi_v1[clf][0] if x_axis == "acc" else plot_data_multi_v1[clf][3] if x_axis == "f1" else plot_data_multi_v1[clf][5], plot_data_multi_v1[clf][2], c=clf_c, s=ratio_dot_size, marker=plot_markers[4], alpha=0.8)
+            axes[2].scatter(plot_data_multi_v1[clf][0] if x_axis == "acc" else plot_data_multi_v1[clf][3] if x_axis == "f1" else plot_data_multi_v1[clf][5], plot_data_multi_v1[clf][4], c=clf_c, s=ratio_dot_size, marker=plot_markers[4], alpha=0.8)
             # plot for multi_v2 method
-            axes[0].scatter(plot_data_multi_v2[clf][0] if x_acc else plot_data_multi_v2[clf][3], plot_data_multi_v2[clf][1], c=clf_c, s=ratio_dot_size, marker=plot_markers[5], alpha=0.8)
-            axes[1].scatter(plot_data_multi_v2[clf][0] if x_acc else plot_data_multi_v2[clf][3], plot_data_multi_v2[clf][2], c=clf_c, s=ratio_dot_size, marker=plot_markers[5], alpha=0.8)
-            axes[2].scatter(plot_data_multi_v2[clf][0] if x_acc else plot_data_multi_v2[clf][3], plot_data_multi_v2[clf][4], c=clf_c, s=ratio_dot_size, marker=plot_markers[5], alpha=0.8)
+            axes[0].scatter(plot_data_multi_v2[clf][0] if x_axis == "acc" else plot_data_multi_v2[clf][3] if x_axis == "f1" else plot_data_multi_v2[clf][5], plot_data_multi_v2[clf][1], c=clf_c, s=ratio_dot_size, marker=plot_markers[5], alpha=0.8)
+            axes[1].scatter(plot_data_multi_v2[clf][0] if x_axis == "acc" else plot_data_multi_v2[clf][3] if x_axis == "f1" else plot_data_multi_v2[clf][5], plot_data_multi_v2[clf][2], c=clf_c, s=ratio_dot_size, marker=plot_markers[5], alpha=0.8)
+            axes[2].scatter(plot_data_multi_v2[clf][0] if x_axis == "acc" else plot_data_multi_v2[clf][3] if x_axis == "f1" else plot_data_multi_v2[clf][5], plot_data_multi_v2[clf][4], c=clf_c, s=ratio_dot_size, marker=plot_markers[5], alpha=0.8)
     if y_scale:
         axes[0].set_yscale(y_scale)
         axes[1].set_yscale(y_scale)
@@ -737,7 +760,7 @@ def plot_all(data_folder, plot_folder, name):
         os.path.exists(os.path.join(data_folder, "similar_v2.pkl")) and \
         os.path.exists(os.path.join(data_folder, "multi_v1.pkl")) and \
         os.path.exists(os.path.join(data_folder, "multi_v2.pkl")) and \
-        (PLOT_PARETO_FRONTIER_V1 or PLOT_PARETO_FRONTIER_V2):
+        (PLOT_PARETO_FRONTIER_ACC or PLOT_PARETO_FRONTIER_F1 or PLOT_PARETO_FRONTIER_REALACC):
         data = {}
         with open(os.path.join(data_folder, "mean_v1.pkl"), "rb") as inFile:
             data["mean_v1"] = pickle.load(inFile)
@@ -751,14 +774,18 @@ def plot_all(data_folder, plot_folder, name):
             data["multi_v1"] = pickle.load(inFile)
         with open(os.path.join(data_folder, "multi_v2.pkl"), "rb") as inFile:
             data["multi_v2"] = pickle.load(inFile)
-        if PLOT_PARETO_FRONTIER_V1:
-            print("Generate plots for pareto front V1 ({})".format(name))
-            plot_func_pareto_front(data, "Pareto Front (Confusion Matrix Accuracy) ({})".format(name), os.path.join(plot_folder, "pareto_front_acc.png"))
-            plot_func_pareto_front(data, "Pareto Front (Confusion Matrix Accuracy) ({})".format(name), os.path.join(plot_folder, "pareto_front_acc_scaled.png"), y_scale="log")
-        if PLOT_PARETO_FRONTIER_V2:
-            print("Generate plots for pareto front V2 ({})".format(name))
-            plot_func_pareto_front(data, "Pareto Front (Confusion Matrix F1 Score) ({})".format(name), os.path.join(plot_folder, "pareto_front_f1.png"), x_acc=False)
-            plot_func_pareto_front(data, "Pareto Front (Confusion Matrix F1 Score) ({})".format(name), os.path.join(plot_folder, "pareto_front_f1_scaled.png"), y_scale="log", x_acc=False)
+        if PLOT_PARETO_FRONTIER_ACC:
+            print("Generate plots for pareto front acc ({})".format(name))
+            plot_func_pareto_front(data, "Pareto Front (Confusion Matrix Accuracy) ({})".format(name), os.path.join(plot_folder, "pareto_front_acc.png"), x_axis="acc")
+            plot_func_pareto_front(data, "Pareto Front (Confusion Matrix Accuracy) ({})".format(name), os.path.join(plot_folder, "pareto_front_acc_scaled.png"), y_scale="log", x_axis="acc")
+        if PLOT_PARETO_FRONTIER_F1:
+            print("Generate plots for pareto front f1 ({})".format(name))
+            plot_func_pareto_front(data, "Pareto Front (Confusion Matrix F1 Score) ({})".format(name), os.path.join(plot_folder, "pareto_front_f1.png"), x_axis="f1")
+            plot_func_pareto_front(data, "Pareto Front (Confusion Matrix F1 Score) ({})".format(name), os.path.join(plot_folder, "pareto_front_f1_scaled.png"), y_scale="log", x_axis="f1")
+        if PLOT_PARETO_FRONTIER_REALACC:
+            print("Generate plots for pareto front real acc ({})".format(name))
+            plot_func_pareto_front(data, "Pareto Front (Real Accuracy) ({})".format(name), os.path.join(plot_folder, "pareto_front_realacc.png"), x_axis="realacc")
+            plot_func_pareto_front(data, "Pareto Front (Real Accuracy) ({})".format(name), os.path.join(plot_folder, "pareto_front_realacc_scaled.png"), y_scale="log", x_axis="realacc")
 
 if __name__=="__main__":
     if not os.path.exists("ratio_analysis_plots"):
