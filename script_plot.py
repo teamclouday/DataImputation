@@ -10,21 +10,27 @@ from matplotlib.lines import Line2D
 
 from script_single_task import random_ratios
 from script_single_task import RUN_MEAN_V1, RUN_MEAN_V2, RUN_MULTI_V1, RUN_MULTI_V2, RUN_SIMILAR_V1, RUN_SIMILAR_V2
-from script_single_task import acc, f1score, bias1, bias2
+from script_single_task import acc, f1score, bias1, bias2, newBias
 
 iter_per_ratio = 200
 
-NAME_DATASETS = ["adult", "compas", "titanic"]
+NAME_DATASETS = ["adult", "compas", "titanic", "german", "communities", "juvenile"]
 NAME_TARGETS  = ["acc", "f1"]
 
 INCOMPLETE_MODE = False
 
-PLOT_ADULT_ACC          = True
+PLOT_ADULT_ACC          = False
 PLOT_ADULT_F1           = False
 PLOT_COMPAS_ACC         = False
 PLOT_COMPAS_F1          = False
 PLOT_TITANIC_ACC        = False
 PLOT_TITANIC_F1         = False
+PLOT_GERMAN_ACC         = False
+PLOT_GERMAN_F1          = False
+PLOT_COMMUNITIES_ACC    = False
+PLOT_COMMUNITIES_F1     = False
+PLOT_JUVENILE_ACC       = False
+PLOT_JUVENILE_F1        = False
 
 TRANSFORM_OUTPUTS       = True
 
@@ -48,28 +54,34 @@ def plot_func(data, method_name, file_name=None, yscale=None, plot_error=True):
     plot_bias2 = {}
     plot_acc = {}
     plot_f1 = {}
+    plot_realacc = {}
+    plot_newbias = {}
     counter = 0
     for clf in classifiers:
-        plot_bias1[clf] = [[], []] # [[actual averaged data], [data for error bar]]
-        plot_bias2[clf] = [[], []]
-        plot_acc[clf]   = [[], []]
-        plot_f1[clf]    = [[], []]
+        plot_bias1[clf]   = [[], []] # [[actual averaged data], [data for error bar]]
+        plot_bias2[clf]   = [[], []]
+        plot_acc[clf]     = [[], []]
+        plot_f1[clf]      = [[], []]
+        plot_realacc[clf] = [[], []]
+        plot_newbias[clf] = [[], []]
     iterations = int(len(data) / len(random_ratios))
     for i in range(0, len(data), iterations):
         i_data = data[i:(i+iterations)]
         for clf in classifiers:
             clf_data = [x[clf] for x in i_data]
-            data_processed = [[], [], [], []] # [[acc avg], [bias1], [bias2], [f1 score]], remove -1, [None] cases
+            data_processed = [[], [], [], [], [], []] # [[acc avg], [bias1], [bias2], [f1 score], [real acc], [new bias]], remove -1, [None] cases
             for cf_matrices in clf_data:
-                tmp_data_processed = [[], [], [], []] #  [[acc each fold], [bias1], [bias2], [f1 score]], remove -1, [None] cases
-                for cf_m in cf_matrices:
-                    if len(cf_m) < 1:
+                tmp_data_processed = [[], [], [], [], [], []] #  [[acc each fold], [bias1], [bias2], [f1 score], [real acc], [new bias]], remove -1, [None] cases
+                for mm in cf_matrices:
+                    if len(mm) < 1:
                         continue
+                    cf_m, acc_m = mm[0], mm[1]
                     try:
                         x = acc(cf_m)
                         y = bias1(cf_m)
                         z = bias2(cf_m)
                         w = f1score(cf_m)
+                        k = newBias(cf_m)
                     except Exception as e:
                         print("Error: {}".format(e))
                         counter += 1
@@ -79,12 +91,16 @@ def plot_func(data, method_name, file_name=None, yscale=None, plot_error=True):
                         tmp_data_processed[1].append(y)
                         tmp_data_processed[2].append(z)
                         tmp_data_processed[3].append(np.mean(w))
+                        tmp_data_processed[4].append(acc_m)
+                        tmp_data_processed[5].append(k)
                     else:
                         counter += 1
                 data_processed[0].append(np.mean(tmp_data_processed[0]))
                 data_processed[1].append(np.mean(tmp_data_processed[1]))
                 data_processed[2].append(np.mean(tmp_data_processed[2]))
                 data_processed[3].append(np.mean(tmp_data_processed[3]))
+                data_processed[4].append(np.mean(tmp_data_processed[4]))
+                data_processed[5].append(np.mean(tmp_data_processed[5]))
             plot_acc[clf][0].append(np.mean(data_processed[0]))
             plot_acc[clf][1].append(np.std(data_processed[0]))
             plot_bias1[clf][0].append(np.mean(data_processed[1]))
@@ -93,10 +109,14 @@ def plot_func(data, method_name, file_name=None, yscale=None, plot_error=True):
             plot_bias2[clf][1].append(np.std(data_processed[2]))
             plot_f1[clf][0].append(np.mean(data_processed[3]))
             plot_f1[clf][1].append(np.std(data_processed[3]))
+            plot_realacc[clf][0].append(np.mean(data_processed[4]))
+            plot_realacc[clf][1].append(np.std(data_processed[4]))
+            plot_newbias[clf][0].append(np.mean(data_processed[5]))
+            plot_newbias[clf][1].append(np.std(data_processed[5]))
     if counter > 0:
         print("Warning: out of {} folds, {} are dropped".format(len(data)*len(classifiers)*10, counter))
     plot_gap = 0.002
-    fig, axes = plt.subplots(4, figsize=(10, 20))
+    fig, axes = plt.subplots(6, figsize=(10, 30))
     # axes[0] shows bias1
     axes[0].set_title("Bias1")
     for i, clf in enumerate(classifiers):
@@ -122,7 +142,7 @@ def plot_func(data, method_name, file_name=None, yscale=None, plot_error=True):
     if yscale:
         axes[1].set_yscale(yscale)
     # axes[2] shows accuracy
-    axes[2].set_title("Accuracy")
+    axes[2].set_title("Confusion Matrix Accuracy")
     for i, clf in enumerate(classifiers):
         if plot_error:
             axes[2].errorbar(random_ratios+(i-3)*plot_gap, plot_acc[clf][0], yerr=plot_acc[clf][1], label=clf)
@@ -134,7 +154,7 @@ def plot_func(data, method_name, file_name=None, yscale=None, plot_error=True):
     if yscale:
         axes[2].set_yscale(yscale)
     # axes[3] shows f1 score
-    axes[3].set_title("F1 Score")
+    axes[3].set_title("Confusion Matrix F1 Score")
     for i, clf in enumerate(classifiers):
         if plot_error:
             axes[3].errorbar(random_ratios+(i-3)*plot_gap, plot_f1[clf][0], yerr=plot_f1[clf][1], label=clf)
@@ -145,12 +165,38 @@ def plot_func(data, method_name, file_name=None, yscale=None, plot_error=True):
     axes[3].set_xticks(np.arange(0.0, 1.0, 0.05))
     if yscale:
         axes[3].set_yscale(yscale)
+    # axes[4] show real acc
+    axes[4].set_title("Real Accuracy")
+    for i, clf in enumerate(classifiers):
+        if plot_error:
+            axes[4].errorbar(random_ratios+(i-3)*plot_gap, plot_realacc[clf][0], yerr=plot_realacc[clf][1], label=clf)
+        else:
+            axes[4].plot(random_ratios+(i-3)*plot_gap, plot_realacc[clf][0], label=clf)
+        axes[4].scatter(random_ratios+(i-3)*plot_gap, plot_realacc[clf][0], s=2)
+    axes[4].legend(loc="best")
+    axes[4].set_xticks(np.arange(0.0, 1.0, 0.05))
+    if yscale:
+        axes[4].set_yscale(yscale)
+    # axes[5] show new bias
+    axes[5].set_title("New Bias")
+    for i, clf in enumerate(classifiers):
+        if plot_error:
+            axes[5].errorbar(random_ratios+(i-3)*plot_gap, plot_newbias[clf][0], yerr=plot_newbias[clf][1], label=clf)
+        else:
+            axes[5].plot(random_ratios+(i-3)*plot_gap, plot_newbias[clf][0], label=clf)
+        axes[5].scatter(random_ratios+(i-3)*plot_gap, plot_newbias[clf][0], s=2)
+    axes[5].legend(loc="best")
+    axes[5].set_xticks(np.arange(0.0, 1.0, 0.05))
+    if yscale:
+        axes[5].set_yscale(yscale)
     fig.tight_layout()
     fig.suptitle("Imputation Method: {}".format(method_name))
     plt.subplots_adjust(top=0.94)
     if file_name:
         fig.savefig(file_name, transparent=False, bbox_inches='tight', pad_inches=0.1)
-    plt.show()
+    plt.show(block=False)
+    plt.pause(2)
+    plt.close()
 
 def plot_func_pareto_front(data, title, file_name=None, y_scale=None, switch=False, x_acc=True):
     # extract data
@@ -200,9 +246,10 @@ def plot_func_pareto_front(data, title, file_name=None, y_scale=None, switch=Fal
             data_processed = [[], [], [], []] # [[acc], [bias1], [bias2], [f1 score]]
             for cf_matrices in clf_data_mean_v1:
                 tmp_processed = [[], [], [], []] # [[acc], [bias1], [bias2], [f1 score]]
-                for cf_m in cf_matrices:
-                    if len(cf_m) < 1:
+                for mm in cf_matrices:
+                    if len(mm) < 1:
                         continue
+                    cf_m, acc_m = mm[0], mm[1]
                     try:
                         x = acc(cf_m)
                         y = bias1(cf_m)
@@ -228,9 +275,10 @@ def plot_func_pareto_front(data, title, file_name=None, y_scale=None, switch=Fal
             data_processed = [[], [], [], []] # [[acc], [bias1], [bias2], [f1 score]]
             for cf_matrices in clf_data_mean_v2:
                 tmp_processed = [[], [], [], []] # [[acc], [bias1], [bias2], [f1 score]]
-                for cf_m in cf_matrices:
-                    if len(cf_m) < 1:
+                for mm in cf_matrices:
+                    if len(mm) < 1:
                         continue
+                    cf_m, acc_m = mm[0], mm[1]
                     try:
                         x = acc(cf_m)
                         y = bias1(cf_m)
@@ -256,9 +304,10 @@ def plot_func_pareto_front(data, title, file_name=None, y_scale=None, switch=Fal
             data_processed = [[], [], [], []] # [[acc], [bias1], [bias2], [f1 score]]
             for cf_matrices in clf_data_similar_v1:
                 tmp_processed = [[], [], [], []] # [[acc], [bias1], [bias2], [f1 score]]
-                for cf_m in cf_matrices:
-                    if len(cf_m) < 1:
+                for mm in cf_matrices:
+                    if len(mm) < 1:
                         continue
+                    cf_m, acc_m = mm[0], mm[1]
                     try:
                         x = acc(cf_m)
                         y = bias1(cf_m)
@@ -284,9 +333,10 @@ def plot_func_pareto_front(data, title, file_name=None, y_scale=None, switch=Fal
             data_processed = [[], [], [], []] # [[acc], [bias1], [bias2], [f1 score]]
             for cf_matrices in clf_data_similar_v2:
                 tmp_processed = [[], [], [], []] # [[acc], [bias1], [bias2], [f1 score]]
-                for cf_m in cf_matrices:
-                    if len(cf_m) < 1:
+                for mm in cf_matrices:
+                    if len(mm) < 1:
                         continue
+                    cf_m, acc_m = mm[0], mm[1]
                     try:
                         x = acc(cf_m)
                         y = bias1(cf_m)
@@ -312,9 +362,10 @@ def plot_func_pareto_front(data, title, file_name=None, y_scale=None, switch=Fal
             data_processed = [[], [], [], []] # [[acc], [bias1], [bias2], [f1 score]]
             for cf_matrices in clf_data_multi_v1:
                 tmp_processed = [[], [], [], []] # [[acc], [bias1], [bias2], [f1 score]]
-                for cf_m in cf_matrices:
-                    if len(cf_m) < 1:
+                for mm in cf_matrices:
+                    if len(mm) < 1:
                         continue
+                    cf_m, acc_m = mm[0], mm[1]
                     try:
                         x = acc(cf_m)
                         y = bias1(cf_m)
@@ -340,9 +391,10 @@ def plot_func_pareto_front(data, title, file_name=None, y_scale=None, switch=Fal
             data_processed = [[], [], [], []] # [[acc], [bias1], [bias2], [f1 score]]
             for cf_matrices in clf_data_multi_v2:
                 tmp_processed = [[], [], [], []] # [[acc], [bias1], [bias2], [f1 score]]
-                for cf_m in cf_matrices:
-                    if len(cf_m) < 1:
+                for mm in cf_matrices:
+                    if len(mm) < 1:
                         continue
+                    cf_m, acc_m = mm[0], mm[1]
                     try:
                         x = acc(cf_m)
                         y = bias1(cf_m)
@@ -366,11 +418,11 @@ def plot_func_pareto_front(data, title, file_name=None, y_scale=None, switch=Fal
             plot_data_multi_v2[clf][3].append(np.mean(data_processed[3]))
     fig, axes = plt.subplots(2, figsize=(8, 12)) # axes[0] for bias1, axes[1] for bias2
     if x_acc:
-        axes[0].set_xlabel("Accuracy")
-        axes[1].set_xlabel("Accuracy")
+        axes[0].set_xlabel("Confusion Matrix Accuracy")
+        axes[1].set_xlabel("Confusion Matrix Accuracy")
     else:
-        axes[0].set_xlabel("F1 Score")
-        axes[1].set_xlabel("F1 Score")
+        axes[0].set_xlabel("Confusion Matrix F1 Score")
+        axes[1].set_xlabel("Confusion Matrix F1 Score")
     axes[0].set_ylabel("Bias1 Values")
     axes[1].set_ylabel("Bias2 Values")
     # each classifier has different color
@@ -438,13 +490,16 @@ def plot_func_pareto_front(data, title, file_name=None, y_scale=None, switch=Fal
     plt.subplots_adjust(top=0.94)
     if file_name:
         plt.savefig(file_name, transparent=False, bbox_inches='tight', pad_inches=0.1)
-    plt.show()
+    plt.show(block=False)
+    plt.pause(2)
+    plt.close()
 
 def compress_outputs():
     for tt in NAME_TARGETS:
         for dd in NAME_DATASETS:
             if not os.path.exists(os.path.join("condor_outputs", tt, dd)):
-                raise Exception("{} folder not found!".format(os.path.join("condor_outputs", tt, dd)))
+                print("Folder not found: {}".format(os.path.join("condor_outputs", tt, dd)))
+                continue
             final_results = {}
             if RUN_MEAN_V1: final_results["mean_v1"] = [[] for _ in range(len(random_ratios))]
             if RUN_MEAN_V2: final_results["mean_v2"] = [[] for _ in range(len(random_ratios))]
@@ -675,9 +730,9 @@ if __name__=="__main__":
     for tt in NAME_TARGETS:
         if not os.path.exists(os.path.join("ratio_analysis_plots", tt)):
             os.makedirs(os.path.join("ratio_analysis_plots", tt))
-            for dd in NAME_DATASETS:
-                if not os.path.exists(os.path.join("ratio_analysis_plots", tt, dd)):
-                    os.makedirs(os.path.join("ratio_analysis_plots", tt, dd))
+        for dd in NAME_DATASETS:
+            if not os.path.exists(os.path.join("ratio_analysis_plots", tt, dd)):
+                os.makedirs(os.path.join("ratio_analysis_plots", tt, dd))
 
     if TRANSFORM_OUTPUTS:
         compress_outputs()
@@ -697,3 +752,15 @@ if __name__=="__main__":
         plot_all(os.path.join("condor_outputs", "acc", "titanic"), os.path.join("ratio_analysis_plots", "acc", "titanic"), "titanic acc")
     if PLOT_TITANIC_F1:
         plot_all(os.path.join("condor_outputs", "f1", "titanic"), os.path.join("ratio_analysis_plots", "f1", "titanic"), "titanic f1")
+    if PLOT_GERMAN_ACC:
+        plot_all(os.path.join("condor_outputs", "acc", "german"), os.path.join("ratio_analysis_plots", "acc", "german"), "german acc")
+    if PLOT_GERMAN_F1:
+        plot_all(os.path.join("condor_outputs", "f1", "german"), os.path.join("ratio_analysis_plots", "f1", "german"), "german f1")
+    if PLOT_COMMUNITIES_ACC:
+        plot_all(os.path.join("condor_outputs", "acc", "communities"), os.path.join("ratio_analysis_plots", "acc", "communities"), "communities acc")
+    if PLOT_COMMUNITIES_F1:
+        plot_all(os.path.join("condor_outputs", "f1", "communities"), os.path.join("ratio_analysis_plots", "f1", "communities"), "communities f1")
+    if PLOT_JUVENILE_ACC:
+        plot_all(os.path.join("condor_outputs", "acc", "juvenile"), os.path.join("ratio_analysis_plots", "acc", "juvenile"), "juvenile acc")
+    if PLOT_JUVENILE_F1:
+        plot_all(os.path.join("condor_outputs", "f1", "juvenile"), os.path.join("ratio_analysis_plots", "f1", "juvenile"), "juvenile f1")
