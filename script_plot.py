@@ -221,12 +221,12 @@ def plot_func_pareto_front(data, title, file_name=None, y_scale=None, switch=Fal
     plot_data_multi_v1      = {}
     plot_data_multi_v2      = {}
     for clf in classifiers:
-        plot_data_mean_v1[clf]      = ([], [], [], []) # [[acc_X], [bias1_Y], [bias2_Y], [f1_X]]
-        plot_data_mean_v2[clf]      = ([], [], [], [])
-        plot_data_similar_v1[clf]   = ([], [], [], [])
-        plot_data_similar_v2[clf]   = ([], [], [], [])
-        plot_data_multi_v1[clf]     = ([], [], [], [])
-        plot_data_multi_v2[clf]     = ([], [], [], [])
+        plot_data_mean_v1[clf]      = ([], [], [], [], []) # [[acc_X], [bias1_Y], [bias2_Y], [f1_X], [newbias_Y]]
+        plot_data_mean_v2[clf]      = ([], [], [], [], [])
+        plot_data_similar_v1[clf]   = ([], [], [], [], [])
+        plot_data_similar_v2[clf]   = ([], [], [], [], [])
+        plot_data_multi_v1[clf]     = ([], [], [], [], [])
+        plot_data_multi_v2[clf]     = ([], [], [], [], [])
     iterations = int(len(data_mean_v1) / len(random_ratios))
     for i in range(0, len(data_mean_v1), iterations):
         d_data_mean_v1      = data_mean_v1[i:(i+iterations)]
@@ -243,9 +243,9 @@ def plot_func_pareto_front(data, title, file_name=None, y_scale=None, switch=Fal
             clf_data_multi_v1   = [x[clf] for x in d_data_multi_v1]
             clf_data_multi_v2   = [x[clf] for x in d_data_multi_v2]
             # process mean_v1 method
-            data_processed = [[], [], [], []] # [[acc], [bias1], [bias2], [f1 score]]
+            data_processed = [[], [], [], [], []] # [[acc], [bias1], [bias2], [f1 score], [new bias]]
             for cf_matrices in clf_data_mean_v1:
-                tmp_processed = [[], [], [], []] # [[acc], [bias1], [bias2], [f1 score]]
+                tmp_processed = [[], [], [], [], []] # [[acc], [bias1], [bias2], [f1 score], [new bias]]
                 for mm in cf_matrices:
                     if len(mm) < 1:
                         continue
@@ -255,6 +255,7 @@ def plot_func_pareto_front(data, title, file_name=None, y_scale=None, switch=Fal
                         y = bias1(cf_m)
                         z = bias2(cf_m)
                         w = f1score(cf_m)
+                        k = newBias(cf_m)
                     except Exception as e:
                         print("Error: {}".format(e))
                         continue
@@ -263,18 +264,21 @@ def plot_func_pareto_front(data, title, file_name=None, y_scale=None, switch=Fal
                         tmp_processed[1].append(y)
                         tmp_processed[2].append(z)
                         tmp_processed[3].append(np.mean(w))
+                        tmp_processed[4].append(k)
                 data_processed[0].append(np.mean(tmp_processed[0]))
                 data_processed[1].append(np.mean(tmp_processed[1]))
                 data_processed[2].append(np.mean(tmp_processed[2]))
                 data_processed[3].append(np.mean(tmp_processed[3]))
+                data_processed[4].append(np.mean(tmp_processed[4]))
             plot_data_mean_v1[clf][0].append(np.mean(data_processed[0]))
             plot_data_mean_v1[clf][1].append(np.mean(data_processed[1]))
             plot_data_mean_v1[clf][2].append(np.mean(data_processed[2]))
             plot_data_mean_v1[clf][3].append(np.mean(data_processed[3]))
+            plot_data_mean_v1[clf][4].append(np.mean(data_processed[4]))
             # process mean_v2 method
-            data_processed = [[], [], [], []] # [[acc], [bias1], [bias2], [f1 score]]
+            data_processed = [[], [], [], [], []] # [[acc], [bias1], [bias2], [f1 score], [new bias]]
             for cf_matrices in clf_data_mean_v2:
-                tmp_processed = [[], [], [], []] # [[acc], [bias1], [bias2], [f1 score]]
+                tmp_processed = [[], [], [], [], []] # [[acc], [bias1], [bias2], [f1 score], [new bias]]
                 for mm in cf_matrices:
                     if len(mm) < 1:
                         continue
@@ -284,6 +288,7 @@ def plot_func_pareto_front(data, title, file_name=None, y_scale=None, switch=Fal
                         y = bias1(cf_m)
                         z = bias2(cf_m)
                         w = f1score(cf_m)
+                        k = newBias(cf_m)
                     except Exception as e:
                         print("Error: {}".format(e))
                         continue
@@ -292,18 +297,21 @@ def plot_func_pareto_front(data, title, file_name=None, y_scale=None, switch=Fal
                         tmp_processed[1].append(y)
                         tmp_processed[2].append(z)
                         tmp_processed[3].append(np.mean(w))
+                        tmp_processed[4].append(k)
                 data_processed[0].append(np.mean(tmp_processed[0]))
                 data_processed[1].append(np.mean(tmp_processed[1]))
                 data_processed[2].append(np.mean(tmp_processed[2]))
                 data_processed[3].append(np.mean(tmp_processed[3]))
-            plot_data_mean_v2[clf][0].append(np.mean(data_processed[0]))
-            plot_data_mean_v2[clf][1].append(np.mean(data_processed[1]))
-            plot_data_mean_v2[clf][2].append(np.mean(data_processed[2]))
-            plot_data_mean_v2[clf][3].append(np.mean(data_processed[3]))
+                data_processed[4].append(np.mean(tmp_processed[4]))
+            plot_data_mean_v1[clf][0].append(np.mean(data_processed[0]))
+            plot_data_mean_v1[clf][1].append(np.mean(data_processed[1]))
+            plot_data_mean_v1[clf][2].append(np.mean(data_processed[2]))
+            plot_data_mean_v1[clf][3].append(np.mean(data_processed[3]))
+            plot_data_mean_v1[clf][4].append(np.mean(data_processed[4]))
             # process similar_v1 method
-            data_processed = [[], [], [], []] # [[acc], [bias1], [bias2], [f1 score]]
+            data_processed = [[], [], [], [], []] # [[acc], [bias1], [bias2], [f1 score], [new bias]]
             for cf_matrices in clf_data_similar_v1:
-                tmp_processed = [[], [], [], []] # [[acc], [bias1], [bias2], [f1 score]]
+                tmp_processed = [[], [], [], [], []] # [[acc], [bias1], [bias2], [f1 score], [new bias]]
                 for mm in cf_matrices:
                     if len(mm) < 1:
                         continue
@@ -313,6 +321,7 @@ def plot_func_pareto_front(data, title, file_name=None, y_scale=None, switch=Fal
                         y = bias1(cf_m)
                         z = bias2(cf_m)
                         w = f1score(cf_m)
+                        k = newBias(cf_m)
                     except Exception as e:
                         print("Error: {}".format(e))
                         continue
@@ -321,18 +330,21 @@ def plot_func_pareto_front(data, title, file_name=None, y_scale=None, switch=Fal
                         tmp_processed[1].append(y)
                         tmp_processed[2].append(z)
                         tmp_processed[3].append(np.mean(w))
+                        tmp_processed[4].append(k)
                 data_processed[0].append(np.mean(tmp_processed[0]))
                 data_processed[1].append(np.mean(tmp_processed[1]))
                 data_processed[2].append(np.mean(tmp_processed[2]))
                 data_processed[3].append(np.mean(tmp_processed[3]))
-            plot_data_similar_v1[clf][0].append(np.mean(data_processed[0]))
-            plot_data_similar_v1[clf][1].append(np.mean(data_processed[1]))
-            plot_data_similar_v1[clf][2].append(np.mean(data_processed[2]))
-            plot_data_similar_v1[clf][3].append(np.mean(data_processed[3]))
+                data_processed[4].append(np.mean(tmp_processed[4]))
+            plot_data_mean_v1[clf][0].append(np.mean(data_processed[0]))
+            plot_data_mean_v1[clf][1].append(np.mean(data_processed[1]))
+            plot_data_mean_v1[clf][2].append(np.mean(data_processed[2]))
+            plot_data_mean_v1[clf][3].append(np.mean(data_processed[3]))
+            plot_data_mean_v1[clf][4].append(np.mean(data_processed[4]))
             # process similar_v2 method
-            data_processed = [[], [], [], []] # [[acc], [bias1], [bias2], [f1 score]]
+            data_processed = [[], [], [], [], []] # [[acc], [bias1], [bias2], [f1 score], [new bias]]
             for cf_matrices in clf_data_similar_v2:
-                tmp_processed = [[], [], [], []] # [[acc], [bias1], [bias2], [f1 score]]
+                tmp_processed = [[], [], [], [], []] # [[acc], [bias1], [bias2], [f1 score], [new bias]]
                 for mm in cf_matrices:
                     if len(mm) < 1:
                         continue
@@ -342,6 +354,7 @@ def plot_func_pareto_front(data, title, file_name=None, y_scale=None, switch=Fal
                         y = bias1(cf_m)
                         z = bias2(cf_m)
                         w = f1score(cf_m)
+                        k = newBias(cf_m)
                     except Exception as e:
                         print("Error: {}".format(e))
                         continue
@@ -350,18 +363,21 @@ def plot_func_pareto_front(data, title, file_name=None, y_scale=None, switch=Fal
                         tmp_processed[1].append(y)
                         tmp_processed[2].append(z)
                         tmp_processed[3].append(np.mean(w))
+                        tmp_processed[4].append(k)
                 data_processed[0].append(np.mean(tmp_processed[0]))
                 data_processed[1].append(np.mean(tmp_processed[1]))
                 data_processed[2].append(np.mean(tmp_processed[2]))
                 data_processed[3].append(np.mean(tmp_processed[3]))
-            plot_data_similar_v2[clf][0].append(np.mean(data_processed[0]))
-            plot_data_similar_v2[clf][1].append(np.mean(data_processed[1]))
-            plot_data_similar_v2[clf][2].append(np.mean(data_processed[2]))
-            plot_data_similar_v2[clf][3].append(np.mean(data_processed[3]))
+                data_processed[4].append(np.mean(tmp_processed[4]))
+            plot_data_mean_v1[clf][0].append(np.mean(data_processed[0]))
+            plot_data_mean_v1[clf][1].append(np.mean(data_processed[1]))
+            plot_data_mean_v1[clf][2].append(np.mean(data_processed[2]))
+            plot_data_mean_v1[clf][3].append(np.mean(data_processed[3]))
+            plot_data_mean_v1[clf][4].append(np.mean(data_processed[4]))
             # process multi_v1 method
-            data_processed = [[], [], [], []] # [[acc], [bias1], [bias2], [f1 score]]
+            data_processed = [[], [], [], [], []] # [[acc], [bias1], [bias2], [f1 score], [new bias]]
             for cf_matrices in clf_data_multi_v1:
-                tmp_processed = [[], [], [], []] # [[acc], [bias1], [bias2], [f1 score]]
+                tmp_processed = [[], [], [], [], []] # [[acc], [bias1], [bias2], [f1 score], [new bias]]
                 for mm in cf_matrices:
                     if len(mm) < 1:
                         continue
@@ -371,6 +387,7 @@ def plot_func_pareto_front(data, title, file_name=None, y_scale=None, switch=Fal
                         y = bias1(cf_m)
                         z = bias2(cf_m)
                         w = f1score(cf_m)
+                        k = newBias(cf_m)
                     except Exception as e:
                         print("Error: {}".format(e))
                         continue
@@ -379,18 +396,21 @@ def plot_func_pareto_front(data, title, file_name=None, y_scale=None, switch=Fal
                         tmp_processed[1].append(y)
                         tmp_processed[2].append(z)
                         tmp_processed[3].append(np.mean(w))
+                        tmp_processed[4].append(k)
                 data_processed[0].append(np.mean(tmp_processed[0]))
                 data_processed[1].append(np.mean(tmp_processed[1]))
                 data_processed[2].append(np.mean(tmp_processed[2]))
                 data_processed[3].append(np.mean(tmp_processed[3]))
-            plot_data_multi_v1[clf][0].append(np.mean(data_processed[0]))
-            plot_data_multi_v1[clf][1].append(np.mean(data_processed[1]))
-            plot_data_multi_v1[clf][2].append(np.mean(data_processed[2]))
-            plot_data_multi_v1[clf][3].append(np.mean(data_processed[3]))
+                data_processed[4].append(np.mean(tmp_processed[4]))
+            plot_data_mean_v1[clf][0].append(np.mean(data_processed[0]))
+            plot_data_mean_v1[clf][1].append(np.mean(data_processed[1]))
+            plot_data_mean_v1[clf][2].append(np.mean(data_processed[2]))
+            plot_data_mean_v1[clf][3].append(np.mean(data_processed[3]))
+            plot_data_mean_v1[clf][4].append(np.mean(data_processed[4]))
             # process multi_v2 method
-            data_processed = [[], [], [], []] # [[acc], [bias1], [bias2], [f1 score]]
+            data_processed = [[], [], [], [], []] # [[acc], [bias1], [bias2], [f1 score], [new bias]]
             for cf_matrices in clf_data_multi_v2:
-                tmp_processed = [[], [], [], []] # [[acc], [bias1], [bias2], [f1 score]]
+                tmp_processed = [[], [], [], [], []] # [[acc], [bias1], [bias2], [f1 score], [new bias]]
                 for mm in cf_matrices:
                     if len(mm) < 1:
                         continue
@@ -400,6 +420,7 @@ def plot_func_pareto_front(data, title, file_name=None, y_scale=None, switch=Fal
                         y = bias1(cf_m)
                         z = bias2(cf_m)
                         w = f1score(cf_m)
+                        k = newBias(cf_m)
                     except Exception as e:
                         print("Error: {}".format(e))
                         continue
@@ -408,66 +429,85 @@ def plot_func_pareto_front(data, title, file_name=None, y_scale=None, switch=Fal
                         tmp_processed[1].append(y)
                         tmp_processed[2].append(z)
                         tmp_processed[3].append(np.mean(w))
+                        tmp_processed[4].append(k)
                 data_processed[0].append(np.mean(tmp_processed[0]))
                 data_processed[1].append(np.mean(tmp_processed[1]))
                 data_processed[2].append(np.mean(tmp_processed[2]))
                 data_processed[3].append(np.mean(tmp_processed[3]))
-            plot_data_multi_v2[clf][0].append(np.mean(data_processed[0]))
-            plot_data_multi_v2[clf][1].append(np.mean(data_processed[1]))
-            plot_data_multi_v2[clf][2].append(np.mean(data_processed[2]))
-            plot_data_multi_v2[clf][3].append(np.mean(data_processed[3]))
-    fig, axes = plt.subplots(2, figsize=(8, 12)) # axes[0] for bias1, axes[1] for bias2
+                data_processed[4].append(np.mean(tmp_processed[4]))
+            plot_data_mean_v1[clf][0].append(np.mean(data_processed[0]))
+            plot_data_mean_v1[clf][1].append(np.mean(data_processed[1]))
+            plot_data_mean_v1[clf][2].append(np.mean(data_processed[2]))
+            plot_data_mean_v1[clf][3].append(np.mean(data_processed[3]))
+            plot_data_mean_v1[clf][4].append(np.mean(data_processed[4]))
+    fig, axes = plt.subplots(3, figsize=(8, 18)) # axes[0] for bias1, axes[1] for bias2, axes[2] for new bias
     if x_acc:
         axes[0].set_xlabel("Confusion Matrix Accuracy")
         axes[1].set_xlabel("Confusion Matrix Accuracy")
+        axes[2].set_xlabel("Confusion Matrix Accuracy")
     else:
         axes[0].set_xlabel("Confusion Matrix F1 Score")
         axes[1].set_xlabel("Confusion Matrix F1 Score")
+        axes[2].set_xlabel("Confusion Matrix F1 Score")
     axes[0].set_ylabel("Bias1 Values")
     axes[1].set_ylabel("Bias2 Values")
+    axes[2].set_ylabel("New Bias Values")
     # each classifier has different color
     for clf, clf_c, clf_m in zip(classifiers, plot_colors, plot_markers):
         if switch:
             # plot for mean_v1 method
             axes[0].scatter(plot_data_mean_v1[clf][0] if x_acc else plot_data_mean_v1[clf][3], plot_data_mean_v1[clf][1], c=plot_colors[0], s=ratio_dot_size, marker=clf_m, alpha=0.8)
             axes[1].scatter(plot_data_mean_v1[clf][0] if x_acc else plot_data_mean_v1[clf][3], plot_data_mean_v1[clf][2], c=plot_colors[0], s=ratio_dot_size, marker=clf_m, alpha=0.8)
+            axes[2].scatter(plot_data_mean_v1[clf][0] if x_acc else plot_data_mean_v1[clf][3], plot_data_mean_v1[clf][4], c=plot_colors[0], s=ratio_dot_size, marker=clf_m, alpha=0.8)
             # plot for mean_v2 method
             axes[0].scatter(plot_data_mean_v2[clf][0] if x_acc else plot_data_mean_v2[clf][3], plot_data_mean_v2[clf][1], c=plot_colors[1], s=ratio_dot_size, marker=clf_m, alpha=0.8)
             axes[1].scatter(plot_data_mean_v2[clf][0] if x_acc else plot_data_mean_v2[clf][3], plot_data_mean_v2[clf][2], c=plot_colors[1], s=ratio_dot_size, marker=clf_m, alpha=0.8)
+            axes[2].scatter(plot_data_mean_v2[clf][0] if x_acc else plot_data_mean_v2[clf][3], plot_data_mean_v2[clf][4], c=plot_colors[1], s=ratio_dot_size, marker=clf_m, alpha=0.8)
             # plot for similar_v1 method
             axes[0].scatter(plot_data_similar_v1[clf][0] if x_acc else plot_data_similar_v1[clf][3], plot_data_similar_v1[clf][1], c=plot_colors[2], s=ratio_dot_size, marker=clf_m, alpha=0.8)
             axes[1].scatter(plot_data_similar_v1[clf][0] if x_acc else plot_data_similar_v1[clf][3], plot_data_similar_v1[clf][2], c=plot_colors[2], s=ratio_dot_size, marker=clf_m, alpha=0.8)
+            axes[2].scatter(plot_data_similar_v1[clf][0] if x_acc else plot_data_similar_v1[clf][3], plot_data_similar_v1[clf][4], c=plot_colors[2], s=ratio_dot_size, marker=clf_m, alpha=0.8)
             # plot for similar_v2 method
             axes[0].scatter(plot_data_similar_v2[clf][0] if x_acc else plot_data_similar_v2[clf][3], plot_data_similar_v2[clf][1], c=plot_colors[3], s=ratio_dot_size, marker=clf_m, alpha=0.8)
             axes[1].scatter(plot_data_similar_v2[clf][0] if x_acc else plot_data_similar_v2[clf][3], plot_data_similar_v2[clf][2], c=plot_colors[3], s=ratio_dot_size, marker=clf_m, alpha=0.8)
+            axes[2].scatter(plot_data_similar_v2[clf][0] if x_acc else plot_data_similar_v2[clf][3], plot_data_similar_v2[clf][4], c=plot_colors[3], s=ratio_dot_size, marker=clf_m, alpha=0.8)
             # plot for multi_v1 method
             axes[0].scatter(plot_data_multi_v1[clf][0] if x_acc else plot_data_multi_v1[clf][3], plot_data_multi_v1[clf][1], c=plot_colors[4], s=ratio_dot_size, marker=clf_m, alpha=0.8)
             axes[1].scatter(plot_data_multi_v1[clf][0] if x_acc else plot_data_multi_v1[clf][3], plot_data_multi_v1[clf][2], c=plot_colors[4], s=ratio_dot_size, marker=clf_m, alpha=0.8)
+            axes[2].scatter(plot_data_multi_v1[clf][0] if x_acc else plot_data_multi_v1[clf][3], plot_data_multi_v1[clf][4], c=plot_colors[4], s=ratio_dot_size, marker=clf_m, alpha=0.8)
             # plot for multi_v2 method
             axes[0].scatter(plot_data_multi_v2[clf][0] if x_acc else plot_data_multi_v2[clf][3], plot_data_multi_v2[clf][1], c=plot_colors[5], s=ratio_dot_size, marker=clf_m, alpha=0.8)
             axes[1].scatter(plot_data_multi_v2[clf][0] if x_acc else plot_data_multi_v2[clf][3], plot_data_multi_v2[clf][2], c=plot_colors[5], s=ratio_dot_size, marker=clf_m, alpha=0.8)
+            axes[2].scatter(plot_data_multi_v2[clf][0] if x_acc else plot_data_multi_v2[clf][3], plot_data_multi_v2[clf][4], c=plot_colors[5], s=ratio_dot_size, marker=clf_m, alpha=0.8)
         else:
             # plot for mean_v1 method
             axes[0].scatter(plot_data_mean_v1[clf][0] if x_acc else plot_data_mean_v1[clf][3], plot_data_mean_v1[clf][1], c=clf_c, s=ratio_dot_size, marker=plot_markers[0], alpha=0.8)
             axes[1].scatter(plot_data_mean_v1[clf][0] if x_acc else plot_data_mean_v1[clf][3], plot_data_mean_v1[clf][2], c=clf_c, s=ratio_dot_size, marker=plot_markers[0], alpha=0.8)
+            axes[2].scatter(plot_data_mean_v1[clf][0] if x_acc else plot_data_mean_v1[clf][3], plot_data_mean_v1[clf][4], c=clf_c, s=ratio_dot_size, marker=plot_markers[0], alpha=0.8)
             # plot for mean_v2 method
             axes[0].scatter(plot_data_mean_v2[clf][0] if x_acc else plot_data_mean_v2[clf][3], plot_data_mean_v2[clf][1], c=clf_c, s=ratio_dot_size, marker=plot_markers[1], alpha=0.8)
             axes[1].scatter(plot_data_mean_v2[clf][0] if x_acc else plot_data_mean_v2[clf][3], plot_data_mean_v2[clf][2], c=clf_c, s=ratio_dot_size, marker=plot_markers[1], alpha=0.8)
+            axes[2].scatter(plot_data_mean_v2[clf][0] if x_acc else plot_data_mean_v2[clf][3], plot_data_mean_v2[clf][4], c=clf_c, s=ratio_dot_size, marker=plot_markers[1], alpha=0.8)
             # plot for similar_v1 method
             axes[0].scatter(plot_data_similar_v1[clf][0] if x_acc else plot_data_similar_v1[clf][3], plot_data_similar_v1[clf][1], c=clf_c, s=ratio_dot_size, marker=plot_markers[2], alpha=0.8)
             axes[1].scatter(plot_data_similar_v1[clf][0] if x_acc else plot_data_similar_v1[clf][3], plot_data_similar_v1[clf][2], c=clf_c, s=ratio_dot_size, marker=plot_markers[2], alpha=0.8)
+            axes[2].scatter(plot_data_similar_v1[clf][0] if x_acc else plot_data_similar_v1[clf][3], plot_data_similar_v1[clf][4], c=clf_c, s=ratio_dot_size, marker=plot_markers[2], alpha=0.8)
             # plot for similar_v2 method
             axes[0].scatter(plot_data_similar_v2[clf][0] if x_acc else plot_data_similar_v2[clf][3], plot_data_similar_v2[clf][1], c=clf_c, s=ratio_dot_size, marker=plot_markers[3], alpha=0.8)
             axes[1].scatter(plot_data_similar_v2[clf][0] if x_acc else plot_data_similar_v2[clf][3], plot_data_similar_v2[clf][2], c=clf_c, s=ratio_dot_size, marker=plot_markers[3], alpha=0.8)
+            axes[2].scatter(plot_data_similar_v2[clf][0] if x_acc else plot_data_similar_v2[clf][3], plot_data_similar_v2[clf][4], c=clf_c, s=ratio_dot_size, marker=plot_markers[3], alpha=0.8)
             # plot for multi_v1 method
             axes[0].scatter(plot_data_multi_v1[clf][0] if x_acc else plot_data_multi_v1[clf][3], plot_data_multi_v1[clf][1], c=clf_c, s=ratio_dot_size, marker=plot_markers[4], alpha=0.8)
             axes[1].scatter(plot_data_multi_v1[clf][0] if x_acc else plot_data_multi_v1[clf][3], plot_data_multi_v1[clf][2], c=clf_c, s=ratio_dot_size, marker=plot_markers[4], alpha=0.8)
+            axes[2].scatter(plot_data_multi_v1[clf][0] if x_acc else plot_data_multi_v1[clf][3], plot_data_multi_v1[clf][4], c=clf_c, s=ratio_dot_size, marker=plot_markers[4], alpha=0.8)
             # plot for multi_v2 method
             axes[0].scatter(plot_data_multi_v2[clf][0] if x_acc else plot_data_multi_v2[clf][3], plot_data_multi_v2[clf][1], c=clf_c, s=ratio_dot_size, marker=plot_markers[5], alpha=0.8)
             axes[1].scatter(plot_data_multi_v2[clf][0] if x_acc else plot_data_multi_v2[clf][3], plot_data_multi_v2[clf][2], c=clf_c, s=ratio_dot_size, marker=plot_markers[5], alpha=0.8)
+            axes[2].scatter(plot_data_multi_v2[clf][0] if x_acc else plot_data_multi_v2[clf][3], plot_data_multi_v2[clf][4], c=clf_c, s=ratio_dot_size, marker=plot_markers[5], alpha=0.8)
     if y_scale:
         axes[0].set_yscale(y_scale)
         axes[1].set_yscale(y_scale)
+        axes[2].set_yscale(y_scale)
     if switch:
         custom_legend = [Line2D([0], [0], color='w', markerfacecolor="black", marker=x, label=y, markersize=10) for x,y in zip(plot_markers, classifiers)]
         custom_legend.append(Line2D([0], [0], markersize=10, markerfacecolor=plot_colors[0], marker="o", label="mean_v1"))
@@ -713,16 +753,12 @@ def plot_all(data_folder, plot_folder, name):
             data["multi_v2"] = pickle.load(inFile)
         if PLOT_PARETO_FRONTIER_V1:
             print("Generate plots for pareto front V1 ({})".format(name))
-            plot_func_pareto_front(data, "Pareto Front (Accuracy) ({})".format(name), os.path.join(plot_folder, "pareto_front_v1.png"))
-            plot_func_pareto_front(data, "Pareto Front (Accuracy) ({})".format(name), os.path.join(plot_folder, "pareto_front_scaled_v1.png"), y_scale="log")
-            plot_func_pareto_front(data, "Pareto Front (Accuracy) ({})".format(name), os.path.join(plot_folder, "pareto_front_v1_switched.png"), switch=True)
-            plot_func_pareto_front(data, "Pareto Front (Accuracy) ({})".format(name), os.path.join(plot_folder, "pareto_front_scaled_v1_switched.png"), y_scale="log", switch=True)
+            plot_func_pareto_front(data, "Pareto Front (Confusion Matrix Accuracy) ({})".format(name), os.path.join(plot_folder, "pareto_front_acc.png"))
+            plot_func_pareto_front(data, "Pareto Front (Confusion Matrix Accuracy) ({})".format(name), os.path.join(plot_folder, "pareto_front_acc_scaled.png"), y_scale="log")
         if PLOT_PARETO_FRONTIER_V2:
             print("Generate plots for pareto front V2 ({})".format(name))
-            plot_func_pareto_front(data, "Pareto Front (F1 Score) ({})".format(name), os.path.join(plot_folder, "pareto_front_v2.png"), x_acc=False)
-            plot_func_pareto_front(data, "Pareto Front (F1 Score) ({})".format(name), os.path.join(plot_folder, "pareto_front_scaled_v2.png"), y_scale="log", x_acc=False)
-            plot_func_pareto_front(data, "Pareto Front (F1 Score) ({})".format(name), os.path.join(plot_folder, "pareto_front_v2_switched.png"), switch=True, x_acc=False)
-            plot_func_pareto_front(data, "Pareto Front (F1 Score) ({})".format(name), os.path.join(plot_folder, "pareto_front_scaled_v2_switched.png"), y_scale="log", switch=True, x_acc=False)
+            plot_func_pareto_front(data, "Pareto Front (Confusion Matrix F1 Score) ({})".format(name), os.path.join(plot_folder, "pareto_front_f1.png"), x_acc=False)
+            plot_func_pareto_front(data, "Pareto Front (Confusion Matrix F1 Score) ({})".format(name), os.path.join(plot_folder, "pareto_front_f1_scaled.png"), y_scale="log", x_acc=False)
 
 if __name__=="__main__":
     if not os.path.exists("ratio_analysis_plots"):
