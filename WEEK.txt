@@ -1,7 +1,7 @@
-Equal Opportunity: the groups should have the same FPR
-same TPR
+Equal Opportunity: the groups should have the same FPR, same TPR
 equal opportunity to go free when you are guilty
 equal opportunity to be sentenced when you are innocent
+
 Pr(AA is labeled as low risk when he is actually high risk) =
 Pr(Caucasian is labeled as low risk when actually high risk) 
 Pr(AA is labeled as high risk when he is low risk) = 
