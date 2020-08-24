@@ -32,7 +32,7 @@ PLOT_COMMUNITIES_F1     = False
 PLOT_JUVENILE_ACC       = False
 PLOT_JUVENILE_F1        = False
 
-TRANSFORM_OUTPUTS       = True
+TRANSFORM_OUTPUTS       = False
 
 PLOT_CREATE_MEAN_V1     = True
 PLOT_CREATE_MEAN_V2     = True
@@ -309,12 +309,12 @@ def plot_func_pareto_front(data, title, file_name=None, y_scale=None, switch=Fal
                 data_processed[3].append(np.mean(tmp_processed[3]))
                 data_processed[4].append(np.mean(tmp_processed[4]))
                 data_processed[5].append(np.mean(tmp_processed[5]))
-            plot_data_mean_v1[clf][0].append(np.mean(data_processed[0]))
-            plot_data_mean_v1[clf][1].append(np.mean(data_processed[1]))
-            plot_data_mean_v1[clf][2].append(np.mean(data_processed[2]))
-            plot_data_mean_v1[clf][3].append(np.mean(data_processed[3]))
-            plot_data_mean_v1[clf][4].append(np.mean(data_processed[4]))
-            plot_data_mean_v1[clf][5].append(np.mean(data_processed[5]))
+            plot_data_mean_v2[clf][0].append(np.mean(data_processed[0]))
+            plot_data_mean_v2[clf][1].append(np.mean(data_processed[1]))
+            plot_data_mean_v2[clf][2].append(np.mean(data_processed[2]))
+            plot_data_mean_v2[clf][3].append(np.mean(data_processed[3]))
+            plot_data_mean_v2[clf][4].append(np.mean(data_processed[4]))
+            plot_data_mean_v2[clf][5].append(np.mean(data_processed[5]))
             # process similar_v1 method
             data_processed = [[], [], [], [], [], []] # [[acc], [bias1], [bias2], [f1 score], [new bias], [real acc]]
             for cf_matrices in clf_data_similar_v1:
@@ -345,12 +345,12 @@ def plot_func_pareto_front(data, title, file_name=None, y_scale=None, switch=Fal
                 data_processed[3].append(np.mean(tmp_processed[3]))
                 data_processed[4].append(np.mean(tmp_processed[4]))
                 data_processed[5].append(np.mean(tmp_processed[5]))
-            plot_data_mean_v1[clf][0].append(np.mean(data_processed[0]))
-            plot_data_mean_v1[clf][1].append(np.mean(data_processed[1]))
-            plot_data_mean_v1[clf][2].append(np.mean(data_processed[2]))
-            plot_data_mean_v1[clf][3].append(np.mean(data_processed[3]))
-            plot_data_mean_v1[clf][4].append(np.mean(data_processed[4]))
-            plot_data_mean_v1[clf][5].append(np.mean(data_processed[5]))
+            plot_data_similar_v1[clf][0].append(np.mean(data_processed[0]))
+            plot_data_similar_v1[clf][1].append(np.mean(data_processed[1]))
+            plot_data_similar_v1[clf][2].append(np.mean(data_processed[2]))
+            plot_data_similar_v1[clf][3].append(np.mean(data_processed[3]))
+            plot_data_similar_v1[clf][4].append(np.mean(data_processed[4]))
+            plot_data_similar_v1[clf][5].append(np.mean(data_processed[5]))
             # process similar_v2 method
             data_processed = [[], [], [], [], [], []] # [[acc], [bias1], [bias2], [f1 score], [new bias], [real acc]]
             for cf_matrices in clf_data_similar_v2:
@@ -381,12 +381,12 @@ def plot_func_pareto_front(data, title, file_name=None, y_scale=None, switch=Fal
                 data_processed[3].append(np.mean(tmp_processed[3]))
                 data_processed[4].append(np.mean(tmp_processed[4]))
                 data_processed[5].append(np.mean(tmp_processed[5]))
-            plot_data_mean_v1[clf][0].append(np.mean(data_processed[0]))
-            plot_data_mean_v1[clf][1].append(np.mean(data_processed[1]))
-            plot_data_mean_v1[clf][2].append(np.mean(data_processed[2]))
-            plot_data_mean_v1[clf][3].append(np.mean(data_processed[3]))
-            plot_data_mean_v1[clf][4].append(np.mean(data_processed[4]))
-            plot_data_mean_v1[clf][5].append(np.mean(data_processed[5]))
+            plot_data_similar_v2[clf][0].append(np.mean(data_processed[0]))
+            plot_data_similar_v2[clf][1].append(np.mean(data_processed[1]))
+            plot_data_similar_v2[clf][2].append(np.mean(data_processed[2]))
+            plot_data_similar_v2[clf][3].append(np.mean(data_processed[3]))
+            plot_data_similar_v2[clf][4].append(np.mean(data_processed[4]))
+            plot_data_similar_v2[clf][5].append(np.mean(data_processed[5]))
             # process multi_v1 method
             data_processed = [[], [], [], [], [], []] # [[acc], [bias1], [bias2], [f1 score], [new bias], [real acc]]
             for cf_matrices in clf_data_multi_v1:
@@ -417,12 +417,12 @@ def plot_func_pareto_front(data, title, file_name=None, y_scale=None, switch=Fal
                 data_processed[3].append(np.mean(tmp_processed[3]))
                 data_processed[4].append(np.mean(tmp_processed[4]))
                 data_processed[5].append(np.mean(tmp_processed[5]))
-            plot_data_mean_v1[clf][0].append(np.mean(data_processed[0]))
-            plot_data_mean_v1[clf][1].append(np.mean(data_processed[1]))
-            plot_data_mean_v1[clf][2].append(np.mean(data_processed[2]))
-            plot_data_mean_v1[clf][3].append(np.mean(data_processed[3]))
-            plot_data_mean_v1[clf][4].append(np.mean(data_processed[4]))
-            plot_data_mean_v1[clf][5].append(np.mean(data_processed[5]))
+            plot_data_multi_v1[clf][0].append(np.mean(data_processed[0]))
+            plot_data_multi_v1[clf][1].append(np.mean(data_processed[1]))
+            plot_data_multi_v1[clf][2].append(np.mean(data_processed[2]))
+            plot_data_multi_v1[clf][3].append(np.mean(data_processed[3]))
+            plot_data_multi_v1[clf][4].append(np.mean(data_processed[4]))
+            plot_data_multi_v1[clf][5].append(np.mean(data_processed[5]))
             # process multi_v2 method
             data_processed = [[], [], [], [], [], []] # [[acc], [bias1], [bias2], [f1 score], [new bias], [real acc]]
             for cf_matrices in clf_data_multi_v2:
@@ -453,12 +453,12 @@ def plot_func_pareto_front(data, title, file_name=None, y_scale=None, switch=Fal
                 data_processed[3].append(np.mean(tmp_processed[3]))
                 data_processed[4].append(np.mean(tmp_processed[4]))
                 data_processed[5].append(np.mean(tmp_processed[5]))
-            plot_data_mean_v1[clf][0].append(np.mean(data_processed[0]))
-            plot_data_mean_v1[clf][1].append(np.mean(data_processed[1]))
-            plot_data_mean_v1[clf][2].append(np.mean(data_processed[2]))
-            plot_data_mean_v1[clf][3].append(np.mean(data_processed[3]))
-            plot_data_mean_v1[clf][4].append(np.mean(data_processed[4]))
-            plot_data_mean_v1[clf][5].append(np.mean(data_processed[5]))
+            plot_data_multi_v2[clf][0].append(np.mean(data_processed[0]))
+            plot_data_multi_v2[clf][1].append(np.mean(data_processed[1]))
+            plot_data_multi_v2[clf][2].append(np.mean(data_processed[2]))
+            plot_data_multi_v2[clf][3].append(np.mean(data_processed[3]))
+            plot_data_multi_v2[clf][4].append(np.mean(data_processed[4]))
+            plot_data_multi_v2[clf][5].append(np.mean(data_processed[5]))
     fig, axes = plt.subplots(3, figsize=(8, 18)) # axes[0] for bias1, axes[1] for bias2, axes[2] for new bias
     if x_axis == "acc":
         axes[0].set_xlabel("Confusion Matrix Accuracy")
