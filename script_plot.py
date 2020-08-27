@@ -21,7 +21,7 @@ INCOMPLETE_MODE = False
 
 PLOT_ADULT_ACC          = False
 PLOT_ADULT_F1           = False
-PLOT_COMPAS_ACC         = False
+PLOT_COMPAS_ACC         = True
 PLOT_COMPAS_F1          = False
 PLOT_TITANIC_ACC        = False
 PLOT_TITANIC_F1         = False
@@ -32,7 +32,7 @@ PLOT_COMMUNITIES_F1     = False
 PLOT_JUVENILE_ACC       = False
 PLOT_JUVENILE_F1        = False
 
-TRANSFORM_OUTPUTS       = False
+TRANSFORM_OUTPUTS       = True
 
 PLOT_CREATE_MEAN_V1     = True
 PLOT_CREATE_MEAN_V2     = True
