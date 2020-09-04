@@ -484,13 +484,13 @@ class Dataset:
         if len(protected_features) > 0:
             assert len(protected_features) == len([x for x in protected_features if x in self.X.columns.tolist()])
         self.protected = protected_features
-        self.encoder = None
-        self.encoders = None
+        self.y_encoder = None
+        self.X_encoders = None
         if auto_convert:
-            self.encoder = self._convert_categories()
+            self.y_encoder = self._convert_categories()
         if encoders is not None:
-            self.encoder = encoders[1]
-            self.encoders = encoders[0]
+            self.y_encoder = encoders[1]
+            self.X_encoders = encoders[0]
         self.types = X.dtypes
         if types is not None:
             self.types = types
@@ -506,13 +506,13 @@ class Dataset:
                     columns_for_convert.append(col)
         else:
             columns_for_convert = columns
-        self.encoders = {}
+        self.X_encoders = {}
         # credit: https://stackoverflow.com/questions/54444260/labelencoder-that-keeps-missing-values-as-nan
         for col in columns_for_convert:
             encoder = LabelEncoder()
             series = self.X[col]
             self.X[col] = pd.Series(encoder.fit_transform(series[series.notnull()]), index=series[series.notnull()].index) # keep nan, convert convert others
-            self.encoders[col] = encoder
+            self.X_encoders[col] = encoder
         # convert for y values also
         encoder = LabelEncoder()
         encoder.fit(self.y)
@@ -520,4 +520,4 @@ class Dataset:
         return encoder
         
     def copy(self):
-        return Dataset(self.name, self.X.copy(), self.y.copy(), auto_convert=False, types=self.types, protected_features=self.protected, encoders=[self.encoders, self.encoder])
+        return Dataset(self.name, self.X.copy(), self.y.copy(), auto_convert=False, types=self.types, protected_features=self.protected, encoders=[self.X_encoders, self.y_encoder])
