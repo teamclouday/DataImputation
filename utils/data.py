@@ -365,17 +365,18 @@ def create_german_dataset(print_time=False):
     data = pd.read_csv(os.path.join("dataset", "german", "german.data"), names=names, sep=" ")
     # combine sex data
     data["Personal_status_sex"] = data["Personal_status_sex"].apply(lambda x: "male" if x in ["A91", "A93", "A94"] else "female")
-    # categorize credit amount data
-    def helper_amount(amount):
-        if amount < 1500:
-            return "(0,1500)"
-        if amount < 2500:
-            return "[1500,2500)"
-        if amount < 5000:
-            return "[2500,5000)"
-        return "[5000,)"
-    data["Credit_amount_c"] = data["Credit_amount"].apply(lambda x: helper_amount(x))
-    X = data.drop(["Credit_amount", "Target"], axis=1).copy()
+    # # categorize credit amount data
+    # def helper_amount(amount):
+    #     if amount < 1500:
+    #         return "(0,1500)"
+    #     if amount < 2500:
+    #         return "[1500,2500)"
+    #     if amount < 5000:
+    #         return "[2500,5000)"
+    #     return "[5000,)"
+    # data["Credit_amount_c"] = data["Credit_amount"].apply(lambda x: helper_amount(x))
+    # X = data.drop(["Credit_amount", "Target"], axis=1).copy()
+    X = data.drop(["Target"], axis=1).copy()
     y = data[["Target"]].copy().to_numpy().ravel()
     protected_features = ["Personal_status_sex"]
     if print_time:
