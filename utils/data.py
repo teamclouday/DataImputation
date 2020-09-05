@@ -307,7 +307,7 @@ def create_drug_dataset(print_time=False, target_drug="Heroin"):
     protected_features = ["Gender", "Education", "Ethnicity"]
     if print_time:
         print("Performance Monitor: ({:.4f}s) ".format(time.process_time() - tt) + inspect.stack()[0][3])
-    return Dataset("drug_"+target_drug, X, y, convert_all=True, protected_features=protected_features)
+    return Dataset("drug_"+target_drug, X, y, protected_features=protected_features)
 
 def create_compas_dataset(print_time=False):
     if print_time:
@@ -466,58 +466,74 @@ def create_juvenile_dataset(print_time=False):
     return Dataset("juvenile", X, y, protected_features=protected_features)
 
 class Dataset:
-    def __init__(self, name, X, y, auto_convert=True, types=None, convert_all=False, protected_features=[], encoders=None):
-        # auto_convert: whether to label-encode categorical values
-        # types: original data types for X
-        # convert_all:  whether to label-encode all attributes (both numerical and categorical)
-        # protected_features: pre-defined protected features
-        # encoders: list => [X_encoders, y_encoder]
-        #           store label encoders for X and y features
+    def __init__(self, name, X, y, types=None, protected_features=[], categorical_features=None, encoders=None):
+        """
+        X: a pandas dataframe storing original dataset
+
+        y: a numpy flat array of targets
+
+        types: set original data types for X (used in imputation methods)
+
+        protected_features: pre-defined protected features
+
+        categorical_features: a python list. if None, automatically detect categorical features, else store the categorical_features
+
+        encoders: set X and y label encoders, set to None to trigger encoding
+        """
         self.name = name
         self.X = X
-        if self.X.drop(protected_features, axis=1).isnull().sum().sum() > 0:
-            self.has_nan = True
-        else:
-            self.has_nan = False
         self.y = y
-        self.convert_all = convert_all
+        self.X_encoded = None
         if len(protected_features) > 0:
             assert len(protected_features) == len([x for x in protected_features if x in self.X.columns.tolist()])
-        self.protected = protected_features
-        self.y_encoder = None
-        self.X_encoders = None
-        if auto_convert:
-            self.y_encoder = self._convert_categories()
-        if encoders is not None:
-            self.y_encoder = encoders[1]
-            self.X_encoders = encoders[0]
-        self.types = X.dtypes
+        self.protected_features = protected_features
         if types is not None:
             self.types = types
+        else:
+            self.types = X.dtypes
+        self.categorical_features = categorical_features
+        if encoders is None:
+            self.X_encoders, self.y_encoder = self._convert_categories()
+        else:
+            self.X_encoders = encoders[0]
+            self.y_encoder = encoders[1]
 
     def _convert_categories(self):
         columns = self.X.columns
-        columns_for_convert = []
-        if not self.convert_all:
+        columns_for_convert = self.categorical_features
+        if columns_for_convert is None:
+            columns_for_convert = []
             for col in columns:
-                if col in self.protected:
+                # skip protected features
+                if col in self.protected_features:
                     continue
                 if not is_numeric_dtype(self.X[col]):
                     columns_for_convert.append(col)
-        else:
-            columns_for_convert = columns
-        self.X_encoders = {}
+        self.categorical_features = columns_for_convert
+        X_encoders = {}
         # credit: https://stackoverflow.com/questions/54444260/labelencoder-that-keeps-missing-values-as-nan
         for col in columns_for_convert:
             encoder = LabelEncoder()
             series = self.X[col]
             self.X[col] = pd.Series(encoder.fit_transform(series[series.notnull()]), index=series[series.notnull()].index) # keep nan, convert convert others
-            self.X_encoders[col] = encoder
+            X_encoders[col] = encoder
         # convert for y values also
-        encoder = LabelEncoder()
-        encoder.fit(self.y)
-        self.y = encoder.transform(self.y)
-        return encoder
+        y_encoder = LabelEncoder()
+        y_encoder.fit(self.y)
+        self.y = y_encoder.transform(self.y)
+        return (X_encoders, y_encoder)
         
     def copy(self):
-        return Dataset(self.name, self.X.copy(), self.y.copy(), auto_convert=False, types=self.types, protected_features=self.protected, encoders=[self.X_encoders, self.y_encoder])
+        """
+        Duplicate the dataset object
+        """
+        return Dataset(self.name, self.X.copy(), self.y.copy(), 
+            types=self.types, protected_features=self.protected_features,
+            encoders=[self.X_encoders, self.y_encoder])
+
+    def preprocess(self):
+        """
+        Apply one-hot-encoding on categorical features before feeding into classifiers
+        """
+        assert self.categorical_features is not None
+        self.X_encoded = pd.get_dummies(self.X, columns=self.categorical_features, prefix_sep="=")
