@@ -9,7 +9,7 @@ warnings.filterwarnings('ignore')
 
 import numpy as np
 import pandas as pd
-from utils.data import Dataset, create_adult_dataset, create_compas_dataset, create_titanic_dataset, create_communities_dataset, create_german_dataset, create_juvenile_dataset
+from utils.data import Dataset, create_adult_dataset, create_compas_dataset, create_titanic_dataset, create_communities_dataset, create_german_dataset, create_bank_dataset
 
 from sklearn.model_selection import GridSearchCV
 from sklearn.neighbors import KNeighborsClassifier
@@ -35,7 +35,7 @@ def prepare_datasets():
         "titanic": None,
         "communities": None,
         "german": None,
-        "juvenile": None
+        "bank": None
     }
     # compas dataset
     c_data = create_compas_dataset()
@@ -67,14 +67,9 @@ def prepare_datasets():
     # german dataset
     g_data = create_german_dataset()
     results["german"] = g_data
-    # juvenile dataset
-    j_data = create_juvenile_dataset()
-    tmp_concat = pd.concat([j_data.X, pd.DataFrame(j_data.y, columns=["_TARGET_"])], axis=1)
-    tmp_concat.dropna(inplace=True)
-    tmp_concat.reset_index(drop=True, inplace=True)
-    j_data.X = tmp_concat.drop(columns=["_TARGET_"]).copy()
-    j_data.y = tmp_concat["_TARGET_"].copy().to_numpy().ravel()
-    results["juvenile"] = j_data
+    # bank dataset
+    b_data = create_bank_dataset()
+    results["bank"] = b_data
     return results
 
 # run parameter searching and save data
@@ -136,7 +131,8 @@ def param_search(datasets, metrics, json_file=None):
         print("Now running on {} dataset".format(d_name))
         for clf in classifiers.keys():
             model = classifiers[clf]
-            X = d_value.X.drop(columns=d_value.protected).copy().to_numpy()
+            d_value.preprocess()
+            X = d_value.X_encoded.drop(columns=d_value.protected).copy().to_numpy()
             y = d_value.y.copy()
             X_res, y_res = smote.fit_resample(X, y)
             print("Parameter searching for {}".format(model.__class__.__name__))
@@ -153,4 +149,4 @@ def param_search(datasets, metrics, json_file=None):
 if __name__=="__main__":
     datasets = prepare_datasets()
     param_search(datasets, metrics=target_metrics["acc"], json_file="params_acc.json")
-    param_search(datasets, metrics=target_metrics["f1"], json_file="params_f1.json")
+    # param_search(datasets, metrics=target_metrics["f1"], json_file="params_f1.json")
