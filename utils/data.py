@@ -229,10 +229,11 @@ def create_adult_dataset(print_time=False):
 def create_bank_dataset(print_time=False):
     if print_time:
         tt = time.process_time()
-    protected_features = ["marital", "education"]
+    protected_features = ["age"]
     data = pd.read_csv(os.path.join("dataset", "bank", "bank-full.csv"), sep=";")
+    data["age"] = data["age"].apply(lambda x: "elder" if x >= 35 else "young")
     X = data.iloc[:, :-1].copy()
-    y = data.iloc[:, -1].copy()
+    y = data.iloc[:, -1].copy().to_numpy().ravel()
     if print_time:
         print("Performance Monitor: ({:.4f}s) ".format(time.process_time() - tt) + inspect.stack()[0][3])
     return Dataset("bank", X, y, protected_features=protected_features)
