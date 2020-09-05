@@ -18,7 +18,7 @@ from functools import partial
 import warnings
 warnings.filterwarnings('ignore')
 
-from utils.data import create_compas_dataset, create_adult_dataset, create_titanic_dataset, create_communities_dataset, create_german_dataset, create_juvenile_dataset, Dataset
+from utils.data import create_compas_dataset, create_adult_dataset, create_titanic_dataset, create_communities_dataset, create_german_dataset, create_bank_dataset, Dataset
 from utils.generator import gen_complete_random
 from utils.completer import complete_by_mean_col, complete_by_mean_col_v2, complete_by_multi, complete_by_multi_v2, complete_by_similar_row, complete_by_similar_row_v2
 
@@ -48,7 +48,7 @@ NAME_DATA = {
     "titanic": 3,
     "german": 4,
     "communities": 5,
-    "juvenile": 6,
+    "bank": 6,
 }
 NAME_TARGET = {
     "acc": 1,
@@ -56,6 +56,7 @@ NAME_TARGET = {
 }
 PARAMS = None
 PARAMS_DATA = None
+N_SPLITS = 10 # set to 5 when running on titanic
 
 #define functions
 
@@ -173,12 +174,13 @@ def compute_confusion_matrix(X_train, y_train, X_test, y_test, clf, protected_fe
     result = matrix_A.ravel().tolist() + matrix_B.ravel().tolist()
     return [result, result_acc]
 
-def test_imputation(X, y, protected_features, completer_func=None, multi=False):
-    # X is pandas dataframe
-    # y is numpy array,
-    # protected_features is list
+def test_imputation(data, completer_func=None, multi=False, verboseID=""):
+    # data is Dataset object
     # completer func is the imputation function
+    # multi determines whether completer_func is a multiple imputation method
+    # verboseID is the name of the completer_func function
     global PARAMS
+    global N_SPLITS
     clfs = { # define all the classifiers with best parameters
         "KNN": KNeighborsClassifier(n_neighbors=PARAMS["KNN"]["n_neighbors"], leaf_size=PARAMS["KNN"]["leaf_size"]),
         "LinearSVC": LinearSVC(dual=False, tol=PARAMS["LinearSVC"]["tol"], C=PARAMS["LinearSVC"]["C"], max_iter=PARAMS["LinearSVC"]["max_iter"]),
@@ -197,8 +199,10 @@ def test_imputation(X, y, protected_features, completer_func=None, multi=False):
         "Tree": [],
         "MLP": [],
     }
-    kf = StratifiedShuffleSplit(n_splits=10)
+    kf = StratifiedShuffleSplit(n_splits=N_SPLITS)
     fold = 1
+    X = data.X
+    y = data.y
     for train_idx, test_idx in kf.split(X, y):
         X_train, X_test = X.iloc[train_idx], X.iloc[test_idx]
         y_train, y_test = y[train_idx], y[test_idx]
@@ -206,23 +210,36 @@ def test_imputation(X, y, protected_features, completer_func=None, multi=False):
         X_train = X_train.reset_index(drop=True)
         if completer_func:
         # do imputations on training set and test set individually
-            data_incomplete = Dataset("tmp", X_train, y_train, auto_convert=False, protected_features=protected_features)
+            data_incomplete = Dataset("tmp", X_train, y_train, types=data.types, 
+                protected_features=data.protected_features, categorical_features=data.categorical_features,
+                encoders=[data.X_encoders, data.y_encoder])
             try:
                 data_complete = completer_func(data_incomplete)
             except Exception as e:
-                print(e)
+                # catch exception and skip
+                print("Exception occurred in completer function '{}': {}".format(verboseID, e))
                 for clf_name in clfs.keys():
                     rawdata_cv[clf_name].append([])
                 fold += 1
                 continue
             if ((not multi) and data_complete.X.isnull().sum().sum() > 0) or (multi and sum([dd.X.isnull().sum().sum() for dd in data_complete]) > 0):
+                # if completed dataset still contains missing values, skip
+                print("Completer function '{}' produces missing values, skipped".format(verboseID))
                 for clf_name in clfs.keys():
                     rawdata_cv[clf_name].append([])
                 fold += 1
                 continue
-            X_train = [m.X.copy() for m in data_complete] if multi else data_complete.X.copy()
+            # apply one-hot-encoding
+            if multi:
+                _ = [m.preprocess() for m in data_complete]
+            else:
+                data_complete.preprocess()
+            X_train = [m.X_encoded.copy() for m in data_complete] if multi else data_complete.X_encoded.copy()
             y_train = data_complete[0].y.copy() if multi else data_complete.y.copy()
-            data_incomplete = Dataset("tmp", X_test, y_test, auto_convert=False, protected_features=protected_features)
+
+            data_incomplete = Dataset("tmp", X_test, y_test, types=data.types, 
+                protected_features=data.protected_features, categorical_features=data.categorical_features,
+                encoders=[data.X_encoders, data.y_encoder])
             try:
                 data_complete = completer_func(data_incomplete)
             except Exception as e:
@@ -236,11 +253,16 @@ def test_imputation(X, y, protected_features, completer_func=None, multi=False):
                     rawdata_cv[clf_name].append([])
                 fold += 1
                 continue
-            X_test = [m.X.copy() for m in data_complete] if multi else data_complete.X.copy()
+            # apply one-hot-encoding
+            if multi:
+                _ = [m.preprocess() for m in data_complete]
+            else:
+                data_complete.preprocess()
+            X_test = [m.X_encoded.copy() for m in data_complete] if multi else data_complete.X_encoded.copy()
             y_test = data_complete[0].y.copy() if multi else data_complete.y.copy()
         # get result for each classifier
         for clf_name, clf in clfs.items():
-            result = compute_confusion_matrix(X_train, y_train, X_test, y_test, clf, protected_features, multi=multi)
+            result = compute_confusion_matrix(X_train, y_train, X_test, y_test, clf, data.protected_features, multi=multi)
             rawdata_cv[clf_name].append(result)
         fold += 1
     return rawdata_cv
@@ -269,43 +291,37 @@ MAX_PROCESS_COUNT = multiprocessing.cpu_count()
 def complete_mean_task(idx):
     global data_complete
     data_sim = gen_complete_random(data_complete, random_ratio=random_ratios[idx], print_all=False)
-    result = test_imputation(data_sim.X.copy(), data_sim.y.copy(),
-                             data_sim.protected, complete_by_mean_col, multi=False)
+    result = test_imputation(data_sim, complete_by_mean_col, multi=False, verboseID="mean_v1")
     return result
 
 def complete_mean_v2_task(idx):
     global data_complete, PARAMS_DATA
     data_sim = gen_complete_random(data_complete, random_ratio=random_ratios[idx], print_all=False)
-    result = test_imputation(data_sim.X.copy(), data_sim.y.copy(),
-                             data_sim.protected, partial(complete_by_mean_col_v2, target_feature=PARAMS_DATA["target"]), multi=False)
+    result = test_imputation(data_sim, partial(complete_by_mean_col_v2, target_feature=PARAMS_DATA["target"]), multi=False, verboseID="mean_v2")
     return result
 
 def complete_similar_task(idx):
     global data_complete
     data_sim = gen_complete_random(data_complete, random_ratio=random_ratios[idx], print_all=False)
-    result = test_imputation(data_sim.X.copy(), data_sim.y.copy(),
-                             data_sim.protected, complete_by_similar_row, multi=False)
+    result = test_imputation(data_sim, complete_by_similar_row, multi=False, verboseID="similar_v1")
     return result
 
 def complete_similar_v2_task(idx):
     global data_complete, PARAMS_DATA
     data_sim = gen_complete_random(data_complete, random_ratio=random_ratios[idx], print_all=False)
-    result = test_imputation(data_sim.X.copy(), data_sim.y.copy(),
-                             data_sim.protected, partial(complete_by_similar_row_v2, target_feature=PARAMS_DATA["target"]), multi=False)
+    result = test_imputation(data_sim, partial(complete_by_similar_row_v2, target_feature=PARAMS_DATA["target"]), multi=False, verboseID="similar_v2")
     return result
 
 def complete_multi_task(idx):
     global data_complete
     data_sim = gen_complete_random(data_complete, random_ratio=random_ratios[idx], print_all=False)
-    result = test_imputation(data_sim.X.copy(), data_sim.y.copy(),
-                             data_sim.protected, complete_by_multi, multi=True)
+    result = test_imputation(data_sim, complete_by_multi, multi=True, verboseID="multi_v1")
     return result
 
 def complete_multi_v2_task(idx):
     global data_complete, PARAMS_DATA
     data_sim = gen_complete_random(data_complete, random_ratio=random_ratios[idx], print_all=False)
-    result = test_imputation(data_sim.X.copy(), data_sim.y.copy(),
-                             data_sim.protected, partial(complete_by_multi_v2, target_feature=PARAMS_DATA["target"]), multi=True)
+    result = test_imputation(data_sim.X, partial(complete_by_multi_v2, target_feature=PARAMS_DATA["target"]), multi=True, verboseID="multi_v2")
     return result
 
 # argv[1] = process id
@@ -351,6 +367,7 @@ if __name__ == "__main__":
             tmp_concat.reset_index(drop=True, inplace=True)
             data_complete.X = tmp_concat.drop(columns=["_TARGET_"]).copy()
             data_complete.y = tmp_concat["_TARGET_"].copy().to_numpy().ravel()
+            N_SPLITS = 5
         elif id_data == NAME_DATA["german"]:
             dataName = "german"
             data_complete = create_german_dataset()
@@ -362,14 +379,9 @@ if __name__ == "__main__":
             tmp_concat.reset_index(drop=True, inplace=True)
             data_complete.X = tmp_concat.drop(columns=["_TARGET_"]).copy()
             data_complete.y = tmp_concat["_TARGET_"].copy().to_numpy().ravel()
-        elif id_data == NAME_DATA["juvenile"]:
-            dataName = "juvenile"
-            data_complete = create_juvenile_dataset()
-            tmp_concat = pd.concat([data_complete.X, pd.DataFrame(data_complete.y, columns=["_TARGET_"])], axis=1)
-            tmp_concat.dropna(inplace=True)
-            tmp_concat.reset_index(drop=True, inplace=True)
-            data_complete.X = tmp_concat.drop(columns=["_TARGET_"]).copy()
-            data_complete.y = tmp_concat["_TARGET_"].copy().to_numpy().ravel()
+        elif id_data == NAME_DATA["bank"]:
+            dataName = "bank"
+            data_complete = create_bank_dataset()
         else: raise ValueError("data id is wrong")
         with open(fileName, "r") as inFile:
             PARAMS = json.load(inFile)
