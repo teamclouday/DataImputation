@@ -132,7 +132,7 @@ def param_search(datasets, metrics, json_file=None):
         for clf in classifiers.keys():
             model = classifiers[clf]
             d_value.preprocess()
-            X = d_value.X_encoded.drop(columns=d_value.protected).copy().to_numpy()
+            X = d_value.X_encoded.drop(columns=d_value.protected_features).copy().to_numpy()
             y = d_value.y.copy()
             X_res, y_res = smote.fit_resample(X, y)
             print("Parameter searching for {}".format(model.__class__.__name__))
