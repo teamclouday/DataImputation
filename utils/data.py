@@ -530,6 +530,7 @@ class Dataset:
         """
         return Dataset(self.name, self.X.copy(), self.y.copy(), 
             types=self.types, protected_features=self.protected_features,
+            categorical_features=self.categorical_features,
             encoders=[self.X_encoders, self.y_encoder])
 
     def preprocess(self):
