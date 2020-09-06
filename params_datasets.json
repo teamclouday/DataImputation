@@ -24,9 +24,9 @@
         "A": "black",
         "B": "white"
     },
-    "juvenile": {
-        "target": "V1_sexe",
-        "A": "Home",
-        "B": "Dona"
+    "bank": {
+        "target": "age",
+        "A": "elder",
+        "B": "young"
     }
 }
