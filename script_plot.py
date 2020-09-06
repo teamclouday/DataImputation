@@ -14,7 +14,7 @@ from script_single_task import acc, f1score, bias1, bias2, newBias
 
 iter_per_ratio = 200
 
-NAME_DATASETS = ["adult", "compas", "titanic", "german", "communities", "juvenile"]
+NAME_DATASETS = ["adult", "compas", "titanic", "german", "communities", "bank"]
 NAME_TARGETS  = ["acc", "f1"]
 
 INCOMPLETE_MODE = False
@@ -29,8 +29,8 @@ PLOT_GERMAN_ACC         = False
 PLOT_GERMAN_F1          = False
 PLOT_COMMUNITIES_ACC    = False
 PLOT_COMMUNITIES_F1     = False
-PLOT_JUVENILE_ACC       = False
-PLOT_JUVENILE_F1        = False
+PLOT_BANK_ACC           = False
+PLOT_BANK_F1            = False
 
 TRANSFORM_OUTPUTS       = True
 
@@ -823,7 +823,7 @@ if __name__=="__main__":
         plot_all(os.path.join("condor_outputs", "acc", "communities"), os.path.join("ratio_analysis_plots", "acc", "communities"), "communities acc")
     if PLOT_COMMUNITIES_F1:
         plot_all(os.path.join("condor_outputs", "f1", "communities"), os.path.join("ratio_analysis_plots", "f1", "communities"), "communities f1")
-    if PLOT_JUVENILE_ACC:
-        plot_all(os.path.join("condor_outputs", "acc", "juvenile"), os.path.join("ratio_analysis_plots", "acc", "juvenile"), "juvenile acc")
-    if PLOT_JUVENILE_F1:
-        plot_all(os.path.join("condor_outputs", "f1", "juvenile"), os.path.join("ratio_analysis_plots", "f1", "juvenile"), "juvenile f1")
+    if PLOT_BANK_ACC:
+        plot_all(os.path.join("condor_outputs", "acc", "bank"), os.path.join("ratio_analysis_plots", "acc", "bank"), "bank acc")
+    if PLOT_BANK_F1:
+        plot_all(os.path.join("condor_outputs", "f1", "bank"), os.path.join("ratio_analysis_plots", "f1", "bank"), "bank f1")
