@@ -10,9 +10,9 @@ def complete_by_value(data, value=0, print_time=False):
     if print_time:
         tt = time.process_time()
     data = data.copy()
-    data_protected = data.X[data.protected].copy()
-    data_unprotected = data.X.drop(columns=data.protected).copy()
-    data_unprotected = data_unprotected.fillna(value).astype(data.types.drop(data.protected))
+    data_protected = data.X[data.protected_features].copy()
+    data_unprotected = data.X.drop(columns=data.protected_features).copy()
+    data_unprotected = data_unprotected.fillna(value).astype(data.types.drop(data.protected_features))
     data.X = pd.concat([data_unprotected, data_protected], axis=1)
     if print_time:
         print("Performance Monitor: ({:.4f}s) ".format(time.process_time() - tt) + inspect.stack()[0][3])
@@ -24,9 +24,9 @@ def complete_by_mean_col(data, print_time=False):
     if print_time:
         tt = time.process_time()
     data = data.copy()
-    data_protected = data.X[data.protected].copy()
-    data_unprotected = data.X.drop(columns=data.protected).copy()
-    data_unprotected = data_unprotected.fillna(data_unprotected.mean()).astype(data.types.drop(data.protected))
+    data_protected = data.X[data.protected_features].copy()
+    data_unprotected = data.X.drop(columns=data.protected_features).copy()
+    data_unprotected = data_unprotected.fillna(data_unprotected.mean()).astype(data.types.drop(data.protected_features))
     data.X = pd.concat([data_unprotected, data_protected], axis=1)
     if print_time:
         print("Performance Monitor: ({:.4f}s) ".format(time.process_time() - tt) + inspect.stack()[0][3])
@@ -40,7 +40,7 @@ def complete_by_mean_col_v2(data, print_time=False, target_feature=None):
     data = data.copy()
 
     if target_feature:
-        assert target_feature in data.protected
+        assert target_feature in data.protected_features
         target_unique_values = data.X[target_feature].unique().tolist()
         assert len(target_unique_values) > 0
         if len(target_unique_values) < 2:
@@ -48,10 +48,10 @@ def complete_by_mean_col_v2(data, print_time=False, target_feature=None):
             return complete_by_mean_col(data, print_time=print_time)
         imputed_parts = []
         for value in target_unique_values:
-            data_train = data.X[data.X[target_feature] != value].drop(columns=data.protected).copy()
-            data_protected = data.X[data.X[target_feature] == value][data.protected].copy()
-            data_unprotected = data.X[data.X[target_feature] == value].drop(columns=data.protected).copy()
-            data_unprotected = data_unprotected.fillna(data_train.mean()).astype(data.types.drop(data.protected))
+            data_train = data.X[data.X[target_feature] != value].drop(columns=data.protected_features).copy()
+            data_protected = data.X[data.X[target_feature] == value][data.protected_features].copy()
+            data_unprotected = data.X[data.X[target_feature] == value].drop(columns=data.protected_features).copy()
+            data_unprotected = data_unprotected.fillna(data_train.mean()).astype(data.types.drop(data.protected_features))
             imputed_parts.append(pd.concat([data_unprotected, data_protected], axis=1))
         data_X = imputed_parts[0]
         idx = 1
@@ -75,10 +75,10 @@ def complete_by_nearby_row(data, print_time=False):
     if print_time:
         tt = time.process_time()
     data = data.copy()
-    data_protected = data.X[data.protected].copy()
-    data_unprotected = data.X.drop(columns=data.protected).copy()
+    data_protected = data.X[data.protected_features].copy()
+    data_unprotected = data.X.drop(columns=data.protected_features).copy()
     data_unprotected = data_unprotected.fillna(method="ffill")
-    data_unprotected = data_unprotected.fillna(method="bfill").astype(data.types.drop(data.protected))
+    data_unprotected = data_unprotected.fillna(method="bfill").astype(data.types.drop(data.protected_features))
     data.X = pd.concat([data_unprotected, data_protected], axis=1)
     if print_time:
         print("Performance Monitor: ({:.4f}s) ".format(time.process_time() - tt) + inspect.stack()[0][3])
@@ -90,8 +90,8 @@ def complete_by_similar_row(data, print_time=False, K=5):
     if print_time:
         tt = time.process_time()
     data = data.copy()
-    data_protected = data.X[data.protected].copy()
-    data_unprotected = data.X.drop(columns=data.protected).copy()
+    data_protected = data.X[data.protected_features].copy()
+    data_unprotected = data.X.drop(columns=data.protected_features).copy()
     # isnull_matrix = data.X.isnull()
     # # compute similarity matrix
     # matrix = np.zeros((len(data.X), len(data.X)))
@@ -139,7 +139,7 @@ def complete_by_similar_row_v2(data, print_time=False, K=5, target_feature=None)
     data = data.copy()
 
     if target_feature:
-        assert target_feature in data.protected
+        assert target_feature in data.protected_features
         target_unique_values = data.X[target_feature].unique().tolist()
         assert len(target_unique_values) > 0
         if len(target_unique_values) < 2:
@@ -148,10 +148,10 @@ def complete_by_similar_row_v2(data, print_time=False, K=5, target_feature=None)
         imputed_parts = []
         for value in target_unique_values:
             imputer = KNNImputer(n_neighbors=K, weights="uniform")
-            data_train = data.X[data.X[target_feature] != value].drop(columns=data.protected).copy()
+            data_train = data.X[data.X[target_feature] != value].drop(columns=data.protected_features).copy()
             imputer.fit(data_train)
-            data_protected = data.X[data.X[target_feature] == value][data.protected].copy()
-            data_unprotected = data.X[data.X[target_feature] == value].drop(columns=data.protected).copy()
+            data_protected = data.X[data.X[target_feature] == value][data.protected_features].copy()
+            data_unprotected = data.X[data.X[target_feature] == value].drop(columns=data.protected_features).copy()
             data_unprotected = pd.DataFrame(imputer.transform(data_unprotected), columns=data_unprotected.columns, index=data_unprotected.index)
             imputed_parts.append(pd.concat([data_unprotected, data_protected], axis=1))
         data_X = imputed_parts[0]
@@ -175,8 +175,8 @@ def complete_by_most_freq(data, print_time=False):
     if print_time:
         tt = time.process_time()
     data = data.copy()
-    data_protected = data.X[data.protected].copy()
-    data_unprotected = data.X.drop(columns=data.protected).copy()
+    data_protected = data.X[data.protected_features].copy()
+    data_unprotected = data.X.drop(columns=data.protected_features).copy()
     data_unprotected.fillna(data_unprotected.mode().iloc[0], inplace=True)
     data.X = pd.concat([data_unprotected, data_protected], axis=1)
     if print_time:
@@ -192,8 +192,8 @@ def complete_by_multi(data, print_time=False, num_outputs=5):
     imputer = IterativeImputer(max_iter=50, sample_posterior=True)
     for i in range(num_outputs):
         data_copy = data.copy()
-        data_protected = data_copy.X[data_copy.protected].copy()
-        data_unprotected = data_copy.X.drop(columns=data_copy.protected).copy()
+        data_protected = data_copy.X[data_copy.protected_features].copy()
+        data_unprotected = data_copy.X.drop(columns=data_copy.protected_features).copy()
         data_unprotected = pd.DataFrame(imputer.fit_transform(data_unprotected), columns=data_unprotected.columns)
         data_copy.X = pd.concat([data_unprotected, data_protected], axis=1)
         data_new.append(data_copy)
@@ -212,7 +212,7 @@ def complete_by_multi_v2(data, print_time=False, num_outputs=5, target_feature=N
     data_new = []
 
     if target_feature:
-        assert target_feature in data.protected
+        assert target_feature in data.protected_features
         target_unique_values = data.X[target_feature].unique().tolist()
         assert len(target_unique_values) > 0
         if len(target_unique_values) < 2:
@@ -223,10 +223,10 @@ def complete_by_multi_v2(data, print_time=False, num_outputs=5, target_feature=N
             data_copy = data.copy()
             imputed_parts = []
             for value in target_unique_values:
-                data_train = data_copy.X[data_copy.X[target_feature] != value].drop(columns=data_copy.protected).copy()
+                data_train = data_copy.X[data_copy.X[target_feature] != value].drop(columns=data_copy.protected_features).copy()
                 imputer.fit(data_train)
-                data_protected = data_copy.X[data_copy.X[target_feature] == value][data_copy.protected].copy()
-                data_unprotected = data_copy.X[data_copy.X[target_feature] == value].drop(columns=data_copy.protected).copy()
+                data_protected = data_copy.X[data_copy.X[target_feature] == value][data_copy.protected_features].copy()
+                data_unprotected = data_copy.X[data_copy.X[target_feature] == value].drop(columns=data_copy.protected_features).copy()
                 data_unprotected = pd.DataFrame(imputer.transform(data_unprotected), columns=data_unprotected.columns, index=data_unprotected.index)
                 imputed_parts.append(pd.concat([data_unprotected, data_protected], axis=1))
             data_X = imputed_parts[0]

@@ -201,37 +201,37 @@ actual_ratios = np.array([
 def complete_mean_task(idx):
     data_sim = gen_complete_random(data_compas_complete, random_ratio=actual_ratios[idx], print_all=False)
     result = test_imputation(data_sim.X.copy(), data_sim.y.copy(),
-                             data_sim.protected, complete_by_mean_col, multi=False)
+                             data_sim.protected_features, complete_by_mean_col, multi=False)
     return result
 
 def complete_mean_v2_task(idx):
     data_sim = gen_complete_random(data_compas_complete, random_ratio=actual_ratios[idx], print_all=False)
     result = test_imputation(data_sim.X.copy(), data_sim.y.copy(),
-                             data_sim.protected, partial(complete_by_mean_col_v2, target_feature="race"), multi=False)
+                             data_sim.protected_features, partial(complete_by_mean_col_v2, target_feature="race"), multi=False)
     return result
 
 def complete_similar_task(idx):
     data_sim = gen_complete_random(data_compas_complete, random_ratio=actual_ratios[idx], print_all=False)
     result = test_imputation(data_sim.X.copy(), data_sim.y.copy(),
-                             data_sim.protected, complete_by_similar_row, multi=False)
+                             data_sim.protected_features, complete_by_similar_row, multi=False)
     return result
 
 def complete_similar_v2_task(idx):
     data_sim = gen_complete_random(data_compas_complete, random_ratio=actual_ratios[idx], print_all=False)
     result = test_imputation(data_sim.X.copy(), data_sim.y.copy(),
-                             data_sim.protected, partial(complete_by_similar_row_v2, target_feature="race"), multi=False)
+                             data_sim.protected_features, partial(complete_by_similar_row_v2, target_feature="race"), multi=False)
     return result
 
 def complete_multi_task(idx):
     data_sim = gen_complete_random(data_compas_complete, random_ratio=actual_ratios[idx], print_all=False)
     result = test_imputation(data_sim.X.copy(), data_sim.y.copy(),
-                             data_sim.protected, complete_by_multi, multi=True)
+                             data_sim.protected_features, complete_by_multi, multi=True)
     return result
 
 def complete_multi_v2_task(idx):
     data_sim = gen_complete_random(data_compas_complete, random_ratio=actual_ratios[idx], print_all=False)
     result = test_imputation(data_sim.X.copy(), data_sim.y.copy(),
-                             data_sim.protected, partial(complete_by_multi_v2, target_feature="race"), multi=True)
+                             data_sim.protected_features, partial(complete_by_multi_v2, target_feature="race"), multi=True)
     return result
 
 MAX_PROCESS_COUNT = multiprocessing.cpu_count() - 1
