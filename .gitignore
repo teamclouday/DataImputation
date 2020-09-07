@@ -5,3 +5,5 @@ condor_outputs/*
 *.pkl
 .vscode/*
 nouse/*
+*.sub
+*.sh
