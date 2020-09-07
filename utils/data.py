@@ -13,7 +13,7 @@ import numpy as np
 import pandas as pd
 from functools import partial
 from pandas.api.types import is_numeric_dtype
-from sklearn.preprocessing import LabelEncoder
+from sklearn.preprocessing import LabelEncoder, OneHotEncoder
 from sklearn.experimental import enable_iterative_imputer
 from sklearn.impute import KNNImputer, IterativeImputer
 
@@ -488,16 +488,18 @@ class Dataset:
         if len(protected_features) > 0:
             assert len(protected_features) == len([x for x in protected_features if x in self.X.columns.tolist()])
         self.protected_features = protected_features
-        if types is not None:
-            self.types = types
-        else:
-            self.types = X.dtypes
         self.categorical_features = categorical_features
         if encoders is None:
             self.X_encoders, self.y_encoder = self._convert_categories()
         else:
             self.X_encoders = encoders[0]
             self.y_encoder = encoders[1]
+        if types is not None:
+            self.types = types
+        else:
+            self.types = X.dtypes
+            for category in self.categorical_features:
+                self.types[category] = np.int32 # set desired dtype to be int32
 
     def _convert_categories(self):
         columns = self.X.columns
@@ -538,4 +540,13 @@ class Dataset:
         Apply one-hot-encoding on categorical features before feeding into classifiers
         """
         assert self.categorical_features is not None
-        self.X_encoded = pd.get_dummies(self.X, columns=self.categorical_features, prefix_sep="=")
+        self.X_encoded = self.X.copy()
+        for category in self.categorical_features:
+            ohe = OneHotEncoder(categories=[list(range(len(self.X_encoders[category].classes_)))], sparse=False)
+            encoded = pd.DataFrame(ohe.fit_transform(self.X_encoded[category].to_numpy().reshape(-1, 1)), columns=ohe.get_feature_names([category]))
+            self.X_encoded = pd.concat([self.X_encoded, encoded], axis=1).drop([category], axis=1)
+        # self.X_encoded = pd.get_dummies(self.X, columns=self.categorical_features, prefix_sep="=")
+
+
+if __name__ == "__main__":
+    data = create_titanic_dataset()
