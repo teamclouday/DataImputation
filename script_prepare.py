@@ -136,7 +136,7 @@ def param_search(datasets, metrics, json_file=None):
             y = d_value.y.copy()
             X_res, y_res = smote.fit_resample(X, y)
             print("Parameter searching for {}".format(model.__class__.__name__))
-            search = RandomizedSearchCV(model, params[clf], n_jobs=-1, cv=10, scoring=scoring)
+            search = GridSearchCV(model, params[clf], n_jobs=-1, cv=10, scoring=scoring)
             start_time = time.time()
             search.fit(X_res, y_res)
             print("Search finished in {:.2f}min, best score = {}".format((time.time() - start_time) / 60, search.best_score_))
