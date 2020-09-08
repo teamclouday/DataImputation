@@ -15,9 +15,9 @@
         "B": "female"
     },
     "german": {
-        "target": "Personal_status_sex",
-        "A": "male",
-        "B": "female"
+        "target": "Age",
+        "A": "elder",
+        "B": "young"
     },
     "communities": {
         "target": "race_c",

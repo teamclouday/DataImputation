@@ -358,28 +358,21 @@ def create_german_dataset(print_time=False):
         tt = time.process_time()
     names = [
         "Status_account", "Duration_month", "Credit_history", "Purpose", "Credit_amount",
-        "Savings_account", "Employment_since", "Installment_rate", "Personal_status_sex",
+        "Savings_account", "Employment_since", "Installment_rate", "Personal_status",
         "Debtors_guarantors", "Residence_since", "Property", "Age", "Installment_plans",
         "Housing", "Number_credits", "Job", "Num_liable_people", "Telephone", "Foreign",
         "Target"
     ]
     data = pd.read_csv(os.path.join("dataset", "german", "german.data"), names=names, sep=" ")
     # combine sex data
-    data["Personal_status_sex"] = data["Personal_status_sex"].apply(lambda x: "male" if x in ["A91", "A93", "A94"] else "female")
-    # # categorize credit amount data
-    # def helper_amount(amount):
-    #     if amount < 1500:
-    #         return "(0,1500)"
-    #     if amount < 2500:
-    #         return "[1500,2500)"
-    #     if amount < 5000:
-    #         return "[2500,5000)"
-    #     return "[5000,)"
-    # data["Credit_amount_c"] = data["Credit_amount"].apply(lambda x: helper_amount(x))
-    # X = data.drop(["Credit_amount", "Target"], axis=1).copy()
+    # data["Personal_status_sex"] = data["Personal_status_sex"].apply(lambda x: "male" if x in ["A91", "A93", "A94"] else "female")
+    
+    # categorize Age feature
+    data["Age"] = data["Age"].apply(lambda x: "elder" if x >= 35 else "young")
+
     X = data.drop(["Target"], axis=1).copy()
     y = data[["Target"]].copy().to_numpy().ravel()
-    protected_features = ["Personal_status_sex"]
+    protected_features = ["Age"]
     if print_time:
         print("Performance Monitor: ({:.4f}s) ".format(time.process_time() - tt) + inspect.stack()[0][3])
     return Dataset("german", X, y, protected_features=protected_features)
@@ -539,11 +532,11 @@ class Dataset:
         """
         Apply one-hot-encoding on categorical features before feeding into classifiers
         """
-        # TODO: remove one col
         assert self.categorical_features is not None
         self.X_encoded = self.X.copy()
         for category in self.categorical_features:
             ohe = OneHotEncoder(categories=[list(range(len(self.X_encoders[category].classes_)))], sparse=False)
             encoded = pd.DataFrame(ohe.fit_transform(self.X_encoded[category].to_numpy().reshape(-1, 1)), columns=ohe.get_feature_names([category]))
+            encoded = encoded.drop(columns=[ohe.get_feature_names([category])[0]]) # drop first column in order for better classifier performance
             self.X_encoded = pd.concat([self.X_encoded, encoded], axis=1).drop([category], axis=1)
         # self.X_encoded = pd.get_dummies(self.X, columns=self.categorical_features, prefix_sep="=")
