@@ -11,7 +11,7 @@ import numpy as np
 import pandas as pd
 from utils.data import Dataset, create_adult_dataset, create_compas_dataset, create_titanic_dataset, create_communities_dataset, create_german_dataset, create_bank_dataset
 
-from sklearn.model_selection import GridSearchCV
+from sklearn.model_selection import GridSearchCV, RandomizedSearchCV
 from sklearn.neighbors import KNeighborsClassifier
 from sklearn.svm import LinearSVC , SVC
 from sklearn.ensemble import RandomForestClassifier
@@ -136,7 +136,7 @@ def param_search(datasets, metrics, json_file=None):
             y = d_value.y.copy()
             X_res, y_res = smote.fit_resample(X, y)
             print("Parameter searching for {}".format(model.__class__.__name__))
-            search = GridSearchCV(model, params[clf], n_jobs=-1, cv=10, scoring=scoring)
+            search = RandomizedSearchCV(model, params[clf], n_jobs=-1, cv=10, scoring=scoring)
             start_time = time.time()
             search.fit(X_res, y_res)
             print("Search finished in {:.2f}min, best score = {}".format((time.time() - start_time) / 60, search.best_score_))
