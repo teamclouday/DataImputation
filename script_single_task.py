@@ -29,6 +29,7 @@ from sklearn.linear_model import LogisticRegression
 from sklearn.tree import DecisionTreeClassifier
 from sklearn.neural_network import MLPClassifier
 from sklearn.model_selection import StratifiedShuffleSplit
+from sklearn.preprocessing import StandardScaler
 from sklearn.metrics import confusion_matrix, accuracy_score
 
 from imblearn.over_sampling import SMOTE
@@ -134,18 +135,22 @@ def compute_confusion_matrix(X_train, y_train, X_test, y_test, clf, protected_fe
     # protected_features is list
     global PARAMS_DATA
     smote = SMOTE()
+    scaler = StandardScaler()
     result_acc = -1
     if not multi:
         X_train = X_train.drop(columns=protected_features).copy().to_numpy()
         X_train_res, y_train_res = smote.fit_resample(X_train, y_train)
-        clf.fit(X_train_res, y_train_res)
-        X_test_A = X_test[X_test[PARAMS_DATA["target"]] == PARAMS_DATA["A"]].drop(columns=protected_features).to_numpy()
-        X_test_B = X_test[X_test[PARAMS_DATA["target"]] == PARAMS_DATA["B"]].drop(columns=protected_features).to_numpy()
-        y_test_A = y_test[X_test[X_test[PARAMS_DATA["target"]] == PARAMS_DATA["A"]].index.tolist()]
-        y_test_B = y_test[X_test[X_test[PARAMS_DATA["target"]] == PARAMS_DATA["B"]].index.tolist()]
+        X_train_scaled = scaler.fit_transform(X_train_res)
+        clf.fit(X_train_scaled, y_train_res)
+        X_test_scaled = pd.DataFrame(scaler.transform(X_test.drop(columns=protected_features)), columns=X_test.drop(columns=protected_features).columns)
+        X_test_scaled = pd.concat([X_test_scaled, X_test[protected_features]], axis=1)
+        X_test_A = X_test_scaled[X_test_scaled[PARAMS_DATA["target"]] == PARAMS_DATA["A"]].drop(columns=protected_features).to_numpy()
+        X_test_B = X_test_scaled[X_test_scaled[PARAMS_DATA["target"]] == PARAMS_DATA["B"]].drop(columns=protected_features).to_numpy()
+        y_test_A = X_test_scaled[X_test_scaled[X_test_scaled[PARAMS_DATA["target"]] == PARAMS_DATA["A"]].index.tolist()]
+        y_test_B = X_test_scaled[X_test_scaled[X_test_scaled[PARAMS_DATA["target"]] == PARAMS_DATA["B"]].index.tolist()]
         matrix_A = confusion_matrix(y_test_A, clf.predict(X_test_A))
         matrix_B = confusion_matrix(y_test_B, clf.predict(X_test_B))
-        result_acc = actualAcc(clf.predict(X_test.drop(columns=protected_features).to_numpy()), y_test)
+        result_acc = actualAcc(clf.predict(X_test_scaled.drop(columns=protected_features).to_numpy()), y_test)
     else:
         prediction_A = []
         prediction_B = []
@@ -156,13 +161,16 @@ def compute_confusion_matrix(X_train, y_train, X_test, y_test, clf, protected_fe
         for X_train_m in X_train:
             X_train_m = X_train_m.drop(columns=protected_features).copy().to_numpy()
             X_train_res, y_train_res = smote.fit_resample(X_train_m, y_train)
-            clf.fit(X_train_res, y_train_res)
+            X_train_scaled = scaler.fit_transform(X_train_res)
+            clf.fit(X_train_scaled, y_train_res)
             for X_test_m in X_test:
-                X_test_A = X_test_m[X_test_m[PARAMS_DATA["target"]] == PARAMS_DATA["A"]].drop(columns=protected_features).to_numpy()
-                X_test_B = X_test_m[X_test_m[PARAMS_DATA["target"]] == PARAMS_DATA["B"]].drop(columns=protected_features).to_numpy()
+                X_test_scaled = pd.DataFrame(scaler.transform(X_test_m.drop(columns=protected_features)), columns=X_test_m.drop(columns=protected_features).columns)
+                X_test_scaled = pd.concat([X_test_scaled, X_test_m[protected_features]], axis=1)
+                X_test_A = X_test_scaled[X_test_scaled[PARAMS_DATA["target"]] == PARAMS_DATA["A"]].drop(columns=protected_features).to_numpy()
+                X_test_B = X_test_scaled[X_test_scaled[PARAMS_DATA["target"]] == PARAMS_DATA["B"]].drop(columns=protected_features).to_numpy()
                 prediction_A.append(clf.predict(X_test_A))
                 prediction_B.append(clf.predict(X_test_B))
-                predictions.append(clf.predict(X_test_m.drop(columns=protected_features).to_numpy()))
+                predictions.append(clf.predict(X_test_scaled.drop(columns=protected_features).to_numpy()))
         # compute final predictions by voting
         predictions = np.apply_along_axis(helper_freq, 0, np.array(predictions))
         prediction_A = np.apply_along_axis(helper_freq, 0, np.array(prediction_A))
