@@ -11,7 +11,7 @@ import numpy as np
 import pandas as pd
 from utils.data import Dataset, create_adult_dataset, create_compas_dataset, create_titanic_dataset, create_communities_dataset, create_german_dataset, create_bank_dataset
 
-from sklearn.model_selection import GridSearchCV
+from sklearn.model_selection import GridSearchCV, RandomizedSearchCV
 from sklearn.neighbors import KNeighborsClassifier
 from sklearn.svm import LinearSVC , SVC
 from sklearn.ensemble import RandomForestClassifier
