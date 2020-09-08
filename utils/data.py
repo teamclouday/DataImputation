@@ -539,6 +539,7 @@ class Dataset:
         """
         Apply one-hot-encoding on categorical features before feeding into classifiers
         """
+        # TODO: remove one col
         assert self.categorical_features is not None
         self.X_encoded = self.X.copy()
         for category in self.categorical_features:
@@ -546,7 +547,3 @@ class Dataset:
             encoded = pd.DataFrame(ohe.fit_transform(self.X_encoded[category].to_numpy().reshape(-1, 1)), columns=ohe.get_feature_names([category]))
             self.X_encoded = pd.concat([self.X_encoded, encoded], axis=1).drop([category], axis=1)
         # self.X_encoded = pd.get_dummies(self.X, columns=self.categorical_features, prefix_sep="=")
-
-
-if __name__ == "__main__":
-    data = create_titanic_dataset()

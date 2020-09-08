@@ -1,3 +1,4 @@
-1. Look into preprocessing steps in the code (German dataset)
-2. Test with IBM package
-3. Start on paper
+1. Update one-hot-encoding
+2. Apply Standard Scaler
+3. Reproduce all results
+4. Try combinations with AIF360
