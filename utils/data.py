@@ -147,7 +147,7 @@ def _dataset_download_juvenile(folder):
 def dataset_prepare(force_download=False):
     dataset_folders = [
         #os.path.join("dataset", "iris"),
-        #os.path.join("dataset", "bank"),
+        os.path.join("dataset", "bank"),
         os.path.join("dataset", "adult"),
         os.path.join("dataset", "compas"),
         #os.path.join("dataset", "heart"),
@@ -155,11 +155,11 @@ def dataset_prepare(force_download=False):
         os.path.join("dataset", "titanic"),
         os.path.join("dataset", "german"),
         os.path.join("dataset", "communities"),
-        os.path.join("dataset", "juvenile"),
+        #os.path.join("dataset", "juvenile"),
     ]
     load_functions = [
         #_dataset_download_iris,
-        #_dataset_download_bank,
+        _dataset_download_bank,
         _dataset_download_adult,
         _dataset_download_compas,
         #_dataset_download_heart,
@@ -167,7 +167,7 @@ def dataset_prepare(force_download=False):
         _dataset_download_titanic,
         _dataset_download_german,
         _dataset_download_communities,
-        _dataset_download_juvenile,
+        #_dataset_download_juvenile,
     ]
     for folder, func in zip(dataset_folders, load_functions):
         if not force_download:
