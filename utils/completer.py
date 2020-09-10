@@ -119,7 +119,7 @@ def complete_by_similar_row(data, print_time=False, K=5):
     #             new_data.X[col_name][i] = data.X[col_name][possible_rows[0][0]]
 
     imputer = KNNImputer(n_neighbors=K, weights="uniform") # by default use euclidean distance
-    data_unprotected = pd.DataFrame(imputer.fit_transform(data_unprotected), columns=data_unprotected.columns)
+    data_unprotected = pd.DataFrame(imputer.fit_transform(data_unprotected), columns=data_unprotected.columns).astype(data.types.drop(data.protected_features))
     data.X = pd.concat([data_unprotected, data_protected], axis=1)
 
     if print_time:
@@ -152,7 +152,7 @@ def complete_by_similar_row_v2(data, print_time=False, K=5, target_feature=None)
             imputer.fit(data_train)
             data_protected = data.X[data.X[target_feature] == value][data.protected_features].copy()
             data_unprotected = data.X[data.X[target_feature] == value].drop(columns=data.protected_features).copy()
-            data_unprotected = pd.DataFrame(imputer.transform(data_unprotected), columns=data_unprotected.columns, index=data_unprotected.index)
+            data_unprotected = pd.DataFrame(imputer.transform(data_unprotected), columns=data_unprotected.columns, index=data_unprotected.index).astype(data.types.drop(data.protected_features))
             imputed_parts.append(pd.concat([data_unprotected, data_protected], axis=1))
         data_X = imputed_parts[0]
         idx = 1
@@ -190,11 +190,11 @@ def complete_by_multi(data, print_time=False, num_outputs=5):
         tt = time.process_time()
     data_new = []
     imputer = IterativeImputer(max_iter=50, sample_posterior=True)
-    for i in range(num_outputs):
+    for _ in range(num_outputs):
         data_copy = data.copy()
         data_protected = data_copy.X[data_copy.protected_features].copy()
         data_unprotected = data_copy.X.drop(columns=data_copy.protected_features).copy()
-        data_unprotected = pd.DataFrame(imputer.fit_transform(data_unprotected), columns=data_unprotected.columns)
+        data_unprotected = pd.DataFrame(imputer.fit_transform(data_unprotected), columns=data_unprotected.columns).astype(data.types.drop(data.protected_features))
         data_copy.X = pd.concat([data_unprotected, data_protected], axis=1)
         data_new.append(data_copy)
     if print_time:
@@ -219,7 +219,7 @@ def complete_by_multi_v2(data, print_time=False, num_outputs=5, target_feature=N
             print("Warning: complete_by_multi_v2: only one unique value found for target feature")
             return complete_by_multi(data, print_time=print_time, num_outputs=num_outputs)
         imputer = IterativeImputer(max_iter=50, sample_posterior=True)
-        for i in range(num_outputs):
+        for _ in range(num_outputs):
             data_copy = data.copy()
             imputed_parts = []
             for value in target_unique_values:
@@ -227,7 +227,7 @@ def complete_by_multi_v2(data, print_time=False, num_outputs=5, target_feature=N
                 imputer.fit(data_train)
                 data_protected = data_copy.X[data_copy.X[target_feature] == value][data_copy.protected_features].copy()
                 data_unprotected = data_copy.X[data_copy.X[target_feature] == value].drop(columns=data_copy.protected_features).copy()
-                data_unprotected = pd.DataFrame(imputer.transform(data_unprotected), columns=data_unprotected.columns, index=data_unprotected.index)
+                data_unprotected = pd.DataFrame(imputer.transform(data_unprotected), columns=data_unprotected.columns, index=data_unprotected.index).astype(data.types.drop(data.protected_features))
                 imputed_parts.append(pd.concat([data_unprotected, data_protected], axis=1))
             data_X = imputed_parts[0]
             idx = 1
