@@ -535,8 +535,14 @@ class Dataset:
         assert self.categorical_features is not None
         self.X_encoded = self.X.copy()
         for category in self.categorical_features:
-            ohe = OneHotEncoder(categories=[list(range(len(self.X_encoders[category].classes_)))], sparse=False)
+            expected_categories = list(range(len(self.X_encoders[category].classes_)))
+            # clip the values in this category
+            self.X_encoded[category].clip(lower=min(expected_categories), upper=max(expected_categories), inplace=True)
+            # setup one-hot-encoder
+            ohe = OneHotEncoder(categories=[expected_categories], sparse=False)
             encoded = pd.DataFrame(ohe.fit_transform(self.X_encoded[category].to_numpy().reshape(-1, 1)), columns=ohe.get_feature_names([category]))
-            encoded = encoded.drop(columns=[ohe.get_feature_names([category])[0]]) # drop first column in order for better classifier performance
+            # drop first column in order for better classifier performance
+            encoded = encoded.drop(columns=[ohe.get_feature_names([category])[0]])
+            # combine the new column
             self.X_encoded = pd.concat([self.X_encoded, encoded], axis=1).drop([category], axis=1)
         # self.X_encoded = pd.get_dummies(self.X, columns=self.categorical_features, prefix_sep="=")
