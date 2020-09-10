@@ -146,8 +146,8 @@ def compute_confusion_matrix(X_train, y_train, X_test, y_test, clf, protected_fe
         X_test_scaled = pd.concat([X_test_scaled, X_test[protected_features]], axis=1)
         X_test_A = X_test_scaled[X_test_scaled[PARAMS_DATA["target"]] == PARAMS_DATA["A"]].drop(columns=protected_features).to_numpy()
         X_test_B = X_test_scaled[X_test_scaled[PARAMS_DATA["target"]] == PARAMS_DATA["B"]].drop(columns=protected_features).to_numpy()
-        y_test_A = X_test_scaled[X_test_scaled[X_test_scaled[PARAMS_DATA["target"]] == PARAMS_DATA["A"]].index.tolist()]
-        y_test_B = X_test_scaled[X_test_scaled[X_test_scaled[PARAMS_DATA["target"]] == PARAMS_DATA["B"]].index.tolist()]
+        y_test_A = y_test[X_test_scaled[X_test_scaled[PARAMS_DATA["target"]] == PARAMS_DATA["A"]].index.tolist()]
+        y_test_B = y_test[X_test_scaled[X_test_scaled[PARAMS_DATA["target"]] == PARAMS_DATA["B"]].index.tolist()]
         matrix_A = confusion_matrix(y_test_A, clf.predict(X_test_A))
         matrix_B = confusion_matrix(y_test_B, clf.predict(X_test_B))
         result_acc = actualAcc(clf.predict(X_test_scaled.drop(columns=protected_features).to_numpy()), y_test)
