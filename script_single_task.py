@@ -329,7 +329,7 @@ def complete_multi_task(idx):
 def complete_multi_v2_task(idx):
     global data_complete, PARAMS_DATA
     data_sim = gen_complete_random(data_complete, random_ratio=random_ratios[idx], print_all=False)
-    result = test_imputation(data_sim.X, partial(complete_by_multi_v2, target_feature=PARAMS_DATA["target"]), multi=True, verboseID="multi_v2")
+    result = test_imputation(data_sim, partial(complete_by_multi_v2, target_feature=PARAMS_DATA["target"]), multi=True, verboseID="multi_v2")
     return result
 
 # argv[1] = process id
