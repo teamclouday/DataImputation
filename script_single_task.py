@@ -379,6 +379,7 @@ if __name__ == "__main__":
         elif id_data == NAME_DATA["german"]:
             dataName = "german"
             data_complete = create_german_dataset()
+            N_SPLITS = 5
         elif id_data == NAME_DATA["communities"]:
             dataName = "communities"
             data_complete = create_communities_dataset()
