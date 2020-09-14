@@ -368,7 +368,7 @@ def create_german_dataset(print_time=False):
     # data["Personal_status_sex"] = data["Personal_status_sex"].apply(lambda x: "male" if x in ["A91", "A93", "A94"] else "female")
     
     # categorize Age feature
-    data["Age"] = data["Age"].apply(lambda x: "elder" if x >= 35 else "young")
+    data["Age"] = data["Age"].apply(lambda x: "elder" if x >= 26 else "young")
 
     X = data.drop(["Target"], axis=1).copy()
     y = data[["Target"]].copy().to_numpy().ravel()
