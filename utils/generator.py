@@ -32,12 +32,16 @@ def gen_complete_random(data, random_ratio=0.2, print_time=False, print_all=True
     num_rows, num_cols = X_data.shape
     row_rand = np.random.permutation(num_rows)
     row_rand = row_rand[:math.floor(num_rows*random_ratio)]
-    for row in row_rand:
+    for row in row_rand[:-1]:
         col_rand = np.random.permutation(num_cols)
         col_rand = col_rand[:math.floor(num_cols*random_ratio)]
-        for col in col_rand:
-            if X_data.iloc[:, col].isnull().sum() < (num_rows - 1):
-                X_data.iloc[row, col] = np.nan
+        X_data.iloc[row, col_rand] = np.nan
+    row = row_rand[-1]
+    col_rand = np.random.permutation(num_cols)
+    col_rand = col_rand[:math.floor(num_cols*random_ratio)]
+    for col in col_rand:
+        if X_data.iloc[:, col].isnull().sum() < (num_rows - 1):
+            X_data.iloc[row, col] = np.nan
     if print_all:
         print("gen_complete_random: {0} NaN values have been inserted".format(X_data.isnull().sum().sum()))
     if len(data.protected_features) > 0:
@@ -82,10 +86,11 @@ def gen_random(data, random_ratio=0.2, random_cols=[], print_time=False, print_a
     ratio_rows = random_ratio ** 2 / (len(random_cols) / num_cols)
     random_rows = np.random.permutation(num_rows)
     random_rows = random_rows[:math.floor(num_rows*ratio_rows)]
-    for row in random_rows:
-        for col in random_cols:
-            if X_data.iloc[:, col].isnull().sum() < (num_rows - 1):
-                X_data.iloc[row, col] = np.nan
+    X_data.iloc[random_rows[:-1], random_cols] = np.nan
+    row = random_rows[-1]
+    for col in random_cols:
+        if X_data.iloc[:, col].isnull().sum() < (num_rows - 1):
+            X_data.iloc[row, col] = np.nan
     if print_all:
         print("gen_random: {0} NaN values have been inserted".format(X_data.isnull().sum().sum()))
     if len(data.protected_features) > 0:
