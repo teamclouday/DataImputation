@@ -5,17 +5,28 @@ import numpy as np
 import pandas as pd
 from utils.data import *
 
-# missingness complete at random
-# take a Dataset object as input
-# take a random_ratio as input
-# Implementation:
-# select random rows based on random_ratio
-# then for each of these rows, select random cols based on random_ratio
-# replace these entries with value of NaN
-# IMPORTANT: leave at least one value for each column
-# IMPORTANT: skip the protected features
-# return the converted dataset object
 def gen_complete_random(data, random_ratio=0.2, print_time=False, print_all=True):
+    """Missing Complete At Random  
+
+    ### Args
+    
+    1. `data` - type of `Dataset`
+    2. `random_ratio` - defines the missingness across rows and columns
+    3. `print_time` - print time to evaluate performance
+    4. `print_all` - print all messages, including warnings
+
+    ### Returns
+    Converted `Dataset` object with missing values
+
+    -----
+
+    ### Implementation
+    1. Select random rows based on random_ratio
+    2. For each row, select random cols based on random_ratio
+    3. Leave at least one value for each column
+    4. Skip protected features
+
+    """
     if print_time:
         tt = time.process_time()
     if random_ratio > 0.5:
@@ -52,25 +63,37 @@ def gen_complete_random(data, random_ratio=0.2, print_time=False, print_all=True
         print("Performance Monitor: ({:.4f}s) ".format(time.process_time() - tt) + inspect.stack()[0][3])
     return data
 
-# missingness at random
-# take a Dataset object as input
-# take random_ratio as input
-# take user-defined random_cols as input
-# Implementation:
-# generate random_cols if not specified
-# calculate the ratio for selecting random rows
-# for each random row
-# for each selected col on that row
-# replace the value of the entry with NaN
-# IMPORTANT: leave at least one value for each column
-# IMPORTANT: skip the protected features
-# return the Dataset object
-def gen_random(data, random_ratio=0.2, random_cols=[], print_time=False, print_all=True):
+def gen_random(data, n_columns_observed=2, print_time=False, print_all=True):
+    """Missing At Random
+
+    ### Args
+    
+    1. `data` - type of `Dataset`
+    2. `n_columns_observed` - decides how many columns without missing value
+    3. `print_time` - print time to evaluate performance
+    4. `print_all` - print all messages, including warnings
+
+    ### Returns
+    Converted `Dataset` object with missing values
+
+    ------
+
+    ### Implementation
+    1. For each column `K` to convert:
+        a. Draw (`n_columns_observed`+1) scalar values from a random standard normal distribution N(-1, 1)
+
+        b. Construct `M` by multiplying the scalar values on the observed features
+
+        c. Use the standard logistic cumulative distribution function to convert `M` to probability `p`
+
+        d. For each `p`, draw a value randomly from the Binomial(1, `p`) distribution
+
+        e. For each row `i`, if `p`[`i`] = 1, then `K`[`i`] is replaced by NaN
+    2. Leave at least one value for each column
+    3. Skip protected features
+    """
     if print_time:
         tt = time.process_time()
-    if random_ratio > 0.5:
-        if print_all:
-            print("Warning: gen_random, random missing ratio > 0.5")
     X_data = data.X.copy()
     if len(data.protected_features) > 0:
         X_data.drop(columns=data.protected_features, inplace=True)
@@ -78,19 +101,19 @@ def gen_random(data, random_ratio=0.2, random_cols=[], print_time=False, print_a
     if len(X_data.shape) != 2:
         print("Error: gen_random only support dataset with rank of 2\nYour input has rank of {0}".format(len(X_data.shape)))
         sys.exit(1)
-    random_ratio = random_ratio ** 0.5
-    num_rows, num_cols = X_data.shape
-    if random_cols == []:
-        random_cols = np.random.permutation(num_cols)
-        random_cols = random_cols[:math.floor(num_cols*random_ratio)]
-    ratio_rows = random_ratio ** 2 / (len(random_cols) / num_cols)
-    random_rows = np.random.permutation(num_rows)
-    random_rows = random_rows[:math.floor(num_rows*ratio_rows)]
-    X_data.iloc[random_rows[:-1], random_cols] = np.nan
-    row = random_rows[-1]
-    for col in random_cols:
-        if X_data.iloc[:, col].isnull().sum() < (num_rows - 1):
-            X_data.iloc[row, col] = np.nan
+    
+    def convert_single_feature(K_df, observed_df):
+        scalars = np.random.standard_normal(n_columns_observed)
+        scalar_a = np.random.standard_normal()
+        observed = observed_df.to_numpy()
+        M = scalar_a + (scalars * observed).sum(axis=1)
+        p = 1 / (1 + np.exp(-M))
+        p_bi = np.random.binomial(1, p).astype(np.bool)
+        K_df = K_df.where(~p_bi, other=np.nan)
+        return K_df
+
+
+
     if print_all:
         print("gen_random: {0} NaN values have been inserted".format(X_data.isnull().sum().sum()))
     if len(data.protected_features) > 0:
