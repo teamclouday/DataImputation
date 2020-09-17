@@ -251,12 +251,13 @@ def test_imputation(data, completer_func=None, multi=False, verboseID=""):
             try:
                 data_complete = completer_func(data_incomplete)
             except Exception as e:
-                print(e)
+                print("Exception occurred in completer function '{}': {}".format(verboseID, e))
                 for clf_name in clfs.keys():
                     rawdata_cv[clf_name].append([])
                 fold += 1
                 continue
             if ((not multi) and data_complete.X.isnull().sum().sum() > 0) or (multi and sum([dd.X.isnull().sum().sum() for dd in data_complete]) > 0):
+                print("Completer function '{}' produces missing values, skipped".format(verboseID))
                 for clf_name in clfs.keys():
                     rawdata_cv[clf_name].append([])
                 fold += 1
