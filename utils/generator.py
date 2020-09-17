@@ -33,6 +33,8 @@ def gen_complete_random(data, random_ratio=0.2, print_time=False, print_all=True
         if print_all:
             print("Warning: gen_complete_random, random missing ratio > 0.5")
     X_data = data.X.copy()
+    if random_ratio == 0.0:
+        return data.copy()
     if len(data.protected_features) > 0:
         X_data.drop(columns=data.protected_features, inplace=True)
         X_data_protected = data.X[data.protected_features].copy()
@@ -153,7 +155,7 @@ def gen_not_random(data, print_time=False, print_all=True):
         print("Error: gen_not_random only support dataset with rank of 2\nYour input has rank of {0}".format(len(X_data.shape)))
         sys.exit(1)
     
-    
+
 
     if print_all:
         print("gen_random: {0} NaN values have been inserted".format(X_data.isnull().sum().sum()))
