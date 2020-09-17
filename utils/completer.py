@@ -92,31 +92,6 @@ def complete_by_similar_row(data, print_time=False, K=5):
     data = data.copy()
     data_protected = data.X[data.protected_features].copy()
     data_unprotected = data.X.drop(columns=data.protected_features).copy()
-    # isnull_matrix = data.X.isnull()
-    # # compute similarity matrix
-    # matrix = np.zeros((len(data.X), len(data.X)))
-    # data_X = data.X.to_numpy()
-    # for i in range(len(data_X)-1):
-    #     for j in range(i+1, len(data_X)):
-    #         print(i, j)
-    #         sim = 0
-    #         count = 0
-    #         # for col_name in data.X.columns:
-    #         #     if not isnull_matrix[col_name][i] and not isnull_matrix[col_name][j]:
-    #         #         sim += (data.X[col_name][i] - data.X[col_name][j])**2 # (x-y)^2
-    #         #         count += 1
-    #         sim = sim ** 0.5
-    #         sim /= count
-    #         matrix[i][j] = sim
-    #         matrix[j][i] = sim
-    # # fill in nan values
-    # for col_name in data.X.columns:
-    #     for i in range(len(data.X)):
-    #         if isnull_matrix[col_name][i]:
-    #             possible_rows = {a:x for (a,x) in enumerate(matrix[i]) if x > 0 and not isnull_matrix[col_name][a]}
-    #             possible_rows = sorted(possible_rows.items(), key=lambda x: x[1])
-    #             if len(possible_rows) <= 0: possible_rows = [(0,0)]
-    #             new_data.X[col_name][i] = data.X[col_name][possible_rows[0][0]]
 
     imputer = KNNImputer(n_neighbors=K, weights="uniform") # by default use euclidean distance
     data_unprotected = pd.DataFrame(imputer.fit_transform(data_unprotected), columns=data_unprotected.columns).astype(data.types.drop(data.protected_features))
@@ -185,11 +160,11 @@ def complete_by_most_freq(data, print_time=False):
 
 # Method 6
 # multiple imputation
-def complete_by_multi(data, print_time=False, num_outputs=5):
+def complete_by_multi(data, print_time=False, num_outputs=10, verbose=0):
     if print_time:
         tt = time.process_time()
     data_new = []
-    imputer = IterativeImputer(max_iter=50, sample_posterior=True)
+    imputer = IterativeImputer(max_iter=1, sample_posterior=True, verbose=verbose)
     for _ in range(num_outputs):
         data_copy = data.copy()
         data_protected = data_copy.X[data_copy.protected_features].copy()
@@ -205,7 +180,7 @@ def complete_by_multi(data, print_time=False, num_outputs=5):
 # multiple imputation
 # same idea as similar imputation version 2
 # apply imputation based on the data from opposite groups
-def complete_by_multi_v2(data, print_time=False, num_outputs=5, target_feature=None):
+def complete_by_multi_v2(data, print_time=False, num_outputs=10, target_feature=None, verbose=0):
     if print_time:
         tt = time.process_time()
 
@@ -218,16 +193,17 @@ def complete_by_multi_v2(data, print_time=False, num_outputs=5, target_feature=N
         if len(target_unique_values) < 2:
             print("Warning: complete_by_multi_v2: only one unique value found for target feature")
             return complete_by_multi(data, print_time=print_time, num_outputs=num_outputs)
-        imputer = IterativeImputer(max_iter=50, sample_posterior=True)
+        imputers = [IterativeImputer(max_iter=1, sample_posterior=True, verbose=verbose) for _ in range(len(target_unique_values))]
         for _ in range(num_outputs):
             data_copy = data.copy()
             imputed_parts = []
-            for value in target_unique_values:
+            for i in range(len(target_unique_values)):
+                value = target_unique_values[i]
                 data_train = data_copy.X[data_copy.X[target_feature] != value].drop(columns=data_copy.protected_features).copy()
-                imputer.fit(data_train)
+                imputers[i].fit(data_train)
                 data_protected = data_copy.X[data_copy.X[target_feature] == value][data_copy.protected_features].copy()
                 data_unprotected = data_copy.X[data_copy.X[target_feature] == value].drop(columns=data_copy.protected_features).copy()
-                data_unprotected = pd.DataFrame(imputer.transform(data_unprotected), columns=data_unprotected.columns, index=data_unprotected.index).astype(data.types.drop(data.protected_features))
+                data_unprotected = pd.DataFrame(imputers[i].transform(data_unprotected), columns=data_unprotected.columns, index=data_unprotected.index).astype(data.types.drop(data.protected_features))
                 imputed_parts.append(pd.concat([data_unprotected, data_protected], axis=1))
             data_X = imputed_parts[0]
             idx = 1
