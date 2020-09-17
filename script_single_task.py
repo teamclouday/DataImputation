@@ -294,6 +294,8 @@ if RUN_DEBUG:
 random_ratios = np.linspace(0.0, 1.0, num=20, endpoint=False)
 
 MAX_PROCESS_COUNT = multiprocessing.cpu_count()
+MAX_PROCESS_COUNT = max(MAX_PROCESS_COUNT, 1)
+MAX_PROCESS_COUNT = min(MAX_PROCESS_COUNT, 20)
 
 # define single task functions
 
