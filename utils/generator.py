@@ -6,7 +6,7 @@ import pandas as pd
 from utils.data import *
 
 def gen_complete_random(data, random_ratio=0.2, print_time=False, print_all=True):
-    """Missing Complete At Random  
+    """Missing Complete At Random (MCAR)
 
     ### Args
     
@@ -64,7 +64,7 @@ def gen_complete_random(data, random_ratio=0.2, print_time=False, print_all=True
     return data
 
 def gen_random(data, n_columns_observed=2, print_time=False, print_all=True):
-    """Missing At Random
+    """Missing At Random (MAR)
 
     ### Args
     
@@ -124,10 +124,43 @@ def gen_random(data, n_columns_observed=2, print_time=False, print_all=True):
         print("Performance Monitor: ({:.4f}s) ".format(time.process_time() - tt) + inspect.stack()[0][3])
     return data
 
-# missingness that depends on unobserved predictors
-def gen_unobserved(data):
-    pass
+def gen_not_random(data, print_time=False, print_all=True):
+    """Missing Not At Random (MNAR)
 
-# missingness that depends on missing value itself
-def gen_by_itself(data):
-    pass
+    ### Args
+    
+    1. `data` - type of `Dataset`
+    3. `print_time` - print time to evaluate performance
+    4. `print_all` - print all messages, including warnings
+
+    ### Returns
+    Converted `Dataset` object with missing values
+
+    ------
+
+    ### Implementation
+    1. 
+    2. Leave at least one value for each column
+    3. Skip protected features
+    """
+    if print_time:
+        tt = time.process_time()
+    X_data = data.X.copy()
+    if len(data.protected_features) > 0:
+        X_data.drop(columns=data.protected_features, inplace=True)
+        X_data_protected = data.X[data.protected_features].copy()
+    if len(X_data.shape) != 2:
+        print("Error: gen_not_random only support dataset with rank of 2\nYour input has rank of {0}".format(len(X_data.shape)))
+        sys.exit(1)
+    
+    
+
+    if print_all:
+        print("gen_random: {0} NaN values have been inserted".format(X_data.isnull().sum().sum()))
+    if len(data.protected_features) > 0:
+        X_data = pd.concat([X_data, X_data_protected], axis=1)
+    data = data.copy()
+    data.X = X_data
+    if print_time and print_all:
+        print("Performance Monitor: ({:.4f}s) ".format(time.process_time() - tt) + inspect.stack()[0][3])
+    return data
