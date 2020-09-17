@@ -5,8 +5,10 @@ import numpy as np
 from utils.data import *
 
 # Method 1
-# fill all missing entries with one value
 def complete_by_value(data, value=0, print_time=False):
+    """
+    Replace NaN with `value` passed as argument
+    """
     if print_time:
         tt = time.process_time()
     data = data.copy()
@@ -19,8 +21,10 @@ def complete_by_value(data, value=0, print_time=False):
     return data
 
 # Method 2
-# complete missing entries using the mean of that column
 def complete_by_mean_col(data, print_time=False):
+    """
+    Fill missing entries using the mean of that column
+    """
     if print_time:
         tt = time.process_time()
     data = data.copy()
@@ -33,8 +37,12 @@ def complete_by_mean_col(data, print_time=False):
     return data
 
 # Method 2 version 2
-# same idea as similar imputation version 2
 def complete_by_mean_col_v2(data, print_time=False, target_feature=None):
+    """
+    Fill missing entries using the mean of the column from opposite group (defined by `target_feature`)
+
+    For example, entries for `race`="African-American" will be imputed from rows whose `race` is not "African-American"
+    """
     if print_time:
         tt = time.process_time()
     data = data.copy()
@@ -69,9 +77,10 @@ def complete_by_mean_col_v2(data, print_time=False, target_feature=None):
     return data
 
 # Method 3
-# complete missing entries using value from previous row
-# if previous rows are all NaN, then fill with value from next row
 def complete_by_nearby_row(data, print_time=False):
+    """
+    Fill the missing entries by nearby values
+    """
     if print_time:
         tt = time.process_time()
     data = data.copy()
@@ -85,8 +94,10 @@ def complete_by_nearby_row(data, print_time=False):
     return data
 
 # Method 4
-# complete missing entries by values from most similar row
 def complete_by_similar_row(data, print_time=False, K=5):
+    """
+    Fill the missing entries by values from most similar rows, found by KNN
+    """
     if print_time:
         tt = time.process_time()
     data = data.copy()
@@ -102,13 +113,14 @@ def complete_by_similar_row(data, print_time=False, K=5):
     return data
 
 # Method 4 version 2
-# complete missing entries by values from most similar row
-# if target_feature (protected feature) is provided
-# the imputation will be implemented by groups
-# for example, entries for race="African-American" will be imputed from rows whose race is not this
-# else if target_feature not provided
-# it will perform the version 1 similar imputation
 def complete_by_similar_row_v2(data, print_time=False, K=5, target_feature=None):
+    """
+    Fill the missing entries by values from most similar rows, found by KNN
+
+    KNN is fit on opposite group data, where opposite group is defined by `target_feature`
+
+    For example, entries for `race`="African-American" will be imputed from rows whose `race` is not "African-American"
+    """
     if print_time:
         tt = time.process_time()
     data = data.copy()
@@ -145,8 +157,10 @@ def complete_by_similar_row_v2(data, print_time=False, K=5, target_feature=None)
     return data
 
 # Method 5
-# fill with the most frequent value in that column
 def complete_by_most_freq(data, print_time=False):
+    """
+    Fill the missing entries by the most frequent value from that column
+    """
     if print_time:
         tt = time.process_time()
     data = data.copy()
@@ -159,8 +173,12 @@ def complete_by_most_freq(data, print_time=False):
     return data
 
 # Method 6
-# multiple imputation
 def complete_by_multi(data, print_time=False, num_outputs=10, verbose=0):
+    """
+    Fill the missing entries by running multiple imputation (MICE)
+
+    Return a list of `Dataset` objects instead of single object
+    """
     if print_time:
         tt = time.process_time()
     data_new = []
@@ -177,10 +195,16 @@ def complete_by_multi(data, print_time=False, num_outputs=10, verbose=0):
     return data_new
 
 # Method 6 version 2
-# multiple imputation
-# same idea as similar imputation version 2
-# apply imputation based on the data from opposite groups
 def complete_by_multi_v2(data, print_time=False, num_outputs=10, target_feature=None, verbose=0):
+    """
+    Fill the missing entries by running multiple imputation (MICE)
+
+    Return a list of `Dataset` objects instead of single object
+
+    Imputer learns from opposite group data, where opposite group is defined by `target_feature`, and transforms current group data
+
+    For example, entries for `race`="African-American" will be imputed from rows whose `race` is not "African-American"
+    """
     if print_time:
         tt = time.process_time()
 
