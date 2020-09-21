@@ -352,7 +352,7 @@ def create_titanic_dataset(print_time=False):
     # X["Name"] = X["Name"].apply(lambda x: x.split(",")[1].split()[0])
     y = data[["Survived"]].copy().to_numpy().ravel()
     protected_features = ["Sex"]
-    observed_features = ["Age", "Pclass"]
+    observed_features = ["Pclass"]
     if print_time:
         print("Performance Monitor: ({:.4f}s) ".format(time.process_time() - tt) + inspect.stack()[0][3])
     return Dataset("titanic", X, y, protected_features=protected_features, observed_features=observed_features)
