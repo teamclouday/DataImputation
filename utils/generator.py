@@ -10,7 +10,6 @@ def gen_complete_random(data, random_ratio=0.2, print_time=False, print_all=True
     """Missing Complete At Random (MCAR)
 
     ### Args
-    
     1. `data` - type of `Dataset`
     2. `random_ratio` - defines the missingness across rows and columns
     3. `print_time` - print time to evaluate performance
@@ -89,24 +88,18 @@ def gen_random(data, columns_observed=[], print_time=False, print_all=True, rang
     Converted `Dataset` object with missing values
 
     ### Exception
-    Will raise an exception if `data.X` is not rank 2
-
-    Will raise an exception if `columns_observed` is empty
-
+    Will raise an exception if `data.X` is not rank 2\\
+    Will raise an exception if `columns_observed` is empty\\
     Will raise an exception if generation failed in internal function `convert_single_feature`
 
     ------
 
     ### Implementation
-    1. For each column `K` to convert:
-        a. Draw (n_columns_observed+1) scalar values from a random standard normal distribution N(0, 1)
-
-        b. Construct `M` by multiplying the scalar values on the observed features
-
-        c. Use the standard logistic cumulative distribution function to convert `M` to probability `p`
-
-        d. For each `p`, draw a value randomly from the Binomial(1, `p`) distribution
-
+    1. For each column `K` to convert:\\
+        a. Draw (n_columns_observed+1) scalar values from a random standard normal distribution N(0, 1)\\
+        b. Construct `M` by multiplying the scalar values on the observed features\\
+        c. Use the standard logistic cumulative distribution function to convert `M` to probability `p`\\
+        d. For each `p`, draw a value randomly from the Binomial(1, `p`) distribution\\
         e. For each row `i`, if `p[i]` = 1, then `K[i]` is replaced by NaN
     2. Skip protected features
     """
@@ -184,22 +177,17 @@ def gen_not_random(data, print_time=False, print_all=True, range_min=0.1, range_
     Converted `Dataset` object with missing values
 
     ### Exception
-    Will raise an exception if `data.X` is not rank 2
-
+    Will raise an exception if `data.X` is not rank 2\\
     Will raise an exception if generation failed in internal function `convert_multiple_features`
 
     ------
 
     ### Implementation
-    1. For the whole input data:
-        a. Draw (n_columns_data+1) scalar values from a random standard normal distribution N(0, 1)
-
-        b. Construct `M` by multiplying the scalar values on the data itself
-
-        c. Use the standard logistic cumulative distribution function to convert `M` to probability `p`
-
-        d. For each `p`, draw a value randomly from the Binomial(1, `p`) distribution
-
+    1. For the whole input data:\\
+        a. Draw (n_columns_data+1) scalar values from a random standard normal distribution N(0, 1)\\
+        b. Construct `M` by multiplying the scalar values on the data itself\\
+        c. Use the standard logistic cumulative distribution function to convert `M` to probability `p`\\
+        d. For each `p`, draw a value randomly from the Binomial(1, `p`) distribution\\
         e. For each row `i`, if `p[i]` = 1, then `K[i]` is replaced by NaN
     2. Skip protected features
     """

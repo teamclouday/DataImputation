@@ -216,6 +216,7 @@ def create_adult_dataset(print_time=False):
         #"race",
         "sex"
     ]
+    observed_features = ["age", "workclass"]
     data = pd.read_csv(os.path.join("dataset", "adult", "adult.data"), header=None)
     X = data.iloc[:, :-1].copy()
     X.columns = names
@@ -224,19 +225,20 @@ def create_adult_dataset(print_time=False):
     y = data.iloc[:, -1].copy()
     if print_time:
         print("Performance Monitor: ({:.4f}s) ".format(time.process_time() - tt) + inspect.stack()[0][3])
-    return Dataset("adult", X, y, protected_features=protected_features)
+    return Dataset("adult", X, y, protected_features=protected_features, observed_features=observed_features)
 
 def create_bank_dataset(print_time=False):
     if print_time:
         tt = time.process_time()
     protected_features = ["age"]
+    observed_features = ["job", "marital"]
     data = pd.read_csv(os.path.join("dataset", "bank", "bank-full.csv"), sep=";")
     data["age"] = data["age"].apply(lambda x: "elder" if x >= 35 else "young")
     X = data.iloc[:, :-1].copy()
     y = data.iloc[:, -1].copy().to_numpy().ravel()
     if print_time:
         print("Performance Monitor: ({:.4f}s) ".format(time.process_time() - tt) + inspect.stack()[0][3])
-    return Dataset("bank", X, y, protected_features=protected_features)
+    return Dataset("bank", X, y, protected_features=protected_features, observed_features=observed_features)
 
 def create_iris_dataset(print_time=False):
     if print_time:
@@ -337,9 +339,10 @@ def create_compas_dataset(print_time=False):
         "race",
         #"sex"
     ]
+    observed_features = ["age", "age_cat"]
     if print_time:
         print("Performance Monitor: ({:.4f}s) ".format(time.process_time() - tt) + inspect.stack()[0][3])
-    return Dataset("compas", X, y, protected_features=protected_features)
+    return Dataset("compas", X, y, protected_features=protected_features, observed_features=observed_features)
 
 def create_titanic_dataset(print_time=False):
     if print_time:
@@ -349,9 +352,10 @@ def create_titanic_dataset(print_time=False):
     # X["Name"] = X["Name"].apply(lambda x: x.split(",")[1].split()[0])
     y = data[["Survived"]].copy().to_numpy().ravel()
     protected_features = ["Sex"]
+    observed_features = ["Age", "Pclass"]
     if print_time:
         print("Performance Monitor: ({:.4f}s) ".format(time.process_time() - tt) + inspect.stack()[0][3])
-    return Dataset("titanic", X, y, protected_features=protected_features)
+    return Dataset("titanic", X, y, protected_features=protected_features, observed_features=observed_features)
 
 def create_german_dataset(print_time=False):
     if print_time:
@@ -373,9 +377,10 @@ def create_german_dataset(print_time=False):
     X = data.drop(["Target"], axis=1).copy()
     y = data[["Target"]].copy().to_numpy().ravel()
     protected_features = ["Age"]
+    observed_features = ["Job", "Purpose"]
     if print_time:
         print("Performance Monitor: ({:.4f}s) ".format(time.process_time() - tt) + inspect.stack()[0][3])
-    return Dataset("german", X, y, protected_features=protected_features)
+    return Dataset("german", X, y, protected_features=protected_features, observed_features=observed_features)
 
 def create_communities_dataset(print_time=False):
     if print_time:
@@ -426,10 +431,11 @@ def create_communities_dataset(print_time=False):
     y_mean = data["ViolentCrimesPerPop"].mean()
     y = data["ViolentCrimesPerPop"].apply(lambda m: "Violent" if m >= y_mean else "Harmless").to_numpy().ravel()
     protected_features = ["race_c"]
+    observed_features = ["population", "PopDens"]
 
     if print_time:
         print("Performance Monitor: ({:.4f}s) ".format(time.process_time() - tt) + inspect.stack()[0][3])
-    return Dataset("communities", X, y, protected_features=protected_features)
+    return Dataset("communities", X, y, protected_features=protected_features, observed_features=observed_features)
 
 def create_juvenile_dataset(print_time=False):
     if print_time:
@@ -460,19 +466,15 @@ def create_juvenile_dataset(print_time=False):
     return Dataset("juvenile", X, y, protected_features=protected_features)
 
 class Dataset:
-    def __init__(self, name, X, y, types=None, protected_features=[], categorical_features=None, encoders=None):
+    def __init__(self, name, X, y, types=None, protected_features=[], observed_features=[], categorical_features=None, encoders=None):
         """
-        X: a pandas dataframe storing original dataset
-
-        y: a numpy flat array of targets
-
-        types: set original data types for X (used in imputation methods)
-
-        protected_features: pre-defined protected features
-
-        categorical_features: a python list. if None, automatically detect categorical features, else store the categorical_features
-
-        encoders: set X and y label encoders, set to None to trigger encoding
+        `X`: a pandas dataframe storing original dataset\\
+        `y`: a numpy flat array of targets\\
+        `types`: set original data types for X (used in imputation methods)\\
+        `protected_features`: pre-defined protected features\\
+        `observed_features`: pre-defined observed features for MAR\\
+        `categorical_features`: a python list. if None, automatically detect categorical features, else store the categorical_features\\
+        `encoders`: set X and y label encoders, set to None to trigger encoding
         """
         self.name = name
         self.X = X
@@ -480,7 +482,10 @@ class Dataset:
         self.X_encoded = None
         if len(protected_features) > 0:
             assert len(protected_features) == len([x for x in protected_features if x in self.X.columns.tolist()])
+        if len(observed_features) > 0:
+            assert len(observed_features) == len([x for x in observed_features if ((x in self.X.columns.tolist()) and (x not in protected_features))])
         self.protected_features = protected_features
+        self.observed_features = observed_features
         self.categorical_features = categorical_features
         if encoders is None:
             self.X_encoders, self.y_encoder = self._convert_categories()
@@ -526,6 +531,7 @@ class Dataset:
         return Dataset(self.name, self.X.copy(), self.y.copy(), 
             types=self.types, protected_features=self.protected_features,
             categorical_features=self.categorical_features,
+            observed_features=self.observed_features,
             encoders=[self.X_encoders, self.y_encoder])
 
     def preprocess(self):
