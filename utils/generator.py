@@ -178,7 +178,8 @@ def gen_not_random(data, print_time=False, print_all=True, range_min=0.1, range_
 
     ### Exception
     Will raise an exception if `data.X` is not rank 2\\
-    Will raise an exception if generation failed in internal function `convert_multiple_features`
+    Will raise an exception if generation failed in internal function `convert_multiple_features`\\
+    Will raise an exception if `data.X` contains missing values
 
     ------
 
@@ -199,6 +200,8 @@ def gen_not_random(data, print_time=False, print_all=True, range_min=0.1, range_
         X_data_protected = data.X[data.protected_features].copy()
     if len(X_data.shape) != 2:
         raise Exception("Error: gen_not_random only support dataset with rank of 2, but your input has rank of {0}".format(len(X_data.shape)))
+    if (X_data.isnull().sum().sum() > 0):
+        raise Exception("Error: gen_not_random only support input dataset without missing values")
 
     scaler = StandardScaler()
     def convert_multiple_features(K_df, range_min=0.1, range_max=0.3, scalar_0=0.05, scalar_1=2):
