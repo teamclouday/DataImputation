@@ -325,13 +325,13 @@ if __name__=="__main__":
 
         if RUN_MULTI_V1:
             print("Now running {} on {}".format("multi_v1", dataName))
-            final_result["multi_v1"] = single_task(data_complete, complete_by_multi, False, "multi_v1")
+            final_result["multi_v1"] = single_task(data_complete, complete_by_multi, True, "multi_v1")
             print("Task complete in {:.2f}min".format((time.time() - start_time) / 60))
             start_time = time.time()
 
         if RUN_MULTI_V2:
             print("Now running {} on {}".format("multi_v2", dataName))
-            final_result["multi_v2"] = single_task(data_complete, partial(complete_by_multi_v2, target_feature=PARAMS_DATA["target"]), False, "multi_v2")
+            final_result["multi_v2"] = single_task(data_complete, partial(complete_by_multi_v2, target_feature=PARAMS_DATA["target"]), True, "multi_v2")
             print("Task complete in {:.2f}min".format((time.time() - start_time) / 60))
             start_time = time.time()
 
