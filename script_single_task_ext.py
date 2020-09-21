@@ -132,7 +132,7 @@ def test_imputation(data, completer_func=None, multi=False, verboseID=""):
         "Forest": RandomForestClassifier(n_estimators=PARAMS["Forest"]["n_estimators"], max_depth=PARAMS["Forest"]["max_depth"], min_samples_leaf=PARAMS["Forest"]["min_samples_leaf"]),
         "LogReg": LogisticRegression(tol=PARAMS["LogReg"]["tol"], C=PARAMS["LogReg"]["C"], max_iter=PARAMS["LogReg"]["max_iter"]),
         "Tree": DecisionTreeClassifier(max_depth=PARAMS["Tree"]["max_depth"], max_leaf_nodes=PARAMS["Tree"]["max_leaf_nodes"], min_samples_leaf=PARAMS["Tree"]["min_samples_leaf"]),
-        "MLP": MLPClassifier(alpha=PARAMS["MLP"]["alpha"], learning_rate_init=PARAMS["MLP"]["learning_rate_init"], max_iter=PARAMS["MLP"]["max_iter"], hidden_layer_sizes=PARAMS["MLP"]["hidden_layer_sizes"]),
+        "MLP": MLPClassifier(alpha=PARAMS["MLP"]["alpha"], learning_rate_init=PARAMS["MLP"]["learning_rate_init"], max_iter=PARAMS["MLP"]["max_iter"], hidden_layer_sizes=PARAMS["MLP"]["hidden_layer_sizes"], early_stopping=True, n_iter_no_change=5),
     }
     rawdata_cv = { # save each raw confusion matrix output cv
         "KNN": [],
@@ -148,6 +148,7 @@ def test_imputation(data, completer_func=None, multi=False, verboseID=""):
     X = data.X
     y = data.y
     for train_idx, test_idx in kf.split(X, y):
+        print("Fold {}".format(fold))
         X_train, X_test = X.iloc[train_idx], X.iloc[test_idx]
         y_train, y_test = y[train_idx], y[test_idx]
         X_test = X_test.reset_index(drop=True)
@@ -207,6 +208,7 @@ def test_imputation(data, completer_func=None, multi=False, verboseID=""):
             y_test = data_complete[0].y.copy() if multi else data_complete.y.copy()
         # get result for each classifier
         for clf_name, clf in clfs.items():
+            print(clf_name)
             result = compute_confusion_matrix(X_train, y_train, X_test, y_test, clf, data.protected_features, multi=multi)
             rawdata_cv[clf_name].append(result)
         fold += 1
