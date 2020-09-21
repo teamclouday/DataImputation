@@ -123,7 +123,7 @@ def gen_random(data, columns_observed=[], print_time=False, print_all=True, rang
 
         Missingness in `K_df` depends on `observed_df`
         """
-        max_iter = 10
+        max_iter = 50
         while(max_iter > 0):
             scalars = np.random.standard_normal(observed_df.shape[1]) * scalar_0
             scalar_a = np.random.standard_normal() - scalar_1
@@ -132,7 +132,7 @@ def gen_random(data, columns_observed=[], print_time=False, print_all=True, rang
             M = scalar_a + (scalars * observed).sum(axis=1)
             p = 1 / (1 + np.exp(-M))
             ratio = p.sum() / K_df.shape[0]
-            if ratio > range_min and ratio < range_max:
+            if ratio >= range_min and ratio <= range_max:
                 break
             max_iter -= 1
         if max_iter <= 0:
@@ -206,7 +206,7 @@ def gen_not_random(data, print_time=False, print_all=True, range_min=0.1, range_
 
         Missingness in `K_df` depends on itself
         """
-        max_iter = 10
+        max_iter = 50
         while(max_iter > 0):
             scalars = np.random.standard_normal(K_df.shape) * scalar_0
             scalar_a = np.random.standard_normal() - scalar_1
@@ -215,7 +215,7 @@ def gen_not_random(data, print_time=False, print_all=True, range_min=0.1, range_
             M = scalar_a + (scalars * K)
             p = 1 / (1 + np.exp(-M))
             ratio = p.mean(axis=0)
-            if ratio.min() > range_min and ratio.max() < range_max:
+            if ratio.min() >= range_min and ratio.max() <= range_max:
                 break
             max_iter -= 1
         if max_iter <= 0:
