@@ -552,3 +552,9 @@ class Dataset:
             # combine the new column
             self.X_encoded = pd.concat([self.X_encoded, encoded], axis=1).drop([category], axis=1)
         # self.X_encoded = pd.get_dummies(self.X, columns=self.categorical_features, prefix_sep="=")
+
+    def get_missing_ratio(self):
+        """
+        Compute the missing percentage
+        """
+        return self.X.isnull().sum().sum() / self.X.size
