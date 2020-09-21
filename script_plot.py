@@ -50,7 +50,7 @@ PLOT_DEBUG_FUNCTION     = False
 def plot_func(data, method_name, file_name=None, yscale=None, plot_error=True):
     if not INCOMPLETE_MODE:
         assert len(data) == (iter_per_ratio * len(random_ratios))
-    classifiers = ["KNN", "LinearSVC", "SVC", "Forest", "LogReg", "Tree", "MLP"]
+    classifiers = ["KNN", "LinearSVC", "Forest", "LogReg", "Tree", "MLP"]
     plot_bias1 = {}
     plot_bias2 = {}
     plot_acc = {}
@@ -207,7 +207,7 @@ def plot_func_pareto_front(data, title, file_name=None, y_scale=None, switch=Fal
     data_similar_v2 = data["similar_v2"]
     data_multi_v1   = data["multi_v1"]
     data_multi_v2   = data["multi_v2"]
-    classifiers = ["KNN", "LinearSVC", "SVC", "Forest", "LogReg", "Tree", "MLP"]
+    classifiers = ["KNN", "LinearSVC", "Forest", "LogReg", "Tree", "MLP"]
     # raise Exception("Update classifiers before run!")
     plot_colors = ["red", "green", "blue", "gold", "darkorange", "grey", "purple"]
     plot_markers = ["o", "s", "*", "^", "P", "v", "X"]
@@ -649,7 +649,7 @@ def plot_debug_func(file_name=None):
         f1_AA        = 2 * (precision_AA * recall_AA) / (recall_AA + precision_AA)
         f1_C         = 2 * (precision_C * recall_C) / (recall_C + precision_C)
         return [f1_AA, f1_C]
-    classifiers = ["KNN", "LinearSVC", "SVC", "Forest", "LogReg", "Tree", "MLP"]
+    classifiers = ["KNN", "LinearSVC", "Forest", "LogReg", "Tree", "MLP"]
     if not os.path.exists("debug_data.pkl"):
         raise FileNotFoundError("debug_data.pkl not found")
     with open("debug_data.pkl", "rb") as inFile:

@@ -128,7 +128,7 @@ def test_imputation(data, completer_func=None, multi=False, verboseID=""):
     clfs = { # define all the classifiers with best parameters
         "KNN": KNeighborsClassifier(n_neighbors=PARAMS["KNN"]["n_neighbors"], leaf_size=PARAMS["KNN"]["leaf_size"]),
         "LinearSVC": LinearSVC(dual=False, tol=PARAMS["LinearSVC"]["tol"], C=PARAMS["LinearSVC"]["C"], max_iter=PARAMS["LinearSVC"]["max_iter"]),
-        "SVC": SVC(tol=PARAMS["SVC"]["tol"], C=PARAMS["SVC"]["C"], max_iter=PARAMS["SVC"]["max_iter"]),
+        # "SVC": SVC(tol=PARAMS["SVC"]["tol"], C=PARAMS["SVC"]["C"], max_iter=PARAMS["SVC"]["max_iter"]),
         "Forest": RandomForestClassifier(n_estimators=PARAMS["Forest"]["n_estimators"], max_depth=PARAMS["Forest"]["max_depth"], min_samples_leaf=PARAMS["Forest"]["min_samples_leaf"]),
         "LogReg": LogisticRegression(tol=PARAMS["LogReg"]["tol"], C=PARAMS["LogReg"]["C"], max_iter=PARAMS["LogReg"]["max_iter"]),
         "Tree": DecisionTreeClassifier(max_depth=PARAMS["Tree"]["max_depth"], max_leaf_nodes=PARAMS["Tree"]["max_leaf_nodes"], min_samples_leaf=PARAMS["Tree"]["min_samples_leaf"]),
@@ -137,7 +137,7 @@ def test_imputation(data, completer_func=None, multi=False, verboseID=""):
     rawdata_cv = { # save each raw confusion matrix output cv
         "KNN": [],
         "LinearSVC": [],
-        "SVC": [],
+        # "SVC": [],
         "Forest": [],
         "LogReg": [],
         "Tree": [],
