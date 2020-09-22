@@ -205,6 +205,7 @@ def test_imputation(data, completer_func=None, multi=False, verboseID=""):
                 data_complete.preprocess()
             X_test = [m.X_encoded.copy() for m in data_complete] if multi else data_complete.X_encoded.copy()
             y_test = data_complete[0].y.copy() if multi else data_complete.y.copy()
+        if not completer_func: multi = False
         # get result for each classifier
         for clf_name, clf in clfs.items():
             result = compute_confusion_matrix(X_train, y_train, X_test, y_test, clf, data.protected_features, multi=multi)
