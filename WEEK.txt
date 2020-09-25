@@ -1,25 +1,13 @@
-1. Implement MAR
-Let A, B, C, D be features
+1. Start writing paper
+2. Learn about Active Learning (data point contributions to accuracy and bias)
+3. Fit exponential curve on results:
 
-Let A, B, C be completely observed (no missing values)
+Bias = k * exp(lambda * Accuracy)
+log(Bias) = log(k) + (lambda * Accuracy)
 
-Let D have missing values
+log(Bias) = log(k) + (lambda * Accuracy) + e
+for every (ML Model, Imputation Method, Dataset)
 
-1) Draw four scalar values: $\alpha$, $\beta_1$, $\beta_2$, $\beta_3$ from a random distribution, say $N(0,1)$
+find e vector, and lambda vector
 
-2) Construct a new feature M as follows:
-
-$$ M = \alpha + \beta_1A+ \beta_2B + \beta_3C $$
-
-3) Use the standard logistic cumulative distribution function to convert M to probability (the same as logistic regression):
-
-$$ p = \frac{1}{1 + e^{-M}} $$
-
-4) For each p, draw a value randomly from the Binomial(1, p) distribution: for row i, you will draw 1 with probability p[i] and 0 with probability 1-p[i]. Store the 0s and 1s in a vector G
-
-5) If G[i]=1 then replace D[i] with NaN
-
-2. Think about MNAR
-3. Think of:
-* What is the overall relationship between data imputation, accuracy, bias?
-* If there are differences among datasets or ML algorithms, what are those differences and why do they happen?
+sum(e^2) = fit metric
