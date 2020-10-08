@@ -261,6 +261,11 @@ if __name__=="__main__":
 
         if dataName == "adult":
             data_complete = create_adult_dataset()
+            tmp_concat = pd.concat([data_complete.X, pd.DataFrame(data_complete.y, columns=["_TARGET_"])], axis=1)
+            tmp_concat.dropna(inplace=True)
+            tmp_concat.reset_index(drop=True, inplace=True)
+            data_complete.X = tmp_concat.drop(columns=["_TARGET_"]).copy()
+            data_complete.y = tmp_concat["_TARGET_"].copy().to_numpy().ravel()
         elif dataName == "compas":
             data_complete = create_compas_dataset()
             tmp_concat = pd.concat([data_complete.X, pd.DataFrame(data_complete.y, columns=["_TARGET_"])], axis=1)

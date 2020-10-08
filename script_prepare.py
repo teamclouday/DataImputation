@@ -48,6 +48,11 @@ def prepare_datasets():
     results["compas"] = c_data
     # adult dataset
     a_data = create_adult_dataset()
+    tmp_concat = pd.concat([a_data.X, pd.DataFrame(a_data.y, columns=["_TARGET_"])], axis=1)
+    tmp_concat.dropna(inplace=True)
+    tmp_concat.reset_index(drop=True, inplace=True)
+    a_data.X = tmp_concat.drop(columns=["_TARGET_"]).copy()
+    a_data.y = tmp_concat["_TARGET_"].copy().to_numpy().ravel()
     results["adult"] = a_data
     # titanic dataset
     t_data = create_titanic_dataset()

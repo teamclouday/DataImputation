@@ -217,7 +217,7 @@ def create_adult_dataset(print_time=False):
         "sex"
     ]
     observed_features = ["age", "workclass"]
-    data = pd.read_csv(os.path.join("dataset", "adult", "adult.data"), header=None)
+    data = pd.read_csv(os.path.join("dataset", "adult", "adult.data"), header=None, na_values=[" ?"])
     X = data.iloc[:, :-1].copy()
     X.columns = names
     # remove unpredictive columns
