@@ -5,27 +5,27 @@
             "n_neighbors": 5
         },
         "LinearSVC": {
-            "C": 1,
+            "C": 0.01,
             "max_iter": 1000,
-            "tol": 0.001
+            "tol": 0.01
         },
         "SVC": {
             "C": 10,
-            "max_iter": 10000,
+            "max_iter": -1,
             "tol": 1e-05
         },
         "Forest": {
-            "max_depth": 200,
-            "min_samples_leaf": 5,
+            "max_depth": 50,
+            "min_samples_leaf": 1,
             "n_estimators": 200
         },
         "LogReg": {
-            "C": 100.0,
+            "C": 0.01,
             "max_iter": 100,
             "tol": 1e-06
         },
         "Tree": {
-            "max_depth": null,
+            "max_depth": 200,
             "max_leaf_nodes": 1000,
             "min_samples_leaf": 1
         },
@@ -33,7 +33,7 @@
             "alpha": 1e-05,
             "hidden_layer_sizes": [500],
             "learning_rate_init": 0.0001,
-            "max_iter": 1000
+            "max_iter": 500
         }
     },
     "compas": {
