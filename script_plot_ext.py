@@ -21,8 +21,8 @@ NAME_TARGETS = ["MAR", "MNAR"]
 PLOT_MAR  = True
 PLOT_MNAR = True
 
-PLOT_ADULT          = True
-PLOT_COMPAS         = True
+PLOT_ADULT          = False
+PLOT_COMPAS         = False
 PLOT_TITANIC        = False
 PLOT_GERMAN         = False
 PLOT_COMMUNITIES    = False
