@@ -216,66 +216,66 @@ def plot_all(data_folder, plot_folder, name):
         print("Generating plot for mean_v1.pkl ({})".format(name))
         with open(os.path.join(data_folder, "mean_v1.pkl"), "rb") as inFile:
             data = pickle.load(inFile)
-        plot_func(data, "Mean V1 ({})".format(name), os.path.join(plot_folder, "ratio_mean_v1.png"))
+        plot_func(data, "Mean V1 ({})".format(name), os.path.join(plot_folder, "mean_v1.png"))
     # generate plot for mean_v2.pkl
     if os.path.exists(os.path.join(data_folder, "mean_v2.pkl")) and PLOT_CREATE_MEAN_V1:
         print("Generating plot for mean_v2.pkl ({})".format(name))
         with open(os.path.join(data_folder, "mean_v2.pkl"), "rb") as inFile:
             data = pickle.load(inFile)
-        plot_func(data, "Mean V2 ({})".format(name), os.path.join(plot_folder, "ratio_mean_v2.png"))
+        plot_func(data, "Mean V2 ({})".format(name), os.path.join(plot_folder, "mean_v2.png"))
     # generate plot for similar_v1.pkl
     if os.path.exists(os.path.join(data_folder, "similar_v1.pkl")) and PLOT_CREATE_SIMILAR_V1:
         print("Generating plot for similar_v1.pkl ({})".format(name))
         with open(os.path.join(data_folder, "similar_v1.pkl"), "rb") as inFile:
             data = pickle.load(inFile)
-        plot_func(data, "Similar V1 ({})".format(name), os.path.join(plot_folder, "ratio_similar_v1.png"))
+        plot_func(data, "Similar V1 ({})".format(name), os.path.join(plot_folder, "similar_v1.png"))
     # generate plot for similar_v2.pkl
     if os.path.exists(os.path.join(data_folder, "similar_v2.pkl")) and PLOT_CREATE_SIMILAR_V2:
         print("Generating plot for similar_v2.pkl ({})".format(name))
         with open(os.path.join(data_folder, "similar_v2.pkl"), "rb") as inFile:
             data = pickle.load(inFile)
-        plot_func(data, "Similar V2 ({})".format(name), os.path.join(plot_folder, "ratio_similar_v2.png"))
+        plot_func(data, "Similar V2 ({})".format(name), os.path.join(plot_folder, "similar_v2.png"))
     # generate plot for multi_v1.pkl
     if os.path.exists(os.path.join(data_folder, "multi_v1.pkl")) and PLOT_CREATE_MULTI_V1:
         print("Generating plot for multi_v1.pkl ({})".format(name))
         with open(os.path.join(data_folder, "multi_v1.pkl"), "rb") as inFile:
             data = pickle.load(inFile)
-        plot_func(data, "Multiple Imputation V1 ({})".format(name), os.path.join(plot_folder, "ratio_multi_v1.png"))
+        plot_func(data, "Multiple Imputation V1 ({})".format(name), os.path.join(plot_folder, "multi_v1.png"))
     # generate plot for multi_v2.pkl
     if os.path.exists(os.path.join(data_folder, "multi_v2.pkl")) and PLOT_CREATE_MULTI_V1:
         print("Generating plot for multi_v2.pkl ({})".format(name))
         with open(os.path.join(data_folder, "multi_v2.pkl"), "rb") as inFile:
             data = pickle.load(inFile)
-        plot_func(data, "Multiple Imputation V2 ({})".format(name), os.path.join(plot_folder, "ratio_multi_v2.png"))
+        plot_func(data, "Multiple Imputation V2 ({})".format(name), os.path.join(plot_folder, "multi_v2.png"))
     # generate pareto front plots
-    if  os.path.exists(os.path.join(data_folder, "mean_v1.pkl")) and \
-        os.path.exists(os.path.join(data_folder, "mean_v2.pkl")) and \
-        os.path.exists(os.path.join(data_folder, "similar_v1.pkl")) and \
-        os.path.exists(os.path.join(data_folder, "similar_v2.pkl")) and \
-        os.path.exists(os.path.join(data_folder, "multi_v1.pkl")) and \
-        os.path.exists(os.path.join(data_folder, "multi_v2.pkl")) and \
-        (PLOT_PARETO_FRONTIER_ACC or PLOT_PARETO_FRONTIER_REALACC):
-        data = {}
-        with open(os.path.join(data_folder, "mean_v1.pkl"), "rb") as inFile:
-            data["mean_v1"] = pickle.load(inFile)
-        with open(os.path.join(data_folder, "mean_v2.pkl"), "rb") as inFile:
-            data["mean_v2"] = pickle.load(inFile)
-        with open(os.path.join(data_folder, "similar_v1.pkl"), "rb") as inFile:
-            data["similar_v1"] = pickle.load(inFile)
-        with open(os.path.join(data_folder, "similar_v2.pkl"), "rb") as inFile:
-            data["similar_v2"] = pickle.load(inFile)
-        with open(os.path.join(data_folder, "multi_v1.pkl"), "rb") as inFile:
-            data["multi_v1"] = pickle.load(inFile)
-        with open(os.path.join(data_folder, "multi_v2.pkl"), "rb") as inFile:
-            data["multi_v2"] = pickle.load(inFile)
-        if PLOT_PARETO_FRONTIER_ACC:
-            print("Generate plots for pareto front acc ({})".format(name))
-            plot_func_pareto_front(data, "Pareto Front (Confusion Matrix Accuracy) ({})".format(name), os.path.join(plot_folder, "pareto_front_acc.png"), x_axis="acc")
-            plot_func_pareto_front(data, "Pareto Front (Confusion Matrix Accuracy) ({})".format(name), os.path.join(plot_folder, "pareto_front_acc_scaled.png"), y_scale=True, x_axis="acc")
-        if PLOT_PARETO_FRONTIER_REALACC:
-            print("Generate plots for pareto front real acc ({})".format(name))
-            plot_func_pareto_front(data, "Pareto Front (Real Accuracy) ({})".format(name), os.path.join(plot_folder, "pareto_front_realacc.png"), x_axis="realacc")
-            plot_func_pareto_front(data, "Pareto Front (Real Accuracy) ({})".format(name), os.path.join(plot_folder, "pareto_front_realacc_scaled.png"), y_scale=True, x_axis="realacc")
+    # if  os.path.exists(os.path.join(data_folder, "mean_v1.pkl")) and \
+    #     os.path.exists(os.path.join(data_folder, "mean_v2.pkl")) and \
+    #     os.path.exists(os.path.join(data_folder, "similar_v1.pkl")) and \
+    #     os.path.exists(os.path.join(data_folder, "similar_v2.pkl")) and \
+    #     os.path.exists(os.path.join(data_folder, "multi_v1.pkl")) and \
+    #     os.path.exists(os.path.join(data_folder, "multi_v2.pkl")) and \
+    #     (PLOT_PARETO_FRONTIER_ACC or PLOT_PARETO_FRONTIER_REALACC):
+    #     data = {}
+    #     with open(os.path.join(data_folder, "mean_v1.pkl"), "rb") as inFile:
+    #         data["mean_v1"] = pickle.load(inFile)
+    #     with open(os.path.join(data_folder, "mean_v2.pkl"), "rb") as inFile:
+    #         data["mean_v2"] = pickle.load(inFile)
+    #     with open(os.path.join(data_folder, "similar_v1.pkl"), "rb") as inFile:
+    #         data["similar_v1"] = pickle.load(inFile)
+    #     with open(os.path.join(data_folder, "similar_v2.pkl"), "rb") as inFile:
+    #         data["similar_v2"] = pickle.load(inFile)
+    #     with open(os.path.join(data_folder, "multi_v1.pkl"), "rb") as inFile:
+    #         data["multi_v1"] = pickle.load(inFile)
+    #     with open(os.path.join(data_folder, "multi_v2.pkl"), "rb") as inFile:
+    #         data["multi_v2"] = pickle.load(inFile)
+    #     if PLOT_PARETO_FRONTIER_ACC:
+    #         print("Generate plots for pareto front acc ({})".format(name))
+    #         plot_func_pareto_front(data, "Pareto Front (Confusion Matrix Accuracy) ({})".format(name), os.path.join(plot_folder, "pareto_front_acc.png"), x_axis="acc")
+    #         plot_func_pareto_front(data, "Pareto Front (Confusion Matrix Accuracy) ({})".format(name), os.path.join(plot_folder, "pareto_front_acc_scaled.png"), y_scale=True, x_axis="acc")
+    #     if PLOT_PARETO_FRONTIER_REALACC:
+    #         print("Generate plots for pareto front real acc ({})".format(name))
+    #         plot_func_pareto_front(data, "Pareto Front (Real Accuracy) ({})".format(name), os.path.join(plot_folder, "pareto_front_realacc.png"), x_axis="realacc")
+    #         plot_func_pareto_front(data, "Pareto Front (Real Accuracy) ({})".format(name), os.path.join(plot_folder, "pareto_front_realacc_scaled.png"), y_scale=True, x_axis="realacc")
 
 if __name__=="__main__":
     if not os.path.exists("other_analysis_plots"):

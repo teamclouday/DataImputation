@@ -17,9 +17,9 @@ iter_per_ratio = 200
 NAME_DATASETS = ["adult", "compas", "titanic", "german", "communities", "bank"]
 NAME_TARGETS  = ["acc", "f1"]
 
-INCOMPLETE_MODE = False
+INCOMPLETE_MODE = True
 
-PLOT_ADULT_ACC          = False
+PLOT_ADULT_ACC          = True
 PLOT_ADULT_F1           = False
 PLOT_COMPAS_ACC         = False
 PLOT_COMPAS_F1          = False
