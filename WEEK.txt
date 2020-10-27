@@ -1,13 +1,5 @@
-1. Start writing paper
-2. Learn about Active Learning (data point contributions to accuracy and bias)
-3. Fit exponential curve on results:
-
-Bias = k * exp(lambda * Accuracy)
-log(Bias) = log(k) + (lambda * Accuracy)
-
-log(Bias) = log(k) + (lambda * Accuracy) + e
-for every (ML Model, Imputation Method, Dataset)
-
-find e vector, and lambda vector
-
-sum(e^2) = fit metric
+1. protected feature and other features (try fit a classification model)
+2. use feature selection for further analysis
+   try generate biased dataset
+   a. protected feature correlated to target -> more bias
+   b. other features that correlated to target -> more accuracy
