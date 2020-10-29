@@ -1,17 +1,28 @@
 # Data Imputation Research  
 
 In the process of machine learning, input data always plays an essential role in the model training  
-However, real world data is usually not perfect. Very often part of the dataset is missing.  
-This repo is created to research on different methods of data replacing and guessing, and their according effect to several well-known machine learning algorithms.  
-
-Specifically, this research is trying to find out how the missing data would make the output of machine learning algorithms "biased".  
+However, real world data is usually not perfect. Very often a ML algorithm trained on the data is biased.  
+This repo is created to research on different methods of data imputation techniques, and their according effects to machine bias produced by several popular ML algorithms.   
 
 ------
 
 ### Main Variables  
 1. The methods of generating missing data entries  
+   * Missing Completely At Random  
+   * Missing At Random  
+   * Missing Not At Random  
 2. The methods of guessing a missing data entry  
-3. Different machine learning algorithms to test on  
+   * Mean Imputation  
+   * Similar Imputation (KNN)  
+   * Multiple Imputation  
+3. Different machine learning algorithms  
+   * Logisitic Regression  
+   * Multi-Layer Perceptron  
+   * Decision Tree  
+   * Random Forest  
+   * SVM (linear)  
+   * K-Nearest Neighbors  
+4. Several popular biased datasets  
 
 ------
 
