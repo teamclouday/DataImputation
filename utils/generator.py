@@ -47,15 +47,15 @@ def gen_complete_random(data, random_ratio=0.2, print_time=False, print_all=True
     random_ratio = random_ratio ** 0.5
     num_rows, num_cols = X_data.shape
     row_rand = np.random.permutation(num_rows)
-    row_rand = row_rand[:math.floor(num_rows*random_ratio)]
+    row_rand = row_rand[:math.ceil(num_rows*random_ratio)]
     for row in row_rand[:-1]:
         col_rand = np.random.permutation(num_cols)
-        col_rand = col_rand[:math.floor(num_cols*random_ratio)]
+        col_rand = col_rand[:math.ceil(num_cols*random_ratio)]
         X_data.iloc[row, col_rand] = np.nan
     # process the last row to ensure no column is completely missing
     row = row_rand[-1]
     col_rand = np.random.permutation(num_cols)
-    col_rand = col_rand[:math.floor(num_cols*random_ratio)]
+    col_rand = col_rand[:math.ceil(num_cols*random_ratio)]
     for col in col_rand:
         if X_data.iloc[:, col].isnull().sum() < (num_rows - 1):
             X_data.iloc[row, col] = np.nan
