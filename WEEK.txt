@@ -1,5 +1,3 @@
-1. protected feature and other features (try fit a classification model)
-2. use feature selection for further analysis
-   try generate biased dataset
-   a. protected feature correlated to target -> more bias
-   b. other features that correlated to target -> more accuracy
+1. Drop most correlated features with protected, scatter plot bias, accuracy (not MCAR)
+2. Do MCAR only on most correlated features with protected, scatter plot bias, accuracy (with MCAR)
+3. What values contributes to accuracy, and what values contributes to bias
