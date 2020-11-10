@@ -2,6 +2,7 @@
 
 import math
 import numpy as np
+from numpy.lib.function_base import select
 import pandas as pd
 from utils.data import *
 from sklearn.preprocessing import StandardScaler
@@ -41,6 +42,8 @@ def gen_complete_random(data, random_ratio=0.2, print_time=False, print_all=True
     if len(data.protected_features) > 0:
         X_data.drop(columns=data.protected_features, inplace=True)
         X_data_protected = data.X[data.protected_features].copy()
+    else:
+        raise Exception("Dataset {} should have protected feature defined".format(data.name))
     if len(X_data.shape) != 2:
         raise Exception("Error: gen_complete_random only support dataset with rank of 2, but your input has rank of {0}".format(len(X_data.shape)))
 
@@ -109,6 +112,8 @@ def gen_random(data, columns_observed=[], print_time=False, print_all=True, rang
     if len(data.protected_features) > 0:
         X_data.drop(columns=data.protected_features, inplace=True)
         X_data_protected = data.X[data.protected_features].copy()
+    else:
+        raise Exception("Dataset {} should have protected feature defined".format(data.name))
     if len(X_data.shape) != 2:
         raise Exception("Error: gen_random only support dataset with rank of 2, but your input has rank of {0}".format(len(X_data.shape)))
     if len(columns_observed) <= 0 and print_all:
@@ -198,6 +203,8 @@ def gen_not_random(data, print_time=False, print_all=True, range_min=0.1, range_
     if len(data.protected_features) > 0:
         X_data.drop(columns=data.protected_features, inplace=True)
         X_data_protected = data.X[data.protected_features].copy()
+    else:
+        raise Exception("Dataset {} should have protected feature defined".format(data.name))
     if len(X_data.shape) != 2:
         raise Exception("Error: gen_not_random only support dataset with rank of 2, but your input has rank of {0}".format(len(X_data.shape)))
     if (X_data.isnull().sum().sum() > 0):
@@ -233,6 +240,82 @@ def gen_not_random(data, print_time=False, print_all=True, range_min=0.1, range_
 
     if print_all:
         print("gen_random: {0} NaN values have been inserted".format(X_data.isnull().sum().sum()))
+    if len(data.protected_features) > 0:
+        X_data = pd.concat([X_data, X_data_protected], axis=1)
+    data = data.copy()
+    data.X = X_data
+    if print_time and print_all:
+        print("Performance Monitor: ({:.4f}s) ".format(time.process_time() - tt) + inspect.stack()[0][3])
+    return data
+
+def gen_complete_random_ext(data, random_ratio=0.2, selected_columns=[], print_time=False, print_all=True):
+    """Missing Complete At Random (MCAR) Extended
+
+    ### Args
+    1. `data` - type of `Dataset`
+    2. `random_ratio` - defines the missingness across rows and columns
+    3. `selected_columns` - generate missing values in selected columns, should not contain protected features
+    4. `print_time` - print time to evaluate performance
+    5. `print_all` - print all messages, including warnings
+
+    ### Returns
+    Converted `Dataset` object with missing values
+
+    ### Exception
+    Will raise an exception if `data.X` is not rank 2
+
+    -----
+
+    ### Implementation
+    1. Select random rows based on random_ratio
+    2. For each row, select random cols based on random_ratio and selected_columns
+    3. Leave at least one value for each column
+    4. Skip protected features
+
+    """
+    if print_time:
+        tt = time.process_time()
+    if random_ratio > 0.5:
+        if print_all:
+            print("Warning: gen_complete_random_ext, random missing ratio > 0.5")
+    X_data = data.X.copy()
+    if random_ratio == 0.0:
+        return data.copy()
+    if len(selected_columns) <= 0:
+        return data.copy()
+    if len(data.protected_features) > 0:
+        X_data.drop(columns=data.protected_features, inplace=True)
+        X_data_protected = data.X[data.protected_features].copy()
+    else:
+        raise Exception("Dataset {} should have protected feature defined".format(data.name))
+    if len(X_data.shape) != 2:
+        raise Exception("Error: gen_complete_random only support dataset with rank of 2, but your input has rank of {0}".format(len(X_data.shape)))
+    if not set(selected_columns).issubset(data.X.columns):
+        raise Exception("Error: selected columns {} contain unknown column(s)".format(selected_columns))
+    if set(data.protected_features) & set(selected_columns):
+        raise Exception("Error: selected columns should not contain protected features")
+
+    random_ratio = random_ratio ** 0.5
+    num_rows, num_cols = X_data.shape
+    row_rand = np.random.permutation(num_rows)
+    row_rand = row_rand[:math.ceil(num_rows*random_ratio)]
+    selected_columns = set([X_data.columns.get_loc(c) for c in selected_columns])
+    for row in row_rand[:-1]:
+        col_rand = np.random.permutation(num_cols)
+        col_rand = set(col_rand[:math.ceil(num_cols*random_ratio)]) & selected_columns
+        col_rand = list(col_rand)
+        if len(col_rand) <= 0: continue
+        X_data.iloc[row, col_rand] = np.nan
+    # process the last row to ensure no column is completely missing
+    row = row_rand[-1]
+    col_rand = np.random.permutation(num_cols)
+    col_rand = col_rand[:math.ceil(num_cols*random_ratio)]
+    for col in col_rand:
+        if X_data.iloc[:, col].isnull().sum() < (num_rows - 1):
+            X_data.iloc[row, col] = np.nan
+
+    if print_all:
+        print("gen_complete_random_ext: {0} NaN values have been inserted".format(X_data.isnull().sum().sum()))
     if len(data.protected_features) > 0:
         X_data = pd.concat([X_data, X_data_protected], axis=1)
     data = data.copy()
