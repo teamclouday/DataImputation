@@ -52,4 +52,4 @@ This repo is created to research on different methods of data imputation techniq
 ------
 
 ### Note  
-Due the multiprocessing nature of Python3, scripts involving multiprocessing cannot be run on Windows.  
+Due to the multiprocessing nature of Python3, scripts involving multiprocessing cannot be run on Windows.  
