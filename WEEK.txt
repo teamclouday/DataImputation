@@ -1,4 +1,2 @@
-1. Drop most correlated features with protected, scatter plot bias, accuracy (not MCAR)
-2. Do MCAR only on most correlated features with protected, scatter plot bias, accuracy (with MCAR)
-3. What values contributes to accuracy, and what values contributes to bias
-4. Do data syntesis for more trials and take average
+1. Fix MCAR and redo all experiments
+2. Plot correlation of features with target and protected
