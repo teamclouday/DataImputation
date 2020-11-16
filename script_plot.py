@@ -21,13 +21,13 @@ INCOMPLETE_MODE = True
 
 PLOT_ADULT_ACC          = False
 PLOT_ADULT_F1           = False
-PLOT_COMPAS_ACC         = True
+PLOT_COMPAS_ACC         = False
 PLOT_COMPAS_F1          = False
 PLOT_TITANIC_ACC        = False
 PLOT_TITANIC_F1         = False
-PLOT_GERMAN_ACC         = False
+PLOT_GERMAN_ACC         = True
 PLOT_GERMAN_F1          = False
-PLOT_COMMUNITIES_ACC    = False
+PLOT_COMMUNITIES_ACC    = True
 PLOT_COMMUNITIES_F1     = False
 PLOT_BANK_ACC           = False
 PLOT_BANK_F1            = False
