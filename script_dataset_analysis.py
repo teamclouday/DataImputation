@@ -12,7 +12,7 @@ from utils.data import create_adult_dataset, create_bank_dataset
 from utils.data import create_communities_dataset, create_compas_dataset
 from utils.data import create_german_dataset, create_titanic_dataset
 
-from utils.generator import gen_complete_random_ext
+from utils.generator import gen_complete_random
 from utils.completer import complete_by_mean_col
 from sklearn.linear_model import LogisticRegression
 from sklearn.preprocessing import LabelEncoder, StandardScaler
@@ -219,7 +219,7 @@ def analysis_impute_correlated_features(data_fn, folder, filename):
         print("Impute on {:<2} most correlated features".format(i))
         data_tmp = data.copy()
         # data_tmp.X.drop(columns=correlated_features[range(i)], inplace=True)
-        data_tmp = gen_complete_random_ext(data_tmp, random_ratio=0.2, selected_columns=correlated_features[range(i)])
+        data_tmp = gen_complete_random(data_tmp, random_ratio=0.2, selected_cols=correlated_features[range(i)])
         bias, acc = cross_val(data_tmp, dataConfig, clfConfig, complete_by_mean_col)
         plot_bias.append(bias)
         plot_acc.append(acc)
