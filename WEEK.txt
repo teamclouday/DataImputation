@@ -42,3 +42,6 @@ look at correlations between predictions of X and Y
 
 
 Divide datasets by protected attribute, look at correlations
+
+
+Read some papers on bias-accuracy tradeoff
