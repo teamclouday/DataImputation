@@ -1,2 +1,44 @@
-1. Fix MCAR and redo all experiments
-2. Plot correlation of features with target and protected
+Sucheta Soundarajan1:16 PM
+1. features (A) used to predict target value are different from the features that predict the protected attribute (B).  In this case, the algorithm does not care about the features in B so the results have nothing to do with protected attribute
+Sucheta Soundarajan1:19 PM
+2. target value is best predicted by the protected attribute.  We can accurately predict protected attribute from available features.  In this case, the algorithm is actually predicting protected attribute as a proxy for target value
+targets: 1 and 2, protected groups: A and B
+Sucheta Soundarajan1:20 PM
+90% of As have target value 1
+90% of Bs have target value 2
+remaining features allow you to predict the group membership (A or B) with perfect accuracy
+Sucheta Soundarajan1:22 PM
+in this example, the 10% of As that have TV 2 will get misclassified as "1"
+the 10% of Bs that have TV 1 will get misclassified as "2"
+Sucheta Soundarajan1:36 PM
+suppose the removal of feature X gives a large drop in bias, but not accuracy.  Why might this happen?
+Sucheta Soundarajan1:37 PM
+this means that feature X is the best way to predict the target value, but in using it to predict TV, it also predicts the PA in the same way.  However, there is another feature Y (or combination of features) that can replace X in predicting TV, and this prediction does not predict PA in the same way
+suppose TV = prob. someone pays back a loan
+Sucheta Soundarajan1:38 PM
+and PA = age
+X = age of a person's credit history
+Y = # items in the person's credit history
+Sucheta Soundarajan1:40 PM
+what X is doing in this case is predicting the strength of a person's credit history by the age of that history, which encodes the person's age- so all old people will get a high score and all young people get a low score
+let's suppose this works well
+what Y is doing is predicting the strength of the credit history by the number of items in that history, so it gives a high score to people who have had many loans in the past and a low score to people who have had few loans
+Sucheta Soundarajan1:42 PM
+in the case of Y, the high scoring people are more likely to be older, but not necessarily.  So X is predicting age (the protected attribute) as a proxy for credit strength
+but Y is more directly predicting credit strength without using the age of the person as a proxy
+Sucheta Soundarajan1:45 PM
+four scenarios: using X alone gives 75% accuracy, using PA alone gives 75% accuracy (same predictions as X), using Y alone gives 70% accuracy, and anything else gives low accuracy
+Sucheta Soundarajan1:47 PM
+use X alone, it gives a high score to all old people and low score to all young people => biased because when it gets the prediction wrong, old people always get the benefit of the doubt and young people are always harmed
+Sucheta Soundarajan1:48 PM
+using Y alone, it gives a high score to most old people and a low score to most young people, so in the misclassifications there is still some bias, but less than X
+if we switched the original example so that Y gave a higher accuracy than X, then the algorithm would not care about X at all
+Sucheta Soundarajan1:49 PM
+relevant properties here: X and Y are correlated with each other.  X and Y are both correlated with PA, but X moreso than Y.  X and Y are both correlated with TV, but X moreso than Y.
+Sucheta Soundarajan1:56 PM
+look at correlations between predictions of X and Y
+1. use X only and Y only for prediction, look at correlations between predicted values
+2. use (all features - Y) and (all features - X) for prediction, look at correlations
+
+
+Divide datasets by protected attribute, look at correlations
