@@ -1,0 +1,10 @@
+1 : age
+2 : age_cat
+3 : c_charge_degree
+4 : priors_count
+5 : juv_misd_count
+6 : juv_fel_count
+7 : juv_other_count
+8 : days_b_screening_arrest
+9 : sex
+10: length_of_stay

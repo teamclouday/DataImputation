@@ -1,0 +1,6 @@
+1 : Pclass
+2 : Age
+3 : SibSp
+4 : Parch
+5 : Fare
+6 : Embarked

@@ -1,0 +1,96 @@
+1 : population
+2 : householdsize
+3 : agePct12t21
+4 : agePct12t29
+5 : agePct16t24
+6 : agePct65up
+7 : numbUrban
+8 : pctUrban
+9 : medIncome
+10: pctWWage
+11: pctWFarmSelf
+12: pctWInvInc
+13: pctWSocSec
+14: pctWPubAsst
+15: pctWRetire
+16: medFamInc
+17: perCapInc
+18: whitePerCap
+19: blackPerCap
+20: indianPerCap
+21: AsianPerCap
+22: OtherPerCap
+23: HispPerCap
+24: NumUnderPov
+25: PctPopUnderPov
+26: PctLess9thGrade
+27: PctNotHSGrad
+28: PctBSorMore
+29: PctUnemployed
+30: PctEmploy
+31: PctEmplManu
+32: PctEmplProfServ
+33: PctOccupManu
+34: PctOccupMgmtProf
+35: MalePctDivorce
+36: MalePctNevMarr
+37: FemalePctDiv
+38: TotalPctDiv
+39: PersPerFam
+40: PctFam2Par
+41: PctKids2Par
+42: PctYoungKids2Par
+43: PctTeen2Par
+44: PctWorkMomYoungKids
+45: PctWorkMom
+46: NumIlleg
+47: PctIlleg
+48: NumImmig
+49: PctImmigRecent
+50: PctImmigRec5
+51: PctImmigRec8
+52: PctImmigRec10
+53: PctRecentImmig
+54: PctRecImmig5
+55: PctRecImmig8
+56: PctRecImmig10
+57: PctSpeakEnglOnly
+58: PctNotSpeakEnglWell
+59: PctLargHouseFam
+60: PctLargHouseOccup
+61: PersPerOccupHous
+62: PersPerOwnOccHous
+63: PersPerRentOccHous
+64: PctPersOwnOccup
+65: PctPersDenseHous
+66: PctHousLess3BR
+67: MedNumBR
+68: HousVacant
+69: PctHousOccup
+70: PctHousOwnOcc
+71: PctVacantBoarded
+72: PctVacMore6Mos
+73: MedYrHousBuilt
+74: PctHousNoPhone
+75: PctWOFullPlumb
+76: OwnOccLowQuart
+77: OwnOccMedVal
+78: OwnOccHiQuart
+79: RentLowQ
+80: RentMedian
+81: RentHighQ
+82: MedRent
+83: MedRentPctHousInc
+84: MedOwnCostPctInc
+85: MedOwnCostPctIncNoMtg
+86: NumInShelters
+87: NumStreet
+88: PctForeignBorn
+89: PctBornSameState
+90: PctSameHouse85
+91: PctSameCity85
+92: PctSameState85
+93: LandArea
+94: PopDens
+95: PctUsePubTrans
+96: LemasPctOfficDrugUn

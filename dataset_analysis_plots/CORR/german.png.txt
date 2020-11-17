@@ -1,0 +1,19 @@
+1 : Status_account
+2 : Duration_month
+3 : Credit_history
+4 : Purpose
+5 : Credit_amount
+6 : Savings_account
+7 : Employment_since
+8 : Installment_rate
+9 : Personal_status
+10: Debtors_guarantors
+11: Residence_since
+12: Property
+13: Installment_plans
+14: Housing
+15: Number_credits
+16: Job
+17: Num_liable_people
+18: Telephone
+19: Foreign

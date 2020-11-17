@@ -20,8 +20,9 @@ from sklearn.model_selection import StratifiedShuffleSplit
 from sklearn.metrics import confusion_matrix, accuracy_score
 from imblearn.over_sampling import SMOTE
 
-PLOT_DROP           = True
-PLOT_IMPUTE         = True
+PLOT_DROP           = False
+PLOT_IMPUTE         = False
+PLOT_SCATTER        = True
 
 PLOT_ADULT          = True
 PLOT_COMPAS         = True
@@ -250,6 +251,45 @@ def analysis_impute_correlated_features(data_fn, folder, filename):
     plt.close()
     print("Done")
 
+def analysis_scatter_correlated_features(data_fn, folder, filename):
+    if not os.path.exists(folder):
+        os.makedirs(folder)
+    data: Dataset = drop_na(data_fn())
+    cdata, encoder = convert_protected(data)
+    ccdata = concat(cdata)
+    print("Dataset: {}".format(data.name))
+    print("Plotting correlation of features with target & protected")
+    correlation_protected = ccdata.corr()[data.protected_features[0]]
+    del correlation_protected["_TARGET_"]
+    del correlation_protected[data.protected_features[0]]
+    correlation_target = ccdata.corr()["_TARGET_"]
+    del correlation_target["_TARGET_"]
+    del correlation_target[data.protected_features[0]]
+    plotX = []
+    plotY = []
+    for key in correlation_protected.keys():
+        plotX.append(correlation_protected[key])
+        plotY.append(correlation_target[key])
+    plotX = np.abs(np.array(plotX))
+    plotY = np.abs(np.array(plotY))
+    plt.figure(figsize=(10, 10))
+    plt.scatter(plotX, plotY, s=200, alpha=0.8)
+    for i, val in enumerate(correlation_protected.keys()):
+        plt.text(plotX[i], plotY[i], "{}".format(i+1), horizontalalignment='center', verticalalignment='center')
+    plt.xlabel("Protected Feature Correlation")
+    plt.ylabel("Target Correlation")
+    plt.xlim([-0.1, 1.1])
+    plt.ylim([-0.1, 1.1])
+    plt.title("Correlation Plot ({})".format(data.name))
+    plt.savefig(os.path.join(folder, filename), transparent=False, bbox_inches='tight', pad_inches=0.1)
+    plt.show(block=False)
+    plt.pause(2)
+    plt.close()
+    with open(os.path.join(folder, "{}.txt".format(filename)), "w") as outFile:
+        for i, val in enumerate(correlation_protected.keys()):
+            print("{:<2}: {}".format(i+1, val), file=outFile)
+    print("Done")
+
 if __name__=="__main__":
     if PLOT_DROP:
         if PLOT_ADULT:
@@ -277,3 +317,16 @@ if __name__=="__main__":
             analysis_impute_correlated_features(create_bank_dataset, os.path.join("dataset_analysis_plots", "IMPUTE"), "bank.png")
         if PLOT_COMMUNITIES:
             analysis_impute_correlated_features(create_communities_dataset, os.path.join("dataset_analysis_plots", "IMPUTE"), "communities.png")
+    if PLOT_SCATTER:
+        if PLOT_ADULT:
+            analysis_scatter_correlated_features(create_adult_dataset, os.path.join("dataset_analysis_plots", "CORR"), "adult.png")
+        if PLOT_COMPAS:
+            analysis_scatter_correlated_features(create_compas_dataset, os.path.join("dataset_analysis_plots", "CORR"), "compas.png")
+        if PLOT_TITANIC:
+            analysis_scatter_correlated_features(create_titanic_dataset, os.path.join("dataset_analysis_plots", "CORR"), "titanic.png")
+        if PLOT_GERMAN:
+            analysis_scatter_correlated_features(create_german_dataset, os.path.join("dataset_analysis_plots", "CORR"), "german.png")
+        if PLOT_BANK:
+            analysis_scatter_correlated_features(create_bank_dataset, os.path.join("dataset_analysis_plots", "CORR"), "bank.png")
+        if PLOT_COMMUNITIES:
+            analysis_scatter_correlated_features(create_communities_dataset, os.path.join("dataset_analysis_plots", "CORR"), "communities.png")
