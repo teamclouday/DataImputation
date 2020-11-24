@@ -3,6 +3,7 @@
 import os
 import json
 from typing import Tuple
+from numpy.core.numeric import cross
 import pandas as pd
 import numpy as np
 import matplotlib.pyplot as plt
@@ -22,7 +23,9 @@ from imblearn.over_sampling import SMOTE
 
 PLOT_DROP           = False
 PLOT_IMPUTE         = False
-PLOT_SCATTER        = True
+PLOT_SCATTER        = False
+PLOT_DROP_SINGLE    = False
+PLOT_DROP_EXCLUDE   = False
 
 PLOT_ADULT          = True
 PLOT_COMPAS         = True
@@ -290,6 +293,96 @@ def analysis_scatter_correlated_features(data_fn, folder, filename):
             print("{:<2}: {}".format(i+1, val), file=outFile)
     print("Done")
 
+def analysis_drop_correlated_features_single(data_fn, folder, filename):
+    if not os.path.exists(folder):
+        os.makedirs(folder)
+    with open("params_datasets.json", "r") as inFile:
+        dataConfig = json.load(inFile)
+    with open("params_acc.json", "r") as inFile:
+        clfConfig = json.load(inFile)
+    data: Dataset = drop_na(data_fn())
+    cdata, encoder = convert_protected(data)
+    ccdata = concat(cdata)
+    print("Dataset: {}".format(data.name))
+    dataConfig = dataConfig[data.name]
+    clfConfig = clfConfig[data.name]["LogReg"]
+    print("Computing bias & accuracy for each single feature (10 most correlated with protected)")
+    correlation = ccdata.corr()[data.protected_features[0]]
+    del correlation["_TARGET_"]
+    del correlation[data.protected_features[0]]
+    correlation = correlation[correlation.abs().sort_values(ascending=False).head(10).index]
+    plotX = [] # bias
+    plotY = [] # accuracy
+    for key in correlation.keys():
+        print("Compute on single feature {}".format(key))
+        data_tmp = data.copy()
+        data_tmp.X.drop(columns=[f for f in correlation.keys() if f != key], inplace=True)
+        bias, acc = cross_val(data_tmp, dataConfig, clfConfig)
+        plotX.append(acc)
+        plotY.append(bias)
+    plotY_compare, plotX_compare = cross_val(data.copy(), dataConfig, clfConfig)
+    plotX = np.abs(np.array(plotX))
+    plotY = np.abs(np.array(plotY))
+    plt.figure(figsize=(10, 10))
+    plt.scatter(plotX, plotY, s=200, alpha=0.8)
+    plt.scatter([plotX_compare], [plotY_compare], s=200, alpha=1.0, c="orange")
+    for i, _ in enumerate(correlation.keys()):
+        plt.text(plotX[i], plotY[i], "{}".format(i+1), horizontalalignment='center', verticalalignment='center')
+    plt.ylabel("Bias")
+    plt.xlabel("Accuracy")
+    plt.xlim([0.4, 1.0])
+    plt.title("Most Correlated Single Feature Experiment ({})".format(data.name))
+    plt.savefig(os.path.join(folder, filename), transparent=False, bbox_inches='tight', pad_inches=0.1)
+    plt.show(block=False)
+    plt.pause(2)
+    plt.close()
+    print("Done")
+
+def analysis_drop_correlated_features_exclude(data_fn, folder, filename):
+    if not os.path.exists(folder):
+        os.makedirs(folder)
+    with open("params_datasets.json", "r") as inFile:
+        dataConfig = json.load(inFile)
+    with open("params_acc.json", "r") as inFile:
+        clfConfig = json.load(inFile)
+    data: Dataset = drop_na(data_fn())
+    cdata, encoder = convert_protected(data)
+    ccdata = concat(cdata)
+    print("Dataset: {}".format(data.name))
+    dataConfig = dataConfig[data.name]
+    clfConfig = clfConfig[data.name]["LogReg"]
+    print("Computing bias & accuracy excluding single feature (10 most correlated with protected)")
+    correlation = ccdata.corr()[data.protected_features[0]]
+    del correlation["_TARGET_"]
+    del correlation[data.protected_features[0]]
+    correlation = correlation[correlation.abs().sort_values(ascending=False).head(10).index]
+    plotX = [] # bias
+    plotY = [] # accuracy
+    for key in correlation.keys():
+        print("Compute by excluding feature {}".format(key))
+        data_tmp = data.copy()
+        data_tmp.X.drop(columns=[key], inplace=True)
+        bias, acc = cross_val(data_tmp, dataConfig, clfConfig)
+        plotX.append(acc)
+        plotY.append(bias)
+    plotY_compare, plotX_compare = cross_val(data.copy(), dataConfig, clfConfig)
+    plotX = np.abs(np.array(plotX))
+    plotY = np.abs(np.array(plotY))
+    plt.figure(figsize=(10, 10))
+    plt.scatter(plotX, plotY, s=200, alpha=0.8)
+    plt.scatter([plotX_compare], [plotY_compare], s=200, alpha=1.0, c="orange")
+    for i, _ in enumerate(correlation.keys()):
+        plt.text(plotX[i], plotY[i], "{}".format(i+1), horizontalalignment='center', verticalalignment='center')
+    plt.ylabel("Bias")
+    plt.xlabel("Accuracy")
+    plt.xlim([0.4, 1.0])
+    plt.title("Most Correlated Excluding Feature Experiment ({})".format(data.name))
+    plt.savefig(os.path.join(folder, filename), transparent=False, bbox_inches='tight', pad_inches=0.1)
+    plt.show(block=False)
+    plt.pause(2)
+    plt.close()
+    print("Done")
+
 if __name__=="__main__":
     if PLOT_DROP:
         if PLOT_ADULT:
@@ -330,3 +423,29 @@ if __name__=="__main__":
             analysis_scatter_correlated_features(create_bank_dataset, os.path.join("dataset_analysis_plots", "CORR"), "bank.png")
         if PLOT_COMMUNITIES:
             analysis_scatter_correlated_features(create_communities_dataset, os.path.join("dataset_analysis_plots", "CORR"), "communities.png")
+    if PLOT_DROP_SINGLE:
+        if PLOT_ADULT:
+            analysis_drop_correlated_features_single(create_adult_dataset, os.path.join("dataset_analysis_plots", "DROP_SINGLE"), "adult.png")
+        if PLOT_COMPAS:
+            analysis_drop_correlated_features_single(create_compas_dataset, os.path.join("dataset_analysis_plots", "DROP_SINGLE"), "compas.png")
+        if PLOT_TITANIC:
+            analysis_drop_correlated_features_single(create_titanic_dataset, os.path.join("dataset_analysis_plots", "DROP_SINGLE"), "titanic.png")
+        if PLOT_GERMAN:
+            analysis_drop_correlated_features_single(create_german_dataset, os.path.join("dataset_analysis_plots", "DROP_SINGLE"), "german.png")
+        if PLOT_BANK:
+            analysis_drop_correlated_features_single(create_bank_dataset, os.path.join("dataset_analysis_plots", "DROP_SINGLE"), "bank.png")
+        if PLOT_COMMUNITIES:
+            analysis_drop_correlated_features_single(create_communities_dataset, os.path.join("dataset_analysis_plots", "DROP_SINGLE"), "communities.png")
+    if PLOT_DROP_EXCLUDE:
+        if PLOT_ADULT:
+            analysis_drop_correlated_features_exclude(create_adult_dataset, os.path.join("dataset_analysis_plots", "DROP_EXCLUDE"), "adult.png")
+        if PLOT_COMPAS:
+            analysis_drop_correlated_features_exclude(create_compas_dataset, os.path.join("dataset_analysis_plots", "DROP_EXCLUDE"), "compas.png")
+        if PLOT_TITANIC:
+            analysis_drop_correlated_features_exclude(create_titanic_dataset, os.path.join("dataset_analysis_plots", "DROP_EXCLUDE"), "titanic.png")
+        if PLOT_GERMAN:
+            analysis_drop_correlated_features_exclude(create_german_dataset, os.path.join("dataset_analysis_plots", "DROP_EXCLUDE"), "german.png")
+        if PLOT_BANK:
+            analysis_drop_correlated_features_exclude(create_bank_dataset, os.path.join("dataset_analysis_plots", "DROP_EXCLUDE"), "bank.png")
+        if PLOT_COMMUNITIES:
+            analysis_drop_correlated_features_exclude(create_communities_dataset, os.path.join("dataset_analysis_plots", "DROP_EXCLUDE"), "communities.png")
