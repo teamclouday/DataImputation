@@ -47,12 +47,14 @@ def newBias(data, A=1, B=1):
     bias = A*abs(FPR_A - FPR_B) + B*abs(FNR_A - FNR_B)
     return bias
 
-def cross_val(data: Dataset, data_config, clf_config, complete_function=None):
+def cross_val(data_original: Dataset, data_config, clf_config, complete_function=None, selected_cols=[]):
     bias = []
     acc = []
     smote = SMOTE()
     scaler = StandardScaler()
     for i in range(20):
+        if complete_function: data = gen_complete_random(data_original, random_ratio=0.4, selected_cols=selected_cols)
+        else: data = data_original
         print("Running Cross Validation {}".format(i))
         bias_cv = []
         acc_cv = []
@@ -223,8 +225,8 @@ def analysis_impute_correlated_features(data_fn, folder, filename):
         print("Impute on {:<2} most correlated features".format(i))
         data_tmp = data.copy()
         # data_tmp.X.drop(columns=correlated_features[range(i)], inplace=True)
-        data_tmp = gen_complete_random(data_tmp, random_ratio=0.2, selected_cols=correlated_features[range(i)])
-        bias, acc = cross_val(data_tmp, dataConfig, clfConfig, complete_by_mean_col)
+        # data_tmp = gen_complete_random(data_tmp, random_ratio=0.2, selected_cols=correlated_features[range(i)])
+        bias, acc = cross_val(data_tmp, dataConfig, clfConfig, complete_by_mean_col, correlated_features[range(i)])
         plot_bias.append(bias)
         plot_acc.append(acc)
     print("Generating plots")
@@ -343,9 +345,9 @@ def analysis_drop_correlated_features_single(data_fn, folder, filename, draw_ori
         for key in correlation.keys():
             print("Compute on single feature {} (Impute V1)".format(key))
             data_tmp = data.copy()
-            data_tmp = gen_complete_random(data_tmp, random_ratio=0.4, selected_cols=[f for f in correlation.keys() if f != key])
+            # data_tmp = gen_complete_random(data_tmp, random_ratio=0.4, selected_cols=[f for f in correlation.keys() if f != key])
             # data_tmp.X.drop(columns=[f for f in correlation.keys() if f != key], inplace=True)
-            bias, acc = cross_val(data_tmp, dataConfig, clfConfig, complete_by_mean_col)
+            bias, acc = cross_val(data_tmp, dataConfig, clfConfig, complete_by_mean_col, [f for f in correlation.keys() if f != key])
             plotX.append(acc)
             plotY.append(bias)
         plotY_compare, plotX_compare = cross_val(data.copy(), dataConfig, clfConfig)
@@ -370,9 +372,9 @@ def analysis_drop_correlated_features_single(data_fn, folder, filename, draw_ori
         for key in correlation.keys():
             print("Compute on single feature {} (Impute V2)".format(key))
             data_tmp = data.copy()
-            data_tmp = gen_complete_random(data_tmp, random_ratio=0.4, selected_cols=[f for f in correlation.keys() if f != key])
+            # data_tmp = gen_complete_random(data_tmp, random_ratio=0.4, selected_cols=[f for f in correlation.keys() if f != key])
             # data_tmp.X.drop(columns=[f for f in correlation.keys() if f != key], inplace=True)
-            bias, acc = cross_val(data_tmp, dataConfig, clfConfig, partial(complete_by_mean_col_v2, target_feature=dataConfig["target"]))
+            bias, acc = cross_val(data_tmp, dataConfig, clfConfig, partial(complete_by_mean_col_v2, target_feature=dataConfig["target"]), [f for f in correlation.keys() if f != key])
             plotX.append(acc)
             plotY.append(bias)
         plotY_compare, plotX_compare = cross_val(data.copy(), dataConfig, clfConfig)
@@ -444,8 +446,8 @@ def analysis_drop_correlated_features_exclude(data_fn, folder, filename, draw_or
             print("Compute by excluding feature {} (Impute V1)".format(key))
             data_tmp = data.copy()
             # data_tmp.X.drop(columns=[key], inplace=True)
-            data_tmp = gen_complete_random(data_tmp, random_ratio=0.4, selected_cols=[key])
-            bias, acc = cross_val(data_tmp, dataConfig, clfConfig, complete_by_mean_col)
+            # data_tmp = gen_complete_random(data_tmp, random_ratio=0.4, selected_cols=[key])
+            bias, acc = cross_val(data_tmp, dataConfig, clfConfig, complete_by_mean_col, [key])
             plotX.append(acc)
             plotY.append(bias)
         plotY_compare, plotX_compare = cross_val(data.copy(), dataConfig, clfConfig)
@@ -471,8 +473,8 @@ def analysis_drop_correlated_features_exclude(data_fn, folder, filename, draw_or
             print("Compute by excluding feature {} (Impute V2)".format(key))
             data_tmp = data.copy()
             # data_tmp.X.drop(columns=[key], inplace=True)
-            data_tmp = gen_complete_random(data_tmp, random_ratio=0.4, selected_cols=[key])
-            bias, acc = cross_val(data_tmp, dataConfig, clfConfig, partial(complete_by_mean_col_v2, target_feature=dataConfig["target"]))
+            # data_tmp = gen_complete_random(data_tmp, random_ratio=0.4, selected_cols=[key])
+            bias, acc = cross_val(data_tmp, dataConfig, clfConfig, partial(complete_by_mean_col_v2, target_feature=dataConfig["target"]), [key])
             plotX.append(acc)
             plotY.append(bias)
         plotY_compare, plotX_compare = cross_val(data.copy(), dataConfig, clfConfig)
