@@ -5,6 +5,7 @@ import json
 from typing import Tuple
 import pandas as pd
 import numpy as np
+import seaborn as sns
 import matplotlib.pyplot as plt
 from functools import partial
 
@@ -52,7 +53,7 @@ def cross_val(data_original: Dataset, data_config, clf_config, complete_function
     acc = []
     smote = SMOTE()
     scaler = StandardScaler()
-    for i in range(20):
+    for i in range(10):
         if complete_function: data = gen_complete_random(data_original, random_ratio=0.4, selected_cols=selected_cols)
         else: data = data_original
         print("Running Cross Validation {}".format(i))
@@ -308,11 +309,11 @@ def analysis_drop_correlated_features_single(data_fn, folder, filename, draw_ori
     print("Dataset: {}".format(data.name))
     dataConfig = dataConfig[data.name]
     clfConfig = clfConfig[data.name]["LogReg"]
-    print("Computing bias & accuracy for each single feature (10 most correlated with protected)")
+    print("Computing bias & accuracy for each single feature (20 most correlated with protected)")
     correlation = ccdata.corr()[data.protected_features[0]]
     del correlation["_TARGET_"]
     del correlation[data.protected_features[0]]
-    correlation = correlation[correlation.abs().sort_values(ascending=False).head(10).index]
+    correlation = correlation[correlation.abs().sort_values(ascending=False).head(20).index]
     if draw_original:
         plotX = [] # bias
         plotY = [] # accuracy
@@ -327,13 +328,15 @@ def analysis_drop_correlated_features_single(data_fn, folder, filename, draw_ori
         plotX = np.abs(np.array(plotX))
         plotY = np.abs(np.array(plotY))
         plt.figure(figsize=(10, 10))
-        plt.scatter(plotX, plotY, s=200, alpha=0.8)
+        # plt.scatter(plotX, plotY, s=200, alpha=0.8)
+        plt.ylim([0.0, 1.2])
+        plt.xlim([0.4, 1.0])
+        sns.regplot(x=plotX, y=plotY, scatter_kws={"s": 200, "alpha": 0.8}, fit_reg=True, truncate=False)
         plt.scatter([plotX_compare], [plotY_compare], s=200, alpha=1.0, c="orange")
         for i, _ in enumerate(correlation.keys()):
             plt.text(plotX[i], plotY[i], "{}".format(i+1), horizontalalignment='center', verticalalignment='center')
         plt.ylabel("Bias")
         plt.xlabel("Accuracy")
-        plt.xlim([0.4, 1.0])
         plt.title("Most Correlated Single Feature Experiment ({})".format(data.name))
         plt.savefig(os.path.join(folder, filename+".png"), transparent=False, bbox_inches='tight', pad_inches=0.1)
         plt.show(block=False)
@@ -354,13 +357,15 @@ def analysis_drop_correlated_features_single(data_fn, folder, filename, draw_ori
         plotX = np.abs(np.array(plotX))
         plotY = np.abs(np.array(plotY))
         plt.figure(figsize=(10, 10))
-        plt.scatter(plotX, plotY, s=200, alpha=0.8)
+        # plt.scatter(plotX, plotY, s=200, alpha=0.8)
+        plt.ylim([0.0, 1.2])
+        plt.xlim([0.4, 1.0])
+        sns.regplot(x=plotX, y=plotY, scatter_kws={"s": 200, "alpha": 0.8}, fit_reg=True, truncate=False)
         plt.scatter([plotX_compare], [plotY_compare], s=200, alpha=1.0, c="orange")
         for i, _ in enumerate(correlation.keys()):
             plt.text(plotX[i], plotY[i], "{}".format(i+1), horizontalalignment='center', verticalalignment='center')
         plt.ylabel("Bias")
         plt.xlabel("Accuracy")
-        plt.xlim([0.4, 1.0])
         plt.title("Most Correlated Single Feature Experiment ({}) (Mean V1)".format(data.name))
         plt.savefig(os.path.join(folder, filename+"_v1.png"), transparent=False, bbox_inches='tight', pad_inches=0.1)
         plt.show(block=False)
@@ -381,13 +386,15 @@ def analysis_drop_correlated_features_single(data_fn, folder, filename, draw_ori
         plotX = np.abs(np.array(plotX))
         plotY = np.abs(np.array(plotY))
         plt.figure(figsize=(10, 10))
-        plt.scatter(plotX, plotY, s=200, alpha=0.8)
+        # plt.scatter(plotX, plotY, s=200, alpha=0.8)
+        plt.ylim([0.0, 1.2])
+        plt.xlim([0.4, 1.0])
+        sns.regplot(x=plotX, y=plotY, scatter_kws={"s": 200, "alpha": 0.8}, fit_reg=True, truncate=False)
         plt.scatter([plotX_compare], [plotY_compare], s=200, alpha=1.0, c="orange")
         for i, _ in enumerate(correlation.keys()):
             plt.text(plotX[i], plotY[i], "{}".format(i+1), horizontalalignment='center', verticalalignment='center')
         plt.ylabel("Bias")
         plt.xlabel("Accuracy")
-        plt.xlim([0.4, 1.0])
         plt.title("Most Correlated Single Feature Experiment ({}) (Mean V2)".format(data.name))
         plt.savefig(os.path.join(folder, filename+"_v2.png"), transparent=False, bbox_inches='tight', pad_inches=0.1)
         plt.show(block=False)
@@ -408,11 +415,11 @@ def analysis_drop_correlated_features_exclude(data_fn, folder, filename, draw_or
     print("Dataset: {}".format(data.name))
     dataConfig = dataConfig[data.name]
     clfConfig = clfConfig[data.name]["LogReg"]
-    print("Computing bias & accuracy excluding single feature (10 most correlated with protected)")
+    print("Computing bias & accuracy excluding single feature (20 most correlated with protected)")
     correlation = ccdata.corr()[data.protected_features[0]]
     del correlation["_TARGET_"]
     del correlation[data.protected_features[0]]
-    correlation = correlation[correlation.abs().sort_values(ascending=False).head(10).index]
+    correlation = correlation[correlation.abs().sort_values(ascending=False).head(20).index]
     if draw_original:
         plotX = [] # bias
         plotY = [] # accuracy
@@ -427,13 +434,15 @@ def analysis_drop_correlated_features_exclude(data_fn, folder, filename, draw_or
         plotX = np.abs(np.array(plotX))
         plotY = np.abs(np.array(plotY))
         plt.figure(figsize=(10, 10))
-        plt.scatter(plotX, plotY, s=200, alpha=0.8)
+        # plt.scatter(plotX, plotY, s=200, alpha=0.8)
+        plt.ylim([0.0, 1.2])
+        plt.xlim([0.4, 1.0])
+        sns.regplot(x=plotX, y=plotY, scatter_kws={"s": 200, "alpha": 0.8}, fit_reg=True, truncate=False)
         plt.scatter([plotX_compare], [plotY_compare], s=200, alpha=1.0, c="orange")
         for i, _ in enumerate(correlation.keys()):
             plt.text(plotX[i], plotY[i], "{}".format(i+1), horizontalalignment='center', verticalalignment='center')
         plt.ylabel("Bias")
         plt.xlabel("Accuracy")
-        plt.xlim([0.4, 1.0])
         plt.title("Most Correlated Excluding Feature Experiment ({})".format(data.name))
         plt.savefig(os.path.join(folder, filename+".png"), transparent=False, bbox_inches='tight', pad_inches=0.1)
         plt.show(block=False)
@@ -454,13 +463,15 @@ def analysis_drop_correlated_features_exclude(data_fn, folder, filename, draw_or
         plotX = np.abs(np.array(plotX))
         plotY = np.abs(np.array(plotY))
         plt.figure(figsize=(10, 10))
-        plt.scatter(plotX, plotY, s=200, alpha=0.8)
+        # plt.scatter(plotX, plotY, s=200, alpha=0.8)
+        plt.ylim([0.0, 1.2])
+        plt.xlim([0.4, 1.0])
+        sns.regplot(x=plotX, y=plotY, scatter_kws={"s": 200, "alpha": 0.8}, fit_reg=True, truncate=False)
         plt.scatter([plotX_compare], [plotY_compare], s=200, alpha=1.0, c="orange")
         for i, _ in enumerate(correlation.keys()):
             plt.text(plotX[i], plotY[i], "{}".format(i+1), horizontalalignment='center', verticalalignment='center')
         plt.ylabel("Bias")
         plt.xlabel("Accuracy")
-        plt.xlim([0.4, 1.0])
         plt.title("Most Correlated Excluding Feature Experiment ({}) (Mean V1)".format(data.name))
         plt.savefig(os.path.join(folder, filename+"_v1.png"), transparent=False, bbox_inches='tight', pad_inches=0.1)
         plt.show(block=False)
@@ -481,13 +492,15 @@ def analysis_drop_correlated_features_exclude(data_fn, folder, filename, draw_or
         plotX = np.abs(np.array(plotX))
         plotY = np.abs(np.array(plotY))
         plt.figure(figsize=(10, 10))
-        plt.scatter(plotX, plotY, s=200, alpha=0.8)
+        # plt.scatter(plotX, plotY, s=200, alpha=0.8)
+        plt.ylim([0.0, 1.2])
+        plt.xlim([0.4, 1.0])
+        sns.regplot(x=plotX, y=plotY, scatter_kws={"s": 200, "alpha": 0.8}, fit_reg=True, truncate=False)
         plt.scatter([plotX_compare], [plotY_compare], s=200, alpha=1.0, c="orange")
         for i, _ in enumerate(correlation.keys()):
             plt.text(plotX[i], plotY[i], "{}".format(i+1), horizontalalignment='center', verticalalignment='center')
         plt.ylabel("Bias")
         plt.xlabel("Accuracy")
-        plt.xlim([0.4, 1.0])
         plt.title("Most Correlated Excluding Feature Experiment ({}) (Mean V2)".format(data.name))
         plt.savefig(os.path.join(folder, filename+"_v2.png"), transparent=False, bbox_inches='tight', pad_inches=0.1)
         plt.show(block=False)
