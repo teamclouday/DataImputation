@@ -19,30 +19,31 @@ NAME_TARGETS  = ["acc", "f1"]
 
 INCOMPLETE_MODE = True
 
-PLOT_ADULT_ACC          = False
+PLOT_ADULT_ACC          = True
+PLOT_COMPAS_ACC         = True
+PLOT_TITANIC_ACC        = True
+PLOT_GERMAN_ACC         = True
+PLOT_COMMUNITIES_ACC    = True
+PLOT_BANK_ACC           = True
+
 PLOT_ADULT_F1           = False
-PLOT_COMPAS_ACC         = False
 PLOT_COMPAS_F1          = False
-PLOT_TITANIC_ACC        = False
 PLOT_TITANIC_F1         = False
-PLOT_GERMAN_ACC         = False
 PLOT_GERMAN_F1          = False
-PLOT_COMMUNITIES_ACC    = False
 PLOT_COMMUNITIES_F1     = False
-PLOT_BANK_ACC           = False
 PLOT_BANK_F1            = False
 
 TRANSFORM_OUTPUTS       = True
 
-PLOT_CREATE_MEAN_V1     = True
-PLOT_CREATE_MEAN_V2     = True
-PLOT_CREATE_SIMILAR_V1  = True
-PLOT_CREATE_SIMILAR_V2  = True
-PLOT_CREATE_MULTI_V1    = True
-PLOT_CREATE_MULTI_V2    = True
+PLOT_CREATE_MEAN_V1     = False
+PLOT_CREATE_MEAN_V2     = False
+PLOT_CREATE_SIMILAR_V1  = False
+PLOT_CREATE_SIMILAR_V2  = False
+PLOT_CREATE_MULTI_V1    = False
+PLOT_CREATE_MULTI_V2    = False
 
-PLOT_PARETO_FRONTIER_ACC     = True
-PLOT_PARETO_FRONTIER_F1      = True
+PLOT_PARETO_FRONTIER_ACC     = False
+PLOT_PARETO_FRONTIER_F1      = False
 PLOT_PARETO_FRONTIER_REALACC = True
 
 PLOT_DEBUG_FUNCTION     = False
@@ -117,79 +118,80 @@ def plot_func(data, method_name, file_name=None, yscale=None, plot_error=True):
     if counter > 0:
         print("Warning: out of {} folds, {} are dropped".format(len(data)*len(classifiers)*10, counter))
     plot_gap = 0.002
-    fig, axes = plt.subplots(6, figsize=(10, 30))
+    # fig, axes = plt.subplots(6, figsize=(10, 30))
+    fig, axes = plt.subplots(2, figsize=(10, 10))
     # axes[0] shows bias1
-    axes[0].set_title("Bias1")
+    # axes[0].set_title("Bias1")
+    # for i, clf in enumerate(classifiers):
+    #     if plot_error:
+    #         axes[0].errorbar(random_ratios+(i-3)*plot_gap, plot_bias1[clf][0], yerr=plot_bias1[clf][1], label=clf)
+    #     else:
+    #         axes[0].plot(random_ratios+(i-3)*plot_gap, plot_bias1[clf][0], label=clf)
+    #     axes[0].scatter(random_ratios+(i-3)*plot_gap, plot_bias1[clf][0], s=2)
+    # axes[0].legend(loc="best")
+    # axes[0].set_xticks(np.arange(0.0, 1.0, 0.05))
+    # if yscale:
+    #     axes[0].set_yscale(yscale)
+    # axes[1] shows bias2
+    # axes[1].set_title("Bias2")
+    # for i, clf in enumerate(classifiers):
+    #     if plot_error:
+    #         axes[1].errorbar(random_ratios+(i-3)*plot_gap, plot_bias2[clf][0], yerr=plot_bias2[clf][1], label=clf)
+    #     else:
+    #         axes[1].plot(random_ratios+(i-3)*plot_gap, plot_bias2[clf][0], label=clf)
+    #     axes[1].scatter(random_ratios+(i-3)*plot_gap, plot_bias2[clf][0], s=2)
+    # axes[1].legend(loc="best")
+    # axes[1].set_xticks(np.arange(0.0, 1.0, 0.05))
+    # if yscale:
+    #     axes[1].set_yscale(yscale)
+    # axes[2] shows accuracy
+    # axes[2].set_title("Confusion Matrix Accuracy")
+    # for i, clf in enumerate(classifiers):
+    #     if plot_error:
+    #         axes[2].errorbar(random_ratios+(i-3)*plot_gap, plot_acc[clf][0], yerr=plot_acc[clf][1], label=clf)
+    #     else:
+    #         axes[2].plot(random_ratios+(i-3)*plot_gap, plot_acc[clf][0], label=clf)
+    #     axes[2].scatter(random_ratios+(i-3)*plot_gap, plot_acc[clf][0], s=2)
+    # axes[2].legend(loc="best")
+    # axes[2].set_xticks(np.arange(0.0, 1.0, 0.05))
+    # if yscale:
+    #     axes[2].set_yscale(yscale)
+    # axes[3] shows f1 score
+    # axes[3].set_title("Confusion Matrix F1 Score")
+    # for i, clf in enumerate(classifiers):
+    #     if plot_error:
+    #         axes[3].errorbar(random_ratios+(i-3)*plot_gap, plot_f1[clf][0], yerr=plot_f1[clf][1], label=clf)
+    #     else:
+    #         axes[3].plot(random_ratios+(i-3)*plot_gap, plot_f1[clf][0], label=clf)
+    #     axes[3].scatter(random_ratios+(i-3)*plot_gap, plot_f1[clf][0], s=2)
+    # axes[3].legend(loc="best")
+    # axes[3].set_xticks(np.arange(0.0, 1.0, 0.05))
+    # if yscale:
+    #     axes[3].set_yscale(yscale)
+    # axes[4] show real acc
+    axes[0].set_title("Accuracy")
     for i, clf in enumerate(classifiers):
         if plot_error:
-            axes[0].errorbar(random_ratios+(i-3)*plot_gap, plot_bias1[clf][0], yerr=plot_bias1[clf][1], label=clf)
+            axes[0].errorbar(random_ratios+(i-3)*plot_gap, plot_realacc[clf][0], yerr=plot_realacc[clf][1], label=clf)
         else:
-            axes[0].plot(random_ratios+(i-3)*plot_gap, plot_bias1[clf][0], label=clf)
-        axes[0].scatter(random_ratios+(i-3)*plot_gap, plot_bias1[clf][0], s=2)
+            axes[0].plot(random_ratios+(i-3)*plot_gap, plot_realacc[clf][0], label=clf)
+        axes[0].scatter(random_ratios+(i-3)*plot_gap, plot_realacc[clf][0], s=2)
     axes[0].legend(loc="best")
     axes[0].set_xticks(np.arange(0.0, 1.0, 0.05))
     if yscale:
         axes[0].set_yscale(yscale)
-    # axes[1] shows bias2
-    axes[1].set_title("Bias2")
+    # axes[5] show new bias
+    axes[1].set_title("Bias")
     for i, clf in enumerate(classifiers):
         if plot_error:
-            axes[1].errorbar(random_ratios+(i-3)*plot_gap, plot_bias2[clf][0], yerr=plot_bias2[clf][1], label=clf)
+            axes[1].errorbar(random_ratios+(i-3)*plot_gap, plot_newbias[clf][0], yerr=plot_newbias[clf][1], label=clf)
         else:
-            axes[1].plot(random_ratios+(i-3)*plot_gap, plot_bias2[clf][0], label=clf)
-        axes[1].scatter(random_ratios+(i-3)*plot_gap, plot_bias2[clf][0], s=2)
+            axes[1].plot(random_ratios+(i-3)*plot_gap, plot_newbias[clf][0], label=clf)
+        axes[1].scatter(random_ratios+(i-3)*plot_gap, plot_newbias[clf][0], s=2)
     axes[1].legend(loc="best")
     axes[1].set_xticks(np.arange(0.0, 1.0, 0.05))
     if yscale:
         axes[1].set_yscale(yscale)
-    # axes[2] shows accuracy
-    axes[2].set_title("Confusion Matrix Accuracy")
-    for i, clf in enumerate(classifiers):
-        if plot_error:
-            axes[2].errorbar(random_ratios+(i-3)*plot_gap, plot_acc[clf][0], yerr=plot_acc[clf][1], label=clf)
-        else:
-            axes[2].plot(random_ratios+(i-3)*plot_gap, plot_acc[clf][0], label=clf)
-        axes[2].scatter(random_ratios+(i-3)*plot_gap, plot_acc[clf][0], s=2)
-    axes[2].legend(loc="best")
-    axes[2].set_xticks(np.arange(0.0, 1.0, 0.05))
-    if yscale:
-        axes[2].set_yscale(yscale)
-    # axes[3] shows f1 score
-    axes[3].set_title("Confusion Matrix F1 Score")
-    for i, clf in enumerate(classifiers):
-        if plot_error:
-            axes[3].errorbar(random_ratios+(i-3)*plot_gap, plot_f1[clf][0], yerr=plot_f1[clf][1], label=clf)
-        else:
-            axes[3].plot(random_ratios+(i-3)*plot_gap, plot_f1[clf][0], label=clf)
-        axes[3].scatter(random_ratios+(i-3)*plot_gap, plot_f1[clf][0], s=2)
-    axes[3].legend(loc="best")
-    axes[3].set_xticks(np.arange(0.0, 1.0, 0.05))
-    if yscale:
-        axes[3].set_yscale(yscale)
-    # axes[4] show real acc
-    axes[4].set_title("Real Accuracy")
-    for i, clf in enumerate(classifiers):
-        if plot_error:
-            axes[4].errorbar(random_ratios+(i-3)*plot_gap, plot_realacc[clf][0], yerr=plot_realacc[clf][1], label=clf)
-        else:
-            axes[4].plot(random_ratios+(i-3)*plot_gap, plot_realacc[clf][0], label=clf)
-        axes[4].scatter(random_ratios+(i-3)*plot_gap, plot_realacc[clf][0], s=2)
-    axes[4].legend(loc="best")
-    axes[4].set_xticks(np.arange(0.0, 1.0, 0.05))
-    if yscale:
-        axes[4].set_yscale(yscale)
-    # axes[5] show new bias
-    axes[5].set_title("New Bias")
-    for i, clf in enumerate(classifiers):
-        if plot_error:
-            axes[5].errorbar(random_ratios+(i-3)*plot_gap, plot_newbias[clf][0], yerr=plot_newbias[clf][1], label=clf)
-        else:
-            axes[5].plot(random_ratios+(i-3)*plot_gap, plot_newbias[clf][0], label=clf)
-        axes[5].scatter(random_ratios+(i-3)*plot_gap, plot_newbias[clf][0], s=2)
-    axes[5].legend(loc="best")
-    axes[5].set_xticks(np.arange(0.0, 1.0, 0.05))
-    if yscale:
-        axes[5].set_yscale(yscale)
     fig.tight_layout()
     fig.suptitle("Imputation Method: {}".format(method_name))
     plt.subplots_adjust(top=0.94)
@@ -208,6 +210,7 @@ def plot_func_pareto_front(data, title, file_name=None, y_scale=None, switch=Fal
     data_multi_v1   = data["multi_v1"]
     data_multi_v2   = data["multi_v2"]
     classifiers = ["KNN", "LinearSVC", "Forest", "LogReg", "Tree", "MLP"]
+    classifiers_realnames = ["KNN", "SVM", "Forest", "LR", "Tree", "MLP"]
     # raise Exception("Update classifiers before run!")
     plot_colors = ["red", "green", "blue", "gold", "darkorange", "grey", "purple"]
     plot_markers = ["o", "s", "*", "^", "P", "v", "X"]
@@ -459,7 +462,8 @@ def plot_func_pareto_front(data, title, file_name=None, y_scale=None, switch=Fal
             plot_data_multi_v2[clf][3].append(np.mean(data_processed[3]))
             plot_data_multi_v2[clf][4].append(np.mean(data_processed[4]))
             plot_data_multi_v2[clf][5].append(np.mean(data_processed[5]))
-    fig, axes = plt.subplots(3, figsize=(8, 18)) # axes[0] for bias1, axes[1] for bias2, axes[2] for new bias
+    # fig, axes = plt.subplots(3, figsize=(8, 18)) # axes[0] for bias1, axes[1] for bias2, axes[2] for new bias
+    fig, axes = plt.subplots(1, figsize=(8, 6)) # axes for new bias
     if x_axis == "acc":
         axes[0].set_xlabel("Confusion Matrix Accuracy")
         axes[1].set_xlabel("Confusion Matrix Accuracy")
@@ -469,88 +473,103 @@ def plot_func_pareto_front(data, title, file_name=None, y_scale=None, switch=Fal
         axes[1].set_xlabel("Confusion Matrix F1 Score")
         axes[2].set_xlabel("Confusion Matrix F1 Score")
     else:
-        axes[0].set_xlabel("Real Accuracy")
-        axes[1].set_xlabel("Real Accuracy")
-        axes[2].set_xlabel("Real Accuracy")
-    axes[0].set_ylabel("Bias1 Values")
-    axes[1].set_ylabel("Bias2 Values")
-    axes[2].set_ylabel("New Bias Values")
+        # axes[0].set_xlabel("Real Accuracy")
+        # axes[1].set_xlabel("Real Accuracy")
+        # axes[2].set_xlabel("Real Accuracy")
+        axes.set_xlabel("Accuracy")
+    # axes[0].set_ylabel("Bias1 Values")
+    # axes[1].set_ylabel("Bias2 Values")
+    # axes[2].set_ylabel("New Bias Values")
+    axes.set_ylabel("Bias")
     # each classifier has different color
     for clf, clf_c, clf_m in zip(classifiers, plot_colors, plot_markers):
         if switch:
             # plot for mean_v1 method
-            axes[0].scatter(plot_data_mean_v1[clf][0] if x_axis == "acc" else plot_data_mean_v1[clf][3] if x_axis == "f1" else plot_data_mean_v1[clf][5], plot_data_mean_v1[clf][1], c=plot_colors[0], s=ratio_dot_size, marker=clf_m, alpha=0.8)
-            axes[1].scatter(plot_data_mean_v1[clf][0] if x_axis == "acc" else plot_data_mean_v1[clf][3] if x_axis == "f1" else plot_data_mean_v1[clf][5], plot_data_mean_v1[clf][2], c=plot_colors[0], s=ratio_dot_size, marker=clf_m, alpha=0.8)
-            axes[2].scatter(plot_data_mean_v1[clf][0] if x_axis == "acc" else plot_data_mean_v1[clf][3] if x_axis == "f1" else plot_data_mean_v1[clf][5], plot_data_mean_v1[clf][4], c=plot_colors[0], s=ratio_dot_size, marker=clf_m, alpha=0.8)
+            # axes[0].scatter(plot_data_mean_v1[clf][0] if x_axis == "acc" else plot_data_mean_v1[clf][3] if x_axis == "f1" else plot_data_mean_v1[clf][5], plot_data_mean_v1[clf][1], c=plot_colors[0], s=ratio_dot_size, marker=clf_m, alpha=0.8)
+            # axes[1].scatter(plot_data_mean_v1[clf][0] if x_axis == "acc" else plot_data_mean_v1[clf][3] if x_axis == "f1" else plot_data_mean_v1[clf][5], plot_data_mean_v1[clf][2], c=plot_colors[0], s=ratio_dot_size, marker=clf_m, alpha=0.8)
+            # axes[2].scatter(plot_data_mean_v1[clf][0] if x_axis == "acc" else plot_data_mean_v1[clf][3] if x_axis == "f1" else plot_data_mean_v1[clf][5], plot_data_mean_v1[clf][4], c=plot_colors[0], s=ratio_dot_size, marker=clf_m, alpha=0.8)
+            axes.scatter(plot_data_mean_v1[clf][0] if x_axis == "acc" else plot_data_mean_v1[clf][3] if x_axis == "f1" else plot_data_mean_v1[clf][5], plot_data_mean_v1[clf][4], c=plot_colors[0], s=ratio_dot_size, marker=clf_m, alpha=0.8)
             # plot for mean_v2 method
-            axes[0].scatter(plot_data_mean_v2[clf][0] if x_axis == "acc" else plot_data_mean_v2[clf][3] if x_axis == "f1" else plot_data_mean_v2[clf][5], plot_data_mean_v2[clf][1], c=plot_colors[1], s=ratio_dot_size, marker=clf_m, alpha=0.8)
-            axes[1].scatter(plot_data_mean_v2[clf][0] if x_axis == "acc" else plot_data_mean_v2[clf][3] if x_axis == "f1" else plot_data_mean_v2[clf][5], plot_data_mean_v2[clf][2], c=plot_colors[1], s=ratio_dot_size, marker=clf_m, alpha=0.8)
-            axes[2].scatter(plot_data_mean_v2[clf][0] if x_axis == "acc" else plot_data_mean_v2[clf][3] if x_axis == "f1" else plot_data_mean_v2[clf][5], plot_data_mean_v2[clf][4], c=plot_colors[1], s=ratio_dot_size, marker=clf_m, alpha=0.8)
+            # axes[0].scatter(plot_data_mean_v2[clf][0] if x_axis == "acc" else plot_data_mean_v2[clf][3] if x_axis == "f1" else plot_data_mean_v2[clf][5], plot_data_mean_v2[clf][1], c=plot_colors[1], s=ratio_dot_size, marker=clf_m, alpha=0.8)
+            # axes[1].scatter(plot_data_mean_v2[clf][0] if x_axis == "acc" else plot_data_mean_v2[clf][3] if x_axis == "f1" else plot_data_mean_v2[clf][5], plot_data_mean_v2[clf][2], c=plot_colors[1], s=ratio_dot_size, marker=clf_m, alpha=0.8)
+            # axes[2].scatter(plot_data_mean_v2[clf][0] if x_axis == "acc" else plot_data_mean_v2[clf][3] if x_axis == "f1" else plot_data_mean_v2[clf][5], plot_data_mean_v2[clf][4], c=plot_colors[1], s=ratio_dot_size, marker=clf_m, alpha=0.8)
+            axes.scatter(plot_data_mean_v2[clf][0] if x_axis == "acc" else plot_data_mean_v2[clf][3] if x_axis == "f1" else plot_data_mean_v2[clf][5], plot_data_mean_v2[clf][4], c=plot_colors[1], s=ratio_dot_size, marker=clf_m, alpha=0.8)
             # plot for similar_v1 method
-            axes[0].scatter(plot_data_similar_v1[clf][0] if x_axis == "acc" else plot_data_similar_v1[clf][3] if x_axis == "f1" else plot_data_similar_v1[clf][5], plot_data_similar_v1[clf][1], c=plot_colors[2], s=ratio_dot_size, marker=clf_m, alpha=0.8)
-            axes[1].scatter(plot_data_similar_v1[clf][0] if x_axis == "acc" else plot_data_similar_v1[clf][3] if x_axis == "f1" else plot_data_similar_v1[clf][5], plot_data_similar_v1[clf][2], c=plot_colors[2], s=ratio_dot_size, marker=clf_m, alpha=0.8)
-            axes[2].scatter(plot_data_similar_v1[clf][0] if x_axis == "acc" else plot_data_similar_v1[clf][3] if x_axis == "f1" else plot_data_similar_v1[clf][5], plot_data_similar_v1[clf][4], c=plot_colors[2], s=ratio_dot_size, marker=clf_m, alpha=0.8)
+            # axes[0].scatter(plot_data_similar_v1[clf][0] if x_axis == "acc" else plot_data_similar_v1[clf][3] if x_axis == "f1" else plot_data_similar_v1[clf][5], plot_data_similar_v1[clf][1], c=plot_colors[2], s=ratio_dot_size, marker=clf_m, alpha=0.8)
+            # axes[1].scatter(plot_data_similar_v1[clf][0] if x_axis == "acc" else plot_data_similar_v1[clf][3] if x_axis == "f1" else plot_data_similar_v1[clf][5], plot_data_similar_v1[clf][2], c=plot_colors[2], s=ratio_dot_size, marker=clf_m, alpha=0.8)
+            # axes[2].scatter(plot_data_similar_v1[clf][0] if x_axis == "acc" else plot_data_similar_v1[clf][3] if x_axis == "f1" else plot_data_similar_v1[clf][5], plot_data_similar_v1[clf][4], c=plot_colors[2], s=ratio_dot_size, marker=clf_m, alpha=0.8)
+            axes.scatter(plot_data_similar_v1[clf][0] if x_axis == "acc" else plot_data_similar_v1[clf][3] if x_axis == "f1" else plot_data_similar_v1[clf][5], plot_data_similar_v1[clf][4], c=plot_colors[2], s=ratio_dot_size, marker=clf_m, alpha=0.8)
             # plot for similar_v2 method
-            axes[0].scatter(plot_data_similar_v2[clf][0] if x_axis == "acc" else plot_data_similar_v2[clf][3] if x_axis == "f1" else plot_data_similar_v2[clf][5], plot_data_similar_v2[clf][1], c=plot_colors[3], s=ratio_dot_size, marker=clf_m, alpha=0.8)
-            axes[1].scatter(plot_data_similar_v2[clf][0] if x_axis == "acc" else plot_data_similar_v2[clf][3] if x_axis == "f1" else plot_data_similar_v2[clf][5], plot_data_similar_v2[clf][2], c=plot_colors[3], s=ratio_dot_size, marker=clf_m, alpha=0.8)
-            axes[2].scatter(plot_data_similar_v2[clf][0] if x_axis == "acc" else plot_data_similar_v2[clf][3] if x_axis == "f1" else plot_data_similar_v2[clf][5], plot_data_similar_v2[clf][4], c=plot_colors[3], s=ratio_dot_size, marker=clf_m, alpha=0.8)
+            # axes[0].scatter(plot_data_similar_v2[clf][0] if x_axis == "acc" else plot_data_similar_v2[clf][3] if x_axis == "f1" else plot_data_similar_v2[clf][5], plot_data_similar_v2[clf][1], c=plot_colors[3], s=ratio_dot_size, marker=clf_m, alpha=0.8)
+            # axes[1].scatter(plot_data_similar_v2[clf][0] if x_axis == "acc" else plot_data_similar_v2[clf][3] if x_axis == "f1" else plot_data_similar_v2[clf][5], plot_data_similar_v2[clf][2], c=plot_colors[3], s=ratio_dot_size, marker=clf_m, alpha=0.8)
+            # axes[2].scatter(plot_data_similar_v2[clf][0] if x_axis == "acc" else plot_data_similar_v2[clf][3] if x_axis == "f1" else plot_data_similar_v2[clf][5], plot_data_similar_v2[clf][4], c=plot_colors[3], s=ratio_dot_size, marker=clf_m, alpha=0.8)
+            axes.scatter(plot_data_similar_v2[clf][0] if x_axis == "acc" else plot_data_similar_v2[clf][3] if x_axis == "f1" else plot_data_similar_v2[clf][5], plot_data_similar_v2[clf][4], c=plot_colors[3], s=ratio_dot_size, marker=clf_m, alpha=0.8)
             # plot for multi_v1 method
-            axes[0].scatter(plot_data_multi_v1[clf][0] if x_axis == "acc" else plot_data_multi_v1[clf][3] if x_axis == "f1" else plot_data_multi_v1[clf][5], plot_data_multi_v1[clf][1], c=plot_colors[4], s=ratio_dot_size, marker=clf_m, alpha=0.8)
-            axes[1].scatter(plot_data_multi_v1[clf][0] if x_axis == "acc" else plot_data_multi_v1[clf][3] if x_axis == "f1" else plot_data_multi_v1[clf][5], plot_data_multi_v1[clf][2], c=plot_colors[4], s=ratio_dot_size, marker=clf_m, alpha=0.8)
-            axes[2].scatter(plot_data_multi_v1[clf][0] if x_axis == "acc" else plot_data_multi_v1[clf][3] if x_axis == "f1" else plot_data_multi_v1[clf][5], plot_data_multi_v1[clf][4], c=plot_colors[4], s=ratio_dot_size, marker=clf_m, alpha=0.8)
+            # axes[0].scatter(plot_data_multi_v1[clf][0] if x_axis == "acc" else plot_data_multi_v1[clf][3] if x_axis == "f1" else plot_data_multi_v1[clf][5], plot_data_multi_v1[clf][1], c=plot_colors[4], s=ratio_dot_size, marker=clf_m, alpha=0.8)
+            # axes[1].scatter(plot_data_multi_v1[clf][0] if x_axis == "acc" else plot_data_multi_v1[clf][3] if x_axis == "f1" else plot_data_multi_v1[clf][5], plot_data_multi_v1[clf][2], c=plot_colors[4], s=ratio_dot_size, marker=clf_m, alpha=0.8)
+            # axes[2].scatter(plot_data_multi_v1[clf][0] if x_axis == "acc" else plot_data_multi_v1[clf][3] if x_axis == "f1" else plot_data_multi_v1[clf][5], plot_data_multi_v1[clf][4], c=plot_colors[4], s=ratio_dot_size, marker=clf_m, alpha=0.8)
+            axes.scatter(plot_data_multi_v1[clf][0] if x_axis == "acc" else plot_data_multi_v1[clf][3] if x_axis == "f1" else plot_data_multi_v1[clf][5], plot_data_multi_v1[clf][4], c=plot_colors[4], s=ratio_dot_size, marker=clf_m, alpha=0.8)
             # plot for multi_v2 method
-            axes[0].scatter(plot_data_multi_v2[clf][0] if x_axis == "acc" else plot_data_multi_v2[clf][3] if x_axis == "f1" else plot_data_multi_v2[clf][5], plot_data_multi_v2[clf][1], c=plot_colors[5], s=ratio_dot_size, marker=clf_m, alpha=0.8)
-            axes[1].scatter(plot_data_multi_v2[clf][0] if x_axis == "acc" else plot_data_multi_v2[clf][3] if x_axis == "f1" else plot_data_multi_v2[clf][5], plot_data_multi_v2[clf][2], c=plot_colors[5], s=ratio_dot_size, marker=clf_m, alpha=0.8)
-            axes[2].scatter(plot_data_multi_v2[clf][0] if x_axis == "acc" else plot_data_multi_v2[clf][3] if x_axis == "f1" else plot_data_multi_v2[clf][5], plot_data_multi_v2[clf][4], c=plot_colors[5], s=ratio_dot_size, marker=clf_m, alpha=0.8)
+            # axes[0].scatter(plot_data_multi_v2[clf][0] if x_axis == "acc" else plot_data_multi_v2[clf][3] if x_axis == "f1" else plot_data_multi_v2[clf][5], plot_data_multi_v2[clf][1], c=plot_colors[5], s=ratio_dot_size, marker=clf_m, alpha=0.8)
+            # axes[1].scatter(plot_data_multi_v2[clf][0] if x_axis == "acc" else plot_data_multi_v2[clf][3] if x_axis == "f1" else plot_data_multi_v2[clf][5], plot_data_multi_v2[clf][2], c=plot_colors[5], s=ratio_dot_size, marker=clf_m, alpha=0.8)
+            # axes[2].scatter(plot_data_multi_v2[clf][0] if x_axis == "acc" else plot_data_multi_v2[clf][3] if x_axis == "f1" else plot_data_multi_v2[clf][5], plot_data_multi_v2[clf][4], c=plot_colors[5], s=ratio_dot_size, marker=clf_m, alpha=0.8)
+            axes.scatter(plot_data_multi_v2[clf][0] if x_axis == "acc" else plot_data_multi_v2[clf][3] if x_axis == "f1" else plot_data_multi_v2[clf][5], plot_data_multi_v2[clf][4], c=plot_colors[5], s=ratio_dot_size, marker=clf_m, alpha=0.8)
         else:
             # plot for mean_v1 method
-            axes[0].scatter(plot_data_mean_v1[clf][0] if x_axis == "acc" else plot_data_mean_v1[clf][3] if x_axis == "f1" else plot_data_mean_v1[clf][5], plot_data_mean_v1[clf][1], c=clf_c, s=ratio_dot_size, marker=plot_markers[0], alpha=0.8)
-            axes[1].scatter(plot_data_mean_v1[clf][0] if x_axis == "acc" else plot_data_mean_v1[clf][3] if x_axis == "f1" else plot_data_mean_v1[clf][5], plot_data_mean_v1[clf][2], c=clf_c, s=ratio_dot_size, marker=plot_markers[0], alpha=0.8)
-            axes[2].scatter(plot_data_mean_v1[clf][0] if x_axis == "acc" else plot_data_mean_v1[clf][3] if x_axis == "f1" else plot_data_mean_v1[clf][5], plot_data_mean_v1[clf][4], c=clf_c, s=ratio_dot_size, marker=plot_markers[0], alpha=0.8)
+            # axes[0].scatter(plot_data_mean_v1[clf][0] if x_axis == "acc" else plot_data_mean_v1[clf][3] if x_axis == "f1" else plot_data_mean_v1[clf][5], plot_data_mean_v1[clf][1], c=clf_c, s=ratio_dot_size, marker=plot_markers[0], alpha=0.8)
+            # axes[1].scatter(plot_data_mean_v1[clf][0] if x_axis == "acc" else plot_data_mean_v1[clf][3] if x_axis == "f1" else plot_data_mean_v1[clf][5], plot_data_mean_v1[clf][2], c=clf_c, s=ratio_dot_size, marker=plot_markers[0], alpha=0.8)
+            # axes[2].scatter(plot_data_mean_v1[clf][0] if x_axis == "acc" else plot_data_mean_v1[clf][3] if x_axis == "f1" else plot_data_mean_v1[clf][5], plot_data_mean_v1[clf][4], c=clf_c, s=ratio_dot_size, marker=plot_markers[0], alpha=0.8)
+            axes.scatter(plot_data_mean_v1[clf][0] if x_axis == "acc" else plot_data_mean_v1[clf][3] if x_axis == "f1" else plot_data_mean_v1[clf][5], plot_data_mean_v1[clf][4], c=clf_c, s=ratio_dot_size, marker=plot_markers[0], alpha=0.8)
             # plot for mean_v2 method
-            axes[0].scatter(plot_data_mean_v2[clf][0] if x_axis == "acc" else plot_data_mean_v2[clf][3] if x_axis == "f1" else plot_data_mean_v2[clf][5], plot_data_mean_v2[clf][1], c=clf_c, s=ratio_dot_size, marker=plot_markers[1], alpha=0.8)
-            axes[1].scatter(plot_data_mean_v2[clf][0] if x_axis == "acc" else plot_data_mean_v2[clf][3] if x_axis == "f1" else plot_data_mean_v2[clf][5], plot_data_mean_v2[clf][2], c=clf_c, s=ratio_dot_size, marker=plot_markers[1], alpha=0.8)
-            axes[2].scatter(plot_data_mean_v2[clf][0] if x_axis == "acc" else plot_data_mean_v2[clf][3] if x_axis == "f1" else plot_data_mean_v2[clf][5], plot_data_mean_v2[clf][4], c=clf_c, s=ratio_dot_size, marker=plot_markers[1], alpha=0.8)
+            # axes[0].scatter(plot_data_mean_v2[clf][0] if x_axis == "acc" else plot_data_mean_v2[clf][3] if x_axis == "f1" else plot_data_mean_v2[clf][5], plot_data_mean_v2[clf][1], c=clf_c, s=ratio_dot_size, marker=plot_markers[1], alpha=0.8)
+            # axes[1].scatter(plot_data_mean_v2[clf][0] if x_axis == "acc" else plot_data_mean_v2[clf][3] if x_axis == "f1" else plot_data_mean_v2[clf][5], plot_data_mean_v2[clf][2], c=clf_c, s=ratio_dot_size, marker=plot_markers[1], alpha=0.8)
+            # axes[2].scatter(plot_data_mean_v2[clf][0] if x_axis == "acc" else plot_data_mean_v2[clf][3] if x_axis == "f1" else plot_data_mean_v2[clf][5], plot_data_mean_v2[clf][4], c=clf_c, s=ratio_dot_size, marker=plot_markers[1], alpha=0.8)
+            axes.scatter(plot_data_mean_v2[clf][0] if x_axis == "acc" else plot_data_mean_v2[clf][3] if x_axis == "f1" else plot_data_mean_v2[clf][5], plot_data_mean_v2[clf][4], c=clf_c, s=ratio_dot_size, marker=plot_markers[1], alpha=0.8)
             # plot for similar_v1 method
-            axes[0].scatter(plot_data_similar_v1[clf][0] if x_axis == "acc" else plot_data_similar_v1[clf][3] if x_axis == "f1" else plot_data_similar_v1[clf][5], plot_data_similar_v1[clf][1], c=clf_c, s=ratio_dot_size, marker=plot_markers[2], alpha=0.8)
-            axes[1].scatter(plot_data_similar_v1[clf][0] if x_axis == "acc" else plot_data_similar_v1[clf][3] if x_axis == "f1" else plot_data_similar_v1[clf][5], plot_data_similar_v1[clf][2], c=clf_c, s=ratio_dot_size, marker=plot_markers[2], alpha=0.8)
-            axes[2].scatter(plot_data_similar_v1[clf][0] if x_axis == "acc" else plot_data_similar_v1[clf][3] if x_axis == "f1" else plot_data_similar_v1[clf][5], plot_data_similar_v1[clf][4], c=clf_c, s=ratio_dot_size, marker=plot_markers[2], alpha=0.8)
+            # axes[0].scatter(plot_data_similar_v1[clf][0] if x_axis == "acc" else plot_data_similar_v1[clf][3] if x_axis == "f1" else plot_data_similar_v1[clf][5], plot_data_similar_v1[clf][1], c=clf_c, s=ratio_dot_size, marker=plot_markers[2], alpha=0.8)
+            # axes[1].scatter(plot_data_similar_v1[clf][0] if x_axis == "acc" else plot_data_similar_v1[clf][3] if x_axis == "f1" else plot_data_similar_v1[clf][5], plot_data_similar_v1[clf][2], c=clf_c, s=ratio_dot_size, marker=plot_markers[2], alpha=0.8)
+            # axes[2].scatter(plot_data_similar_v1[clf][0] if x_axis == "acc" else plot_data_similar_v1[clf][3] if x_axis == "f1" else plot_data_similar_v1[clf][5], plot_data_similar_v1[clf][4], c=clf_c, s=ratio_dot_size, marker=plot_markers[2], alpha=0.8)
+            axes.scatter(plot_data_similar_v1[clf][0] if x_axis == "acc" else plot_data_similar_v1[clf][3] if x_axis == "f1" else plot_data_similar_v1[clf][5], plot_data_similar_v1[clf][4], c=clf_c, s=ratio_dot_size, marker=plot_markers[2], alpha=0.8)
             # plot for similar_v2 method
-            axes[0].scatter(plot_data_similar_v2[clf][0] if x_axis == "acc" else plot_data_similar_v2[clf][3] if x_axis == "f1" else plot_data_similar_v2[clf][5], plot_data_similar_v2[clf][1], c=clf_c, s=ratio_dot_size, marker=plot_markers[3], alpha=0.8)
-            axes[1].scatter(plot_data_similar_v2[clf][0] if x_axis == "acc" else plot_data_similar_v2[clf][3] if x_axis == "f1" else plot_data_similar_v2[clf][5], plot_data_similar_v2[clf][2], c=clf_c, s=ratio_dot_size, marker=plot_markers[3], alpha=0.8)
-            axes[2].scatter(plot_data_similar_v2[clf][0] if x_axis == "acc" else plot_data_similar_v2[clf][3] if x_axis == "f1" else plot_data_similar_v2[clf][5], plot_data_similar_v2[clf][4], c=clf_c, s=ratio_dot_size, marker=plot_markers[3], alpha=0.8)
+            # axes[0].scatter(plot_data_similar_v2[clf][0] if x_axis == "acc" else plot_data_similar_v2[clf][3] if x_axis == "f1" else plot_data_similar_v2[clf][5], plot_data_similar_v2[clf][1], c=clf_c, s=ratio_dot_size, marker=plot_markers[3], alpha=0.8)
+            # axes[1].scatter(plot_data_similar_v2[clf][0] if x_axis == "acc" else plot_data_similar_v2[clf][3] if x_axis == "f1" else plot_data_similar_v2[clf][5], plot_data_similar_v2[clf][2], c=clf_c, s=ratio_dot_size, marker=plot_markers[3], alpha=0.8)
+            # axes[2].scatter(plot_data_similar_v2[clf][0] if x_axis == "acc" else plot_data_similar_v2[clf][3] if x_axis == "f1" else plot_data_similar_v2[clf][5], plot_data_similar_v2[clf][4], c=clf_c, s=ratio_dot_size, marker=plot_markers[3], alpha=0.8)
+            axes.scatter(plot_data_similar_v2[clf][0] if x_axis == "acc" else plot_data_similar_v2[clf][3] if x_axis == "f1" else plot_data_similar_v2[clf][5], plot_data_similar_v2[clf][4], c=clf_c, s=ratio_dot_size, marker=plot_markers[3], alpha=0.8)
             # plot for multi_v1 method
-            axes[0].scatter(plot_data_multi_v1[clf][0] if x_axis == "acc" else plot_data_multi_v1[clf][3] if x_axis == "f1" else plot_data_multi_v1[clf][5], plot_data_multi_v1[clf][1], c=clf_c, s=ratio_dot_size, marker=plot_markers[4], alpha=0.8)
-            axes[1].scatter(plot_data_multi_v1[clf][0] if x_axis == "acc" else plot_data_multi_v1[clf][3] if x_axis == "f1" else plot_data_multi_v1[clf][5], plot_data_multi_v1[clf][2], c=clf_c, s=ratio_dot_size, marker=plot_markers[4], alpha=0.8)
-            axes[2].scatter(plot_data_multi_v1[clf][0] if x_axis == "acc" else plot_data_multi_v1[clf][3] if x_axis == "f1" else plot_data_multi_v1[clf][5], plot_data_multi_v1[clf][4], c=clf_c, s=ratio_dot_size, marker=plot_markers[4], alpha=0.8)
+            # axes[0].scatter(plot_data_multi_v1[clf][0] if x_axis == "acc" else plot_data_multi_v1[clf][3] if x_axis == "f1" else plot_data_multi_v1[clf][5], plot_data_multi_v1[clf][1], c=clf_c, s=ratio_dot_size, marker=plot_markers[4], alpha=0.8)
+            # axes[1].scatter(plot_data_multi_v1[clf][0] if x_axis == "acc" else plot_data_multi_v1[clf][3] if x_axis == "f1" else plot_data_multi_v1[clf][5], plot_data_multi_v1[clf][2], c=clf_c, s=ratio_dot_size, marker=plot_markers[4], alpha=0.8)
+            # axes[2].scatter(plot_data_multi_v1[clf][0] if x_axis == "acc" else plot_data_multi_v1[clf][3] if x_axis == "f1" else plot_data_multi_v1[clf][5], plot_data_multi_v1[clf][4], c=clf_c, s=ratio_dot_size, marker=plot_markers[4], alpha=0.8)
+            axes.scatter(plot_data_multi_v1[clf][0] if x_axis == "acc" else plot_data_multi_v1[clf][3] if x_axis == "f1" else plot_data_multi_v1[clf][5], plot_data_multi_v1[clf][4], c=clf_c, s=ratio_dot_size, marker=plot_markers[4], alpha=0.8)
             # plot for multi_v2 method
-            axes[0].scatter(plot_data_multi_v2[clf][0] if x_axis == "acc" else plot_data_multi_v2[clf][3] if x_axis == "f1" else plot_data_multi_v2[clf][5], plot_data_multi_v2[clf][1], c=clf_c, s=ratio_dot_size, marker=plot_markers[5], alpha=0.8)
-            axes[1].scatter(plot_data_multi_v2[clf][0] if x_axis == "acc" else plot_data_multi_v2[clf][3] if x_axis == "f1" else plot_data_multi_v2[clf][5], plot_data_multi_v2[clf][2], c=clf_c, s=ratio_dot_size, marker=plot_markers[5], alpha=0.8)
-            axes[2].scatter(plot_data_multi_v2[clf][0] if x_axis == "acc" else plot_data_multi_v2[clf][3] if x_axis == "f1" else plot_data_multi_v2[clf][5], plot_data_multi_v2[clf][4], c=clf_c, s=ratio_dot_size, marker=plot_markers[5], alpha=0.8)
+            # axes[0].scatter(plot_data_multi_v2[clf][0] if x_axis == "acc" else plot_data_multi_v2[clf][3] if x_axis == "f1" else plot_data_multi_v2[clf][5], plot_data_multi_v2[clf][1], c=clf_c, s=ratio_dot_size, marker=plot_markers[5], alpha=0.8)
+            # axes[1].scatter(plot_data_multi_v2[clf][0] if x_axis == "acc" else plot_data_multi_v2[clf][3] if x_axis == "f1" else plot_data_multi_v2[clf][5], plot_data_multi_v2[clf][2], c=clf_c, s=ratio_dot_size, marker=plot_markers[5], alpha=0.8)
+            # axes[2].scatter(plot_data_multi_v2[clf][0] if x_axis == "acc" else plot_data_multi_v2[clf][3] if x_axis == "f1" else plot_data_multi_v2[clf][5], plot_data_multi_v2[clf][4], c=clf_c, s=ratio_dot_size, marker=plot_markers[5], alpha=0.8)
+            axes.scatter(plot_data_multi_v2[clf][0] if x_axis == "acc" else plot_data_multi_v2[clf][3] if x_axis == "f1" else plot_data_multi_v2[clf][5], plot_data_multi_v2[clf][4], c=clf_c, s=ratio_dot_size, marker=plot_markers[5], alpha=0.8)
     if y_scale:
-        axes[0].set_yscale(y_scale)
-        axes[1].set_yscale(y_scale)
-        axes[2].set_yscale(y_scale)
+        # axes[0].set_yscale(y_scale)
+        # axes[1].set_yscale(y_scale)
+        # axes[2].set_yscale(y_scale)
+        axes.set_yscale(y_scale)
     if switch:
-        custom_legend = [Line2D([0], [0], color='w', markerfacecolor="black", marker=x, label=y, markersize=10) for x,y in zip(plot_markers, classifiers)]
-        custom_legend.append(Line2D([0], [0], markersize=10, markerfacecolor=plot_colors[0], marker="o", label="mean_v1"))
-        custom_legend.append(Line2D([0], [0], markersize=10, markerfacecolor=plot_colors[1], marker="o", label="mean_v2"))
-        custom_legend.append(Line2D([0], [0], markersize=10, markerfacecolor=plot_colors[2], marker="o", label="similar_v1"))
-        custom_legend.append(Line2D([0], [0], markersize=10, markerfacecolor=plot_colors[3], marker="o", label="similar_v2"))
-        custom_legend.append(Line2D([0], [0], markersize=10, markerfacecolor=plot_colors[4], marker="o", label="multi_v1"))
-        custom_legend.append(Line2D([0], [0], markersize=10, markerfacecolor=plot_colors[5], marker="o", label="multi_v2"))
+        custom_legend = [Line2D([0], [0], color='w', markerfacecolor="black", marker=x, label=y, markersize=10) for x,y in zip(plot_markers, classifiers_realnames)]
+        custom_legend.append(Line2D([0], [0], markersize=10, markerfacecolor=plot_colors[0], marker="o", label="mean"))
+        custom_legend.append(Line2D([0], [0], markersize=10, markerfacecolor=plot_colors[1], marker="o", label="mean (FO)"))
+        custom_legend.append(Line2D([0], [0], markersize=10, markerfacecolor=plot_colors[2], marker="o", label="similar"))
+        custom_legend.append(Line2D([0], [0], markersize=10, markerfacecolor=plot_colors[3], marker="o", label="similar (FO)"))
+        custom_legend.append(Line2D([0], [0], markersize=10, markerfacecolor=plot_colors[4], marker="o", label="multi"))
+        custom_legend.append(Line2D([0], [0], markersize=10, markerfacecolor=plot_colors[5], marker="o", label="multi (FO)"))
     else:
-        custom_legend = [Line2D([0], [0], markerfacecolor=x, marker="o", label=y, markersize=10) for x,y in zip(plot_colors, classifiers)]
-        custom_legend.append(Line2D([0], [0], color='w', markersize=10, markerfacecolor="black", marker=plot_markers[0], label="mean_v1"))
-        custom_legend.append(Line2D([0], [0], color='w', markersize=10, markerfacecolor="black", marker=plot_markers[1], label="mean_v2"))
-        custom_legend.append(Line2D([0], [0], color='w', markersize=10, markerfacecolor="black", marker=plot_markers[2], label="similar_v1"))
-        custom_legend.append(Line2D([0], [0], color='w', markersize=10, markerfacecolor="black", marker=plot_markers[3], label="similar_v2"))
-        custom_legend.append(Line2D([0], [0], color='w', markersize=10, markerfacecolor="black", marker=plot_markers[4], label="multi_v1"))
-        custom_legend.append(Line2D([0], [0], color='w', markersize=10, markerfacecolor="black", marker=plot_markers[5], label="multi_v2"))
+        custom_legend = [Line2D([0], [0], markerfacecolor=x, marker="o", label=y, markersize=10) for x,y in zip(plot_colors, classifiers_realnames)]
+        custom_legend.append(Line2D([0], [0], color='w', markersize=10, markerfacecolor="black", marker=plot_markers[0], label="mean"))
+        custom_legend.append(Line2D([0], [0], color='w', markersize=10, markerfacecolor="black", marker=plot_markers[1], label="mean (FO)"))
+        custom_legend.append(Line2D([0], [0], color='w', markersize=10, markerfacecolor="black", marker=plot_markers[2], label="similar"))
+        custom_legend.append(Line2D([0], [0], color='w', markersize=10, markerfacecolor="black", marker=plot_markers[3], label="similar (FO)"))
+        custom_legend.append(Line2D([0], [0], color='w', markersize=10, markerfacecolor="black", marker=plot_markers[4], label="multi"))
+        custom_legend.append(Line2D([0], [0], color='w', markersize=10, markerfacecolor="black", marker=plot_markers[5], label="multi (FO)"))
     plt.legend(handles=custom_legend, bbox_to_anchor=(1, 0.6))
     fig.tight_layout()
-    fig.suptitle(title)
-    plt.subplots_adjust(top=0.94)
+    # fig.suptitle(title)
+    # plt.subplots_adjust(top=0.94)
     if file_name:
         plt.savefig(file_name, transparent=False, bbox_inches='tight', pad_inches=0.1)
     plt.show(block=False)
@@ -716,43 +735,43 @@ def plot_all(data_folder, plot_folder, name):
         print("Generating plot for mean_v1.pkl ({})".format(name))
         with open(os.path.join(data_folder, "mean_v1.pkl"), "rb") as inFile:
             data = pickle.load(inFile)
-        plot_func(data, "Complete by Mean V1 ({})".format(name), os.path.join(plot_folder, "ratio_mean_v1.png"))
-        plot_func(data, "Complete by Mean V1 ({})".format(name), os.path.join(plot_folder, "ratio_mean_v1_scaled.png"), yscale="log")
+        plot_func(data, "Mean Imputation V1 ({})".format(name), os.path.join(plot_folder, "ratio_mean_v1.png"))
+        plot_func(data, "Mean Imputation V1 ({})".format(name), os.path.join(plot_folder, "ratio_mean_v1_scaled.png"), yscale="log")
     # generate plot for mean_v2.pkl
     if os.path.exists(os.path.join(data_folder, "mean_v2.pkl")) and PLOT_CREATE_MEAN_V1:
         print("Generating plot for mean_v2.pkl ({})".format(name))
         with open(os.path.join(data_folder, "mean_v2.pkl"), "rb") as inFile:
             data = pickle.load(inFile)
-        plot_func(data, "Complete by Mean V2 ({})".format(name), os.path.join(plot_folder, "ratio_mean_v2.png"))
-        plot_func(data, "Complete by Mean V2 ({})".format(name), os.path.join(plot_folder, "ratio_mean_v2_scaled.png"), yscale="log")
+        plot_func(data, "Mean Imputation V2 ({})".format(name), os.path.join(plot_folder, "ratio_mean_v2.png"))
+        plot_func(data, "Mean Imputation V2 ({})".format(name), os.path.join(plot_folder, "ratio_mean_v2_scaled.png"), yscale="log")
     # generate plot for similar_v1.pkl
     if os.path.exists(os.path.join(data_folder, "similar_v1.pkl")) and PLOT_CREATE_SIMILAR_V1:
         print("Generating plot for similar_v1.pkl ({})".format(name))
         with open(os.path.join(data_folder, "similar_v1.pkl"), "rb") as inFile:
             data = pickle.load(inFile)
-        plot_func(data, "Complete by Similar V1 ({})".format(name), os.path.join(plot_folder, "ratio_similar_v1.png"))
-        plot_func(data, "Complete by Similar V1 ({})".format(name), os.path.join(plot_folder, "ratio_similar_v1_scaled.png"), yscale="log")
+        plot_func(data, "Similar Imputation V1 ({})".format(name), os.path.join(plot_folder, "ratio_similar_v1.png"))
+        plot_func(data, "Similar Imputation V1 ({})".format(name), os.path.join(plot_folder, "ratio_similar_v1_scaled.png"), yscale="log")
     # generate plot for similar_v2.pkl
     if os.path.exists(os.path.join(data_folder, "similar_v2.pkl")) and PLOT_CREATE_SIMILAR_V2:
         print("Generating plot for similar_v2.pkl ({})".format(name))
         with open(os.path.join(data_folder, "similar_v2.pkl"), "rb") as inFile:
             data = pickle.load(inFile)
-        plot_func(data, "Complete by Similar V2 ({})".format(name), os.path.join(plot_folder, "ratio_similar_v2.png"))
-        plot_func(data, "Complete by Similar V2 ({})".format(name), os.path.join(plot_folder, "ratio_similar_v2_scaled.png"), yscale="log")
+        plot_func(data, "Similar Imputation V2 ({})".format(name), os.path.join(plot_folder, "ratio_similar_v2.png"))
+        plot_func(data, "Similar Imputation V2 ({})".format(name), os.path.join(plot_folder, "ratio_similar_v2_scaled.png"), yscale="log")
     # generate plot for multi_v1.pkl
     if os.path.exists(os.path.join(data_folder, "multi_v1.pkl")) and PLOT_CREATE_MULTI_V1:
         print("Generating plot for multi_v1.pkl ({})".format(name))
         with open(os.path.join(data_folder, "multi_v1.pkl"), "rb") as inFile:
             data = pickle.load(inFile)
-        plot_func(data, "Complete by Multiple Imputation V1 ({})".format(name), os.path.join(plot_folder, "ratio_multi_v1.png"))
-        plot_func(data, "Complete by Multiple Imputation V1 ({})".format(name), os.path.join(plot_folder, "ratio_multi_v1_scaled.png"), yscale="log")
+        plot_func(data, "Multiple Imputation V1 ({})".format(name), os.path.join(plot_folder, "ratio_multi_v1.png"))
+        plot_func(data, "Multiple Imputation V1 ({})".format(name), os.path.join(plot_folder, "ratio_multi_v1_scaled.png"), yscale="log")
     # generate plot for multi_v2.pkl
     if os.path.exists(os.path.join(data_folder, "multi_v2.pkl")) and PLOT_CREATE_MULTI_V1:
         print("Generating plot for multi_v2.pkl ({})".format(name))
         with open(os.path.join(data_folder, "multi_v2.pkl"), "rb") as inFile:
             data = pickle.load(inFile)
-        plot_func(data, "Complete by Multiple Imputation V2 ({})".format(name), os.path.join(plot_folder, "ratio_multi_v2.png"))
-        plot_func(data, "Complete by Multiple Imputation V2 ({})".format(name), os.path.join(plot_folder, "ratio_multi_v2_scaled.png"), yscale="log")
+        plot_func(data, "Multiple Imputation V2 ({})".format(name), os.path.join(plot_folder, "ratio_multi_v2.png"))
+        plot_func(data, "Multiple Imputation V2 ({})".format(name), os.path.join(plot_folder, "ratio_multi_v2_scaled.png"), yscale="log")
     # generate pareto front plots
     if  os.path.exists(os.path.join(data_folder, "mean_v1.pkl")) and \
         os.path.exists(os.path.join(data_folder, "mean_v2.pkl")) and \
@@ -784,10 +803,12 @@ def plot_all(data_folder, plot_folder, name):
             plot_func_pareto_front(data, "Pareto Front (Confusion Matrix F1 Score) ({})".format(name), os.path.join(plot_folder, "pareto_front_f1_scaled.png"), y_scale="log", x_axis="f1")
         if PLOT_PARETO_FRONTIER_REALACC:
             print("Generate plots for pareto front real acc ({})".format(name))
-            plot_func_pareto_front(data, "Pareto Front (Real Accuracy) ({})".format(name), os.path.join(plot_folder, "pareto_front_realacc.png"), x_axis="realacc")
-            plot_func_pareto_front(data, "Pareto Front (Real Accuracy) ({})".format(name), os.path.join(plot_folder, "pareto_front_realacc_scaled.png"), y_scale="log", x_axis="realacc")
+            plot_func_pareto_front(data, "Pareto Front ({})".format(name), os.path.join(plot_folder, "pareto_front_{}.png".format(name)), x_axis="realacc")
+            # plot_func_pareto_front(data, "Pareto Front ({})".format(name), os.path.join(plot_folder, "pareto_front_realacc_scaled.png"), y_scale="log", x_axis="realacc")
 
 if __name__=="__main__":
+    plt.rcParams.update({'font.size': 12})
+
     if not os.path.exists("ratio_analysis_plots"):
         os.makedirs("ratio_analysis_plots")
     for tt in NAME_TARGETS:
@@ -804,26 +825,26 @@ if __name__=="__main__":
         plot_debug_func(file_name=os.path.join("ratio_analysis_plots", "debug_plot_mean_v1.png"))
 
     if PLOT_ADULT_ACC:
-        plot_all(os.path.join("condor_outputs", "acc", "adult"), os.path.join("ratio_analysis_plots", "acc", "adult"), "adult acc")
+        plot_all(os.path.join("condor_outputs", "acc", "adult"), os.path.join("ratio_analysis_plots", "acc", "adult"), "adult")
     if PLOT_ADULT_F1:
         plot_all(os.path.join("condor_outputs", "f1", "adult"), os.path.join("ratio_analysis_plots", "f1", "adult"), "adult f1")
     if PLOT_COMPAS_ACC:
-        plot_all(os.path.join("condor_outputs", "acc", "compas"), os.path.join("ratio_analysis_plots", "acc", "compas"), "compas acc")
+        plot_all(os.path.join("condor_outputs", "acc", "compas"), os.path.join("ratio_analysis_plots", "acc", "compas"), "compas")
     if PLOT_COMPAS_F1:
         plot_all(os.path.join("condor_outputs", "f1", "compas"), os.path.join("ratio_analysis_plots", "f1", "compas"), "compas f1")
     if PLOT_TITANIC_ACC:
-        plot_all(os.path.join("condor_outputs", "acc", "titanic"), os.path.join("ratio_analysis_plots", "acc", "titanic"), "titanic acc")
+        plot_all(os.path.join("condor_outputs", "acc", "titanic"), os.path.join("ratio_analysis_plots", "acc", "titanic"), "titanic")
     if PLOT_TITANIC_F1:
         plot_all(os.path.join("condor_outputs", "f1", "titanic"), os.path.join("ratio_analysis_plots", "f1", "titanic"), "titanic f1")
     if PLOT_GERMAN_ACC:
-        plot_all(os.path.join("condor_outputs", "acc", "german"), os.path.join("ratio_analysis_plots", "acc", "german"), "german acc")
+        plot_all(os.path.join("condor_outputs", "acc", "german"), os.path.join("ratio_analysis_plots", "acc", "german"), "german")
     if PLOT_GERMAN_F1:
         plot_all(os.path.join("condor_outputs", "f1", "german"), os.path.join("ratio_analysis_plots", "f1", "german"), "german f1")
     if PLOT_COMMUNITIES_ACC:
-        plot_all(os.path.join("condor_outputs", "acc", "communities"), os.path.join("ratio_analysis_plots", "acc", "communities"), "communities acc")
+        plot_all(os.path.join("condor_outputs", "acc", "communities"), os.path.join("ratio_analysis_plots", "acc", "communities"), "communities")
     if PLOT_COMMUNITIES_F1:
         plot_all(os.path.join("condor_outputs", "f1", "communities"), os.path.join("ratio_analysis_plots", "f1", "communities"), "communities f1")
     if PLOT_BANK_ACC:
-        plot_all(os.path.join("condor_outputs", "acc", "bank"), os.path.join("ratio_analysis_plots", "acc", "bank"), "bank acc")
+        plot_all(os.path.join("condor_outputs", "acc", "bank"), os.path.join("ratio_analysis_plots", "acc", "bank"), "bank")
     if PLOT_BANK_F1:
         plot_all(os.path.join("condor_outputs", "f1", "bank"), os.path.join("ratio_analysis_plots", "f1", "bank"), "bank f1")
