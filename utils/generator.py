@@ -158,7 +158,7 @@ def gen_random(data, columns_observed=[], print_time=False, print_all=True, rang
     return data
 
 def gen_not_random(data, print_time=False, print_all=True, range_min=0.1, range_max=0.3, scalar_0=0.05, scalar_1=2):
-    """Missing Not At Random (MNAR)
+    """Not Missing At Random (NMAR)
 
     ### Args
     
