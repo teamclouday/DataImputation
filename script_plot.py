@@ -35,16 +35,16 @@ PLOT_BANK_F1            = False
 
 TRANSFORM_OUTPUTS       = True
 
-PLOT_CREATE_MEAN_V1     = False
-PLOT_CREATE_MEAN_V2     = False
-PLOT_CREATE_SIMILAR_V1  = False
-PLOT_CREATE_SIMILAR_V2  = False
-PLOT_CREATE_MULTI_V1    = False
-PLOT_CREATE_MULTI_V2    = False
+PLOT_CREATE_MEAN_V1     = True
+PLOT_CREATE_MEAN_V2     = True
+PLOT_CREATE_SIMILAR_V1  = True
+PLOT_CREATE_SIMILAR_V2  = True
+PLOT_CREATE_MULTI_V1    = True
+PLOT_CREATE_MULTI_V2    = True
 
 PLOT_PARETO_FRONTIER_ACC     = False
 PLOT_PARETO_FRONTIER_F1      = False
-PLOT_PARETO_FRONTIER_REALACC = True
+PLOT_PARETO_FRONTIER_REALACC = False
 
 PLOT_DEBUG_FUNCTION     = False
 
@@ -52,6 +52,7 @@ def plot_func(data, method_name, file_name=None, yscale=None, plot_error=True):
     if not INCOMPLETE_MODE:
         assert len(data) == (iter_per_ratio * len(random_ratios))
     classifiers = ["KNN", "LinearSVC", "Forest", "LogReg", "Tree", "MLP"]
+    classifiers_names = ["KNN", "SVM", "Forest", "LR", "Tree", "MLP"]
     plot_bias1 = {}
     plot_bias2 = {}
     plot_acc = {}
@@ -172,9 +173,9 @@ def plot_func(data, method_name, file_name=None, yscale=None, plot_error=True):
     axes[0].set_title("Accuracy")
     for i, clf in enumerate(classifiers):
         if plot_error:
-            axes[0].errorbar(random_ratios+(i-3)*plot_gap, plot_realacc[clf][0], yerr=plot_realacc[clf][1], label=clf)
+            axes[0].errorbar(random_ratios+(i-3)*plot_gap, plot_realacc[clf][0], yerr=plot_realacc[clf][1], label=classifiers_names[i])
         else:
-            axes[0].plot(random_ratios+(i-3)*plot_gap, plot_realacc[clf][0], label=clf)
+            axes[0].plot(random_ratios+(i-3)*plot_gap, plot_realacc[clf][0], label=classifiers_names[i])
         axes[0].scatter(random_ratios+(i-3)*plot_gap, plot_realacc[clf][0], s=2)
     axes[0].legend(loc="best")
     axes[0].set_xticks(np.arange(0.0, 1.0, 0.05))
@@ -184,17 +185,17 @@ def plot_func(data, method_name, file_name=None, yscale=None, plot_error=True):
     axes[1].set_title("Bias")
     for i, clf in enumerate(classifiers):
         if plot_error:
-            axes[1].errorbar(random_ratios+(i-3)*plot_gap, plot_newbias[clf][0], yerr=plot_newbias[clf][1], label=clf)
+            axes[1].errorbar(random_ratios+(i-3)*plot_gap, plot_newbias[clf][0], yerr=plot_newbias[clf][1], label=classifiers_names[i])
         else:
-            axes[1].plot(random_ratios+(i-3)*plot_gap, plot_newbias[clf][0], label=clf)
+            axes[1].plot(random_ratios+(i-3)*plot_gap, plot_newbias[clf][0], label=classifiers_names[i])
         axes[1].scatter(random_ratios+(i-3)*plot_gap, plot_newbias[clf][0], s=2)
     axes[1].legend(loc="best")
     axes[1].set_xticks(np.arange(0.0, 1.0, 0.05))
     if yscale:
         axes[1].set_yscale(yscale)
     fig.tight_layout()
-    fig.suptitle("Imputation Method: {}".format(method_name))
-    plt.subplots_adjust(top=0.94)
+    # fig.suptitle("Imputation Method: {}".format(method_name))
+    # plt.subplots_adjust(top=0.94)
     if file_name:
         fig.savefig(file_name, transparent=False, bbox_inches='tight', pad_inches=0.1)
     plt.show(block=False)
@@ -735,43 +736,43 @@ def plot_all(data_folder, plot_folder, name):
         print("Generating plot for mean_v1.pkl ({})".format(name))
         with open(os.path.join(data_folder, "mean_v1.pkl"), "rb") as inFile:
             data = pickle.load(inFile)
-        plot_func(data, "Mean Imputation V1 ({})".format(name), os.path.join(plot_folder, "ratio_mean_v1.png"))
-        plot_func(data, "Mean Imputation V1 ({})".format(name), os.path.join(plot_folder, "ratio_mean_v1_scaled.png"), yscale="log")
+        plot_func(data, "Mean Imputation V1 ({})".format(name), os.path.join(plot_folder, "{}_mean_v1.png".format(name)))
+        # plot_func(data, "Mean Imputation V1 ({})".format(name), os.path.join(plot_folder, "ratio_mean_v1_scaled.png"), yscale="log")
     # generate plot for mean_v2.pkl
     if os.path.exists(os.path.join(data_folder, "mean_v2.pkl")) and PLOT_CREATE_MEAN_V1:
         print("Generating plot for mean_v2.pkl ({})".format(name))
         with open(os.path.join(data_folder, "mean_v2.pkl"), "rb") as inFile:
             data = pickle.load(inFile)
-        plot_func(data, "Mean Imputation V2 ({})".format(name), os.path.join(plot_folder, "ratio_mean_v2.png"))
-        plot_func(data, "Mean Imputation V2 ({})".format(name), os.path.join(plot_folder, "ratio_mean_v2_scaled.png"), yscale="log")
+        plot_func(data, "Mean Imputation V2 ({})".format(name), os.path.join(plot_folder, "{}_mean_v2.png".format(name)))
+        # plot_func(data, "Mean Imputation V2 ({})".format(name), os.path.join(plot_folder, "ratio_mean_v2_scaled.png"), yscale="log")
     # generate plot for similar_v1.pkl
     if os.path.exists(os.path.join(data_folder, "similar_v1.pkl")) and PLOT_CREATE_SIMILAR_V1:
         print("Generating plot for similar_v1.pkl ({})".format(name))
         with open(os.path.join(data_folder, "similar_v1.pkl"), "rb") as inFile:
             data = pickle.load(inFile)
-        plot_func(data, "Similar Imputation V1 ({})".format(name), os.path.join(plot_folder, "ratio_similar_v1.png"))
-        plot_func(data, "Similar Imputation V1 ({})".format(name), os.path.join(plot_folder, "ratio_similar_v1_scaled.png"), yscale="log")
+        plot_func(data, "Similar Imputation V1 ({})".format(name), os.path.join(plot_folder, "{}_similar_v1.png".format(name)))
+        # plot_func(data, "Similar Imputation V1 ({})".format(name), os.path.join(plot_folder, "ratio_similar_v1_scaled.png"), yscale="log")
     # generate plot for similar_v2.pkl
     if os.path.exists(os.path.join(data_folder, "similar_v2.pkl")) and PLOT_CREATE_SIMILAR_V2:
         print("Generating plot for similar_v2.pkl ({})".format(name))
         with open(os.path.join(data_folder, "similar_v2.pkl"), "rb") as inFile:
             data = pickle.load(inFile)
-        plot_func(data, "Similar Imputation V2 ({})".format(name), os.path.join(plot_folder, "ratio_similar_v2.png"))
-        plot_func(data, "Similar Imputation V2 ({})".format(name), os.path.join(plot_folder, "ratio_similar_v2_scaled.png"), yscale="log")
+        plot_func(data, "Similar Imputation V2 ({})".format(name), os.path.join(plot_folder, "{}_similar_v2.png".format(name)))
+        # plot_func(data, "Similar Imputation V2 ({})".format(name), os.path.join(plot_folder, "ratio_similar_v2_scaled.png"), yscale="log")
     # generate plot for multi_v1.pkl
     if os.path.exists(os.path.join(data_folder, "multi_v1.pkl")) and PLOT_CREATE_MULTI_V1:
         print("Generating plot for multi_v1.pkl ({})".format(name))
         with open(os.path.join(data_folder, "multi_v1.pkl"), "rb") as inFile:
             data = pickle.load(inFile)
-        plot_func(data, "Multiple Imputation V1 ({})".format(name), os.path.join(plot_folder, "ratio_multi_v1.png"))
-        plot_func(data, "Multiple Imputation V1 ({})".format(name), os.path.join(plot_folder, "ratio_multi_v1_scaled.png"), yscale="log")
+        plot_func(data, "Multiple Imputation V1 ({})".format(name), os.path.join(plot_folder, "{}_multi_v1.png".format(name)))
+        # plot_func(data, "Multiple Imputation V1 ({})".format(name), os.path.join(plot_folder, "ratio_multi_v1_scaled.png"), yscale="log")
     # generate plot for multi_v2.pkl
     if os.path.exists(os.path.join(data_folder, "multi_v2.pkl")) and PLOT_CREATE_MULTI_V1:
         print("Generating plot for multi_v2.pkl ({})".format(name))
         with open(os.path.join(data_folder, "multi_v2.pkl"), "rb") as inFile:
             data = pickle.load(inFile)
-        plot_func(data, "Multiple Imputation V2 ({})".format(name), os.path.join(plot_folder, "ratio_multi_v2.png"))
-        plot_func(data, "Multiple Imputation V2 ({})".format(name), os.path.join(plot_folder, "ratio_multi_v2_scaled.png"), yscale="log")
+        plot_func(data, "Multiple Imputation V2 ({})".format(name), os.path.join(plot_folder, "{}_multi_v2.png".format(name)))
+        # plot_func(data, "Multiple Imputation V2 ({})".format(name), os.path.join(plot_folder, "ratio_multi_v2_scaled.png"), yscale="log")
     # generate pareto front plots
     if  os.path.exists(os.path.join(data_folder, "mean_v1.pkl")) and \
         os.path.exists(os.path.join(data_folder, "mean_v2.pkl")) and \
@@ -796,11 +797,11 @@ def plot_all(data_folder, plot_folder, name):
         if PLOT_PARETO_FRONTIER_ACC:
             print("Generate plots for pareto front acc ({})".format(name))
             plot_func_pareto_front(data, "Pareto Front (Confusion Matrix Accuracy) ({})".format(name), os.path.join(plot_folder, "pareto_front_acc.png"), x_axis="acc")
-            plot_func_pareto_front(data, "Pareto Front (Confusion Matrix Accuracy) ({})".format(name), os.path.join(plot_folder, "pareto_front_acc_scaled.png"), y_scale="log", x_axis="acc")
+            # plot_func_pareto_front(data, "Pareto Front (Confusion Matrix Accuracy) ({})".format(name), os.path.join(plot_folder, "pareto_front_acc_scaled.png"), y_scale="log", x_axis="acc")
         if PLOT_PARETO_FRONTIER_F1:
             print("Generate plots for pareto front f1 ({})".format(name))
             plot_func_pareto_front(data, "Pareto Front (Confusion Matrix F1 Score) ({})".format(name), os.path.join(plot_folder, "pareto_front_f1.png"), x_axis="f1")
-            plot_func_pareto_front(data, "Pareto Front (Confusion Matrix F1 Score) ({})".format(name), os.path.join(plot_folder, "pareto_front_f1_scaled.png"), y_scale="log", x_axis="f1")
+            # plot_func_pareto_front(data, "Pareto Front (Confusion Matrix F1 Score) ({})".format(name), os.path.join(plot_folder, "pareto_front_f1_scaled.png"), y_scale="log", x_axis="f1")
         if PLOT_PARETO_FRONTIER_REALACC:
             print("Generate plots for pareto front real acc ({})".format(name))
             plot_func_pareto_front(data, "Pareto Front ({})".format(name), os.path.join(plot_folder, "pareto_front_{}.png".format(name)), x_axis="realacc")
