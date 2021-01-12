@@ -35,16 +35,16 @@ PLOT_BANK_F1            = False
 
 TRANSFORM_OUTPUTS       = True
 
-PLOT_CREATE_MEAN_V1     = True
-PLOT_CREATE_MEAN_V2     = True
-PLOT_CREATE_SIMILAR_V1  = True
-PLOT_CREATE_SIMILAR_V2  = True
-PLOT_CREATE_MULTI_V1    = True
-PLOT_CREATE_MULTI_V2    = True
+PLOT_CREATE_MEAN_V1     = False
+PLOT_CREATE_MEAN_V2     = False
+PLOT_CREATE_SIMILAR_V1  = False
+PLOT_CREATE_SIMILAR_V2  = False
+PLOT_CREATE_MULTI_V1    = False
+PLOT_CREATE_MULTI_V2    = False
 
 PLOT_PARETO_FRONTIER_ACC     = False
 PLOT_PARETO_FRONTIER_F1      = False
-PLOT_PARETO_FRONTIER_REALACC = False
+PLOT_PARETO_FRONTIER_REALACC = True
 
 PLOT_DEBUG_FUNCTION     = False
 
@@ -554,19 +554,19 @@ def plot_func_pareto_front(data, title, file_name=None, y_scale=None, switch=Fal
     if switch:
         custom_legend = [Line2D([0], [0], color='w', markerfacecolor="black", marker=x, label=y, markersize=10) for x,y in zip(plot_markers, classifiers_realnames)]
         custom_legend.append(Line2D([0], [0], markersize=10, markerfacecolor=plot_colors[0], marker="o", label="mean"))
-        custom_legend.append(Line2D([0], [0], markersize=10, markerfacecolor=plot_colors[1], marker="o", label="mean (FO)"))
+        custom_legend.append(Line2D([0], [0], markersize=10, markerfacecolor=plot_colors[1], marker="o", label="IFO-mean"))
         custom_legend.append(Line2D([0], [0], markersize=10, markerfacecolor=plot_colors[2], marker="o", label="similar"))
-        custom_legend.append(Line2D([0], [0], markersize=10, markerfacecolor=plot_colors[3], marker="o", label="similar (FO)"))
+        custom_legend.append(Line2D([0], [0], markersize=10, markerfacecolor=plot_colors[3], marker="o", label="IFO-similar"))
         custom_legend.append(Line2D([0], [0], markersize=10, markerfacecolor=plot_colors[4], marker="o", label="multi"))
-        custom_legend.append(Line2D([0], [0], markersize=10, markerfacecolor=plot_colors[5], marker="o", label="multi (FO)"))
+        custom_legend.append(Line2D([0], [0], markersize=10, markerfacecolor=plot_colors[5], marker="o", label="IFO-multi"))
     else:
         custom_legend = [Line2D([0], [0], markerfacecolor=x, marker="o", label=y, markersize=10) for x,y in zip(plot_colors, classifiers_realnames)]
         custom_legend.append(Line2D([0], [0], color='w', markersize=10, markerfacecolor="black", marker=plot_markers[0], label="mean"))
-        custom_legend.append(Line2D([0], [0], color='w', markersize=10, markerfacecolor="black", marker=plot_markers[1], label="mean (FO)"))
+        custom_legend.append(Line2D([0], [0], color='w', markersize=10, markerfacecolor="black", marker=plot_markers[1], label="IFO-mean"))
         custom_legend.append(Line2D([0], [0], color='w', markersize=10, markerfacecolor="black", marker=plot_markers[2], label="similar"))
-        custom_legend.append(Line2D([0], [0], color='w', markersize=10, markerfacecolor="black", marker=plot_markers[3], label="similar (FO)"))
+        custom_legend.append(Line2D([0], [0], color='w', markersize=10, markerfacecolor="black", marker=plot_markers[3], label="IFO-similar"))
         custom_legend.append(Line2D([0], [0], color='w', markersize=10, markerfacecolor="black", marker=plot_markers[4], label="multi"))
-        custom_legend.append(Line2D([0], [0], color='w', markersize=10, markerfacecolor="black", marker=plot_markers[5], label="multi (FO)"))
+        custom_legend.append(Line2D([0], [0], color='w', markersize=10, markerfacecolor="black", marker=plot_markers[5], label="IFO-multi"))
     plt.legend(handles=custom_legend, bbox_to_anchor=(1, 0.6))
     fig.tight_layout()
     # fig.suptitle(title)
