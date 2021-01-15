@@ -282,6 +282,8 @@ def plot_all(data_folder, plot_folder, name):
     #         plot_func_pareto_front(data, "Pareto Front (Real Accuracy) ({})".format(name), os.path.join(plot_folder, "pareto_front_realacc_scaled.png"), y_scale=True, x_axis="realacc")
 
 if __name__=="__main__":
+    plt.rcParams.update({'font.size': 12})
+
     if not os.path.exists("other_analysis_plots"):
         os.makedirs("other_analysis_plots")
     for tt in NAME_TARGETS:
