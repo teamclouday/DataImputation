@@ -21,12 +21,12 @@ NAME_TARGETS = ["MAR", "MNAR"]
 PLOT_MAR  = True
 PLOT_MNAR = True
 
-PLOT_ADULT          = False
-PLOT_COMPAS         = False
-PLOT_TITANIC        = False
-PLOT_GERMAN         = False
-PLOT_COMMUNITIES    = False
-PLOT_BANK           = False
+PLOT_ADULT          = True
+PLOT_COMPAS         = True
+PLOT_TITANIC        = True
+PLOT_GERMAN         = True
+PLOT_COMMUNITIES    = True
+PLOT_BANK           = True
 
 TRANSFORM_OUTPUTS = True
 
@@ -64,6 +64,7 @@ def plot_helper(clf_data):
 def plot_func(data, method_name, file_name=None):
     assert len(data[0]) == len(data[1]) == len(data[2])
     classifiers = ["KNN", "LinearSVC", "Forest", "LogReg", "Tree", "MLP"]
+    classifiers_names = ["KNN", "SVM", "Forest", "LR", "Tree", "MLP"]
     plot_newbias = {}
     plot_acc = {}
     plot_bias1 = {}
@@ -120,49 +121,52 @@ def plot_func(data, method_name, file_name=None):
     bar_pos = np.array(bar_pos).ravel()
     bar_names = ["0", "{:.2f}".format(np.mean(plot_distribution))] * len(classifiers)
 
-    fig, axes = plt.subplots(5, figsize=(10, 45))
+    fig, axes = plt.subplots(3, figsize=(10, 27))
     # axes[0] shows distribution
     axes[0].set_title("Missing Percentage Distribution")
     axes[0].bar(plot_distribution_processed[0]-0.005, plot_distribution_processed[1], 0.01)
+    axes[0].set_xlabel("Missingness Percentage")
     # axes[1] shows new bias
-    axes[1].set_title("New Bias")
+    axes[1].set_title("Bias")
     for i in range(len(classifiers)):
         clf = classifiers[i]
         axes[1].bar(bar_pos[i*2], np.mean(plot_newbias[clf][0]), width=bar_width, yerr=np.mean(plot_newbias[clf][2]), color="grey", label="original" if i == 0 else "")
-        axes[1].bar(bar_pos[i*2+1], np.mean(plot_newbias[clf][1]), width=bar_width, yerr=np.mean(plot_newbias[clf][3]), label=clf)
+        axes[1].bar(bar_pos[i*2+1], np.mean(plot_newbias[clf][1]), width=bar_width, yerr=np.mean(plot_newbias[clf][3]), label=classifiers_names[i])
     axes[1].set_xticks(bar_pos)
     axes[1].set_xticklabels(bar_names)
     axes[1].legend(loc="best")
+    axes[1].set_xlabel("Missingness Percentage")
     # axes[2] shows accuracy
-    axes[2].set_title("accuracy")
+    axes[2].set_title("Accuracy")
     for i in range(len(classifiers)):
         clf = classifiers[i]
         axes[2].bar(bar_pos[i*2], np.mean(plot_acc[clf][0]), width=bar_width, yerr=np.mean(plot_acc[clf][2]), color="grey", label="original" if i == 0 else "")
-        axes[2].bar(bar_pos[i*2+1], np.mean(plot_acc[clf][1]), width=bar_width, yerr=np.mean(plot_acc[clf][3]), label=clf)
+        axes[2].bar(bar_pos[i*2+1], np.mean(plot_acc[clf][1]), width=bar_width, yerr=np.mean(plot_acc[clf][3]), label=classifiers_names[i])
     axes[2].set_xticks(bar_pos)
     axes[2].set_xticklabels(bar_names)
     axes[2].legend(loc="best")
-    # axes[3] shows bias 1
-    axes[3].set_title("Bias 1")
-    for i in range(len(classifiers)):
-        clf = classifiers[i]
-        axes[3].bar(bar_pos[i*2], np.mean(plot_bias1[clf][0]), width=bar_width, yerr=np.mean(plot_bias1[clf][2]), color="grey", label="original" if i == 0 else "")
-        axes[3].bar(bar_pos[i*2+1], np.mean(plot_bias1[clf][1]), width=bar_width, yerr=np.mean(plot_bias1[clf][3]), label=clf)
-    axes[3].set_xticks(bar_pos)
-    axes[3].set_xticklabels(bar_names)
-    axes[3].legend(loc="best")
-    # axes[4] shows bias 2
-    axes[4].set_title("Bias 2")
-    for i in range(len(classifiers)):
-        clf = classifiers[i]
-        axes[4].bar(bar_pos[i*2], np.mean(plot_bias2[clf][0]), width=bar_width, yerr=np.mean(plot_bias2[clf][2]), color="grey", label="original" if i == 0 else "")
-        axes[4].bar(bar_pos[i*2+1], np.mean(plot_bias2[clf][1]), width=bar_width, yerr=np.mean(plot_bias2[clf][3]), label=clf)
-    axes[4].set_xticks(bar_pos)
-    axes[4].set_xticklabels(bar_names)
-    axes[4].legend(loc="best")
+    axes[2].set_xlabel("Missingness Percentage")
+    # # axes[3] shows bias 1
+    # axes[3].set_title("Bias 1")
+    # for i in range(len(classifiers)):
+    #     clf = classifiers[i]
+    #     axes[3].bar(bar_pos[i*2], np.mean(plot_bias1[clf][0]), width=bar_width, yerr=np.mean(plot_bias1[clf][2]), color="grey", label="original" if i == 0 else "")
+    #     axes[3].bar(bar_pos[i*2+1], np.mean(plot_bias1[clf][1]), width=bar_width, yerr=np.mean(plot_bias1[clf][3]), label=clf)
+    # axes[3].set_xticks(bar_pos)
+    # axes[3].set_xticklabels(bar_names)
+    # axes[3].legend(loc="best")
+    # # axes[4] shows bias 2
+    # axes[4].set_title("Bias 2")
+    # for i in range(len(classifiers)):
+    #     clf = classifiers[i]
+    #     axes[4].bar(bar_pos[i*2], np.mean(plot_bias2[clf][0]), width=bar_width, yerr=np.mean(plot_bias2[clf][2]), color="grey", label="original" if i == 0 else "")
+    #     axes[4].bar(bar_pos[i*2+1], np.mean(plot_bias2[clf][1]), width=bar_width, yerr=np.mean(plot_bias2[clf][3]), label=clf)
+    # axes[4].set_xticks(bar_pos)
+    # axes[4].set_xticklabels(bar_names)
+    # axes[4].legend(loc="best")
     fig.tight_layout()
-    fig.suptitle("Imputation Method: {}".format(method_name))
-    plt.subplots_adjust(top=0.96)
+    # fig.suptitle("Imputation Method: {}".format(method_name))
+    # plt.subplots_adjust(top=0.96)
     if file_name:
         fig.savefig(file_name, transparent=False, bbox_inches='tight', pad_inches=0.1)
     plt.show(block=False)
@@ -216,37 +220,37 @@ def plot_all(data_folder, plot_folder, name):
         print("Generating plot for mean_v1.pkl ({})".format(name))
         with open(os.path.join(data_folder, "mean_v1.pkl"), "rb") as inFile:
             data = pickle.load(inFile)
-        plot_func(data, "Mean V1 ({})".format(name), os.path.join(plot_folder, "mean_v1.png"))
+        plot_func(data, "Mean V1 ({})".format(name), os.path.join(plot_folder, name+"_mean_v1.png"))
     # generate plot for mean_v2.pkl
     if os.path.exists(os.path.join(data_folder, "mean_v2.pkl")) and PLOT_CREATE_MEAN_V1:
         print("Generating plot for mean_v2.pkl ({})".format(name))
         with open(os.path.join(data_folder, "mean_v2.pkl"), "rb") as inFile:
             data = pickle.load(inFile)
-        plot_func(data, "Mean V2 ({})".format(name), os.path.join(plot_folder, "mean_v2.png"))
+        plot_func(data, "Mean V2 ({})".format(name), os.path.join(plot_folder, name+"_mean_v2.png"))
     # generate plot for similar_v1.pkl
     if os.path.exists(os.path.join(data_folder, "similar_v1.pkl")) and PLOT_CREATE_SIMILAR_V1:
         print("Generating plot for similar_v1.pkl ({})".format(name))
         with open(os.path.join(data_folder, "similar_v1.pkl"), "rb") as inFile:
             data = pickle.load(inFile)
-        plot_func(data, "Similar V1 ({})".format(name), os.path.join(plot_folder, "similar_v1.png"))
+        plot_func(data, "Similar V1 ({})".format(name), os.path.join(plot_folder, name+"_similar_v1.png"))
     # generate plot for similar_v2.pkl
     if os.path.exists(os.path.join(data_folder, "similar_v2.pkl")) and PLOT_CREATE_SIMILAR_V2:
         print("Generating plot for similar_v2.pkl ({})".format(name))
         with open(os.path.join(data_folder, "similar_v2.pkl"), "rb") as inFile:
             data = pickle.load(inFile)
-        plot_func(data, "Similar V2 ({})".format(name), os.path.join(plot_folder, "similar_v2.png"))
+        plot_func(data, "Similar V2 ({})".format(name), os.path.join(plot_folder, name+"_similar_v2.png"))
     # generate plot for multi_v1.pkl
     if os.path.exists(os.path.join(data_folder, "multi_v1.pkl")) and PLOT_CREATE_MULTI_V1:
         print("Generating plot for multi_v1.pkl ({})".format(name))
         with open(os.path.join(data_folder, "multi_v1.pkl"), "rb") as inFile:
             data = pickle.load(inFile)
-        plot_func(data, "Multiple Imputation V1 ({})".format(name), os.path.join(plot_folder, "multi_v1.png"))
+        plot_func(data, "Multiple Imputation V1 ({})".format(name), os.path.join(plot_folder, name+"_multi_v1.png"))
     # generate plot for multi_v2.pkl
     if os.path.exists(os.path.join(data_folder, "multi_v2.pkl")) and PLOT_CREATE_MULTI_V1:
         print("Generating plot for multi_v2.pkl ({})".format(name))
         with open(os.path.join(data_folder, "multi_v2.pkl"), "rb") as inFile:
             data = pickle.load(inFile)
-        plot_func(data, "Multiple Imputation V2 ({})".format(name), os.path.join(plot_folder, "multi_v2.png"))
+        plot_func(data, "Multiple Imputation V2 ({})".format(name), os.path.join(plot_folder, name+"_multi_v2.png"))
     # generate pareto front plots
     # if  os.path.exists(os.path.join(data_folder, "mean_v1.pkl")) and \
     #     os.path.exists(os.path.join(data_folder, "mean_v2.pkl")) and \
@@ -295,28 +299,28 @@ if __name__=="__main__":
     
     if PLOT_MAR:
         if PLOT_ADULT:
-            plot_all(os.path.join("condor_outputs", "MAR", "adult"), os.path.join("other_analysis_plots", "MAR", "adult"), "adult MAR")
+            plot_all(os.path.join("condor_outputs", "MAR", "adult"), os.path.join("other_analysis_plots", "MAR", "adult"), "adult")
         if PLOT_COMPAS:
-            plot_all(os.path.join("condor_outputs", "MAR", "compas"), os.path.join("other_analysis_plots", "MAR", "compas"), "compas MAR")
+            plot_all(os.path.join("condor_outputs", "MAR", "compas"), os.path.join("other_analysis_plots", "MAR", "compas"), "compas")
         if PLOT_TITANIC:
-            plot_all(os.path.join("condor_outputs", "MAR", "titanic"), os.path.join("other_analysis_plots", "MAR", "titanic"), "titanic MAR")
+            plot_all(os.path.join("condor_outputs", "MAR", "titanic"), os.path.join("other_analysis_plots", "MAR", "titanic"), "titanic")
         if PLOT_GERMAN:
-            plot_all(os.path.join("condor_outputs", "MAR", "german"), os.path.join("other_analysis_plots", "MAR", "german"), "german MAR")
+            plot_all(os.path.join("condor_outputs", "MAR", "german"), os.path.join("other_analysis_plots", "MAR", "german"), "german")
         if PLOT_COMMUNITIES:
-            plot_all(os.path.join("condor_outputs", "MAR", "communities"), os.path.join("other_analysis_plots", "MAR", "communities"), "communities MAR")
+            plot_all(os.path.join("condor_outputs", "MAR", "communities"), os.path.join("other_analysis_plots", "MAR", "communities"), "communities")
         if PLOT_BANK:
-            plot_all(os.path.join("condor_outputs", "MAR", "bank"), os.path.join("other_analysis_plots", "MAR", "bank"), "bank MAR")
+            plot_all(os.path.join("condor_outputs", "MAR", "bank"), os.path.join("other_analysis_plots", "MAR", "bank"), "bank")
 
     if PLOT_MNAR:
         if PLOT_ADULT:
-            plot_all(os.path.join("condor_outputs", "MNAR", "adult"), os.path.join("other_analysis_plots", "MNAR", "adult"), "adult MNAR")
+            plot_all(os.path.join("condor_outputs", "MNAR", "adult"), os.path.join("other_analysis_plots", "MNAR", "adult"), "adult")
         if PLOT_COMPAS:
-            plot_all(os.path.join("condor_outputs", "MNAR", "compas"), os.path.join("other_analysis_plots", "MNAR", "compas"), "compas MNAR")
+            plot_all(os.path.join("condor_outputs", "MNAR", "compas"), os.path.join("other_analysis_plots", "MNAR", "compas"), "compas")
         if PLOT_TITANIC:
-            plot_all(os.path.join("condor_outputs", "MNAR", "titanic"), os.path.join("other_analysis_plots", "MNAR", "titanic"), "titanic MNAR")
+            plot_all(os.path.join("condor_outputs", "MNAR", "titanic"), os.path.join("other_analysis_plots", "MNAR", "titanic"), "titanic")
         if PLOT_GERMAN:
-            plot_all(os.path.join("condor_outputs", "MNAR", "german"), os.path.join("other_analysis_plots", "MNAR", "german"), "german MNAR")
+            plot_all(os.path.join("condor_outputs", "MNAR", "german"), os.path.join("other_analysis_plots", "MNAR", "german"), "german")
         if PLOT_COMMUNITIES:
-            plot_all(os.path.join("condor_outputs", "MNAR", "communities"), os.path.join("other_analysis_plots", "MNAR", "communities"), "communities MNAR")
+            plot_all(os.path.join("condor_outputs", "MNAR", "communities"), os.path.join("other_analysis_plots", "MNAR", "communities"), "communities")
         if PLOT_BANK:
-            plot_all(os.path.join("condor_outputs", "MNAR", "bank"), os.path.join("other_analysis_plots", "MNAR", "bank"), "bank MNAR")
+            plot_all(os.path.join("condor_outputs", "MNAR", "bank"), os.path.join("other_analysis_plots", "MNAR", "bank"), "bank")
