@@ -19,12 +19,12 @@ NAME_TARGETS  = ["acc", "f1"]
 
 INCOMPLETE_MODE = True
 
-PLOT_ADULT_ACC          = True
-PLOT_COMPAS_ACC         = True
-PLOT_TITANIC_ACC        = True
-PLOT_GERMAN_ACC         = True
-PLOT_COMMUNITIES_ACC    = True
-PLOT_BANK_ACC           = True
+PLOT_ADULT_ACC          = False
+PLOT_COMPAS_ACC         = False
+PLOT_TITANIC_ACC        = False
+PLOT_GERMAN_ACC         = False
+PLOT_COMMUNITIES_ACC    = False
+PLOT_BANK_ACC           = False
 
 PLOT_ADULT_F1           = False
 PLOT_COMPAS_F1          = False
@@ -44,7 +44,9 @@ PLOT_CREATE_MULTI_V2    = False
 
 PLOT_PARETO_FRONTIER_ACC     = False
 PLOT_PARETO_FRONTIER_F1      = False
-PLOT_PARETO_FRONTIER_REALACC = True
+PLOT_PARETO_FRONTIER_REALACC = False
+
+PLOT_PARETO_FRONTIER_ALL    = True
 
 PLOT_DEBUG_FUNCTION     = False
 
@@ -577,6 +579,331 @@ def plot_func_pareto_front(data, title, file_name=None, y_scale=None, switch=Fal
     plt.pause(2)
     plt.close()
 
+def plot_func_pareto_front_all(file_name=None):
+    def helper_plot(axes, data):
+        # extract data
+        data_mean_v1    = data["mean_v1"]
+        data_mean_v2    = data["mean_v2"]
+        data_similar_v1 = data["similar_v1"]
+        data_similar_v2 = data["similar_v2"]
+        data_multi_v1   = data["multi_v1"]
+        data_multi_v2   = data["multi_v2"]
+        classifiers = ["KNN", "LinearSVC", "Forest", "LogReg", "Tree", "MLP"]
+        plot_colors = ["red", "green", "blue", "gold", "darkorange", "grey", "purple"]
+        plot_markers = ["o", "s", "*", "^", "P", "v", "X"]
+        ratio_dot_size      = [(x+1)*3 for x in range(len(random_ratios))]
+        if not INCOMPLETE_MODE:
+            assert len(data_mean_v1) == len(data_mean_v2) == len(data_similar_v1) == len(data_similar_v2) == len(data_multi_v1) == len(data_multi_v2) == (iter_per_ratio * len(random_ratios))
+        # prepare data for plotting
+        plot_data_mean_v1       = {}
+        plot_data_mean_v2       = {}
+        plot_data_similar_v1    = {}
+        plot_data_similar_v2    = {}
+        plot_data_multi_v1      = {}
+        plot_data_multi_v2      = {}
+        for clf in classifiers:
+            plot_data_mean_v1[clf]      = ([], [], [], [], [], []) # [[acc_X], [bias1_Y], [bias2_Y], [f1_X], [newbias_Y], [realacc_X]]
+            plot_data_mean_v2[clf]      = ([], [], [], [], [], [])
+            plot_data_similar_v1[clf]   = ([], [], [], [], [], [])
+            plot_data_similar_v2[clf]   = ([], [], [], [], [], [])
+            plot_data_multi_v1[clf]     = ([], [], [], [], [], [])
+            plot_data_multi_v2[clf]     = ([], [], [], [], [], [])
+        iterations = int(len(data_mean_v1) / len(random_ratios))
+        for i in range(0, len(data_mean_v1), iterations):
+            d_data_mean_v1      = data_mean_v1[i:(i+iterations)]
+            d_data_mean_v2      = data_mean_v2[i:(i+iterations)]
+            d_data_similar_v1   = data_similar_v1[i:(i+iterations)]
+            d_data_similar_v2   = data_similar_v2[i:(i+iterations)]
+            d_data_multi_v1     = data_multi_v1[i:(i+iterations)]
+            d_data_multi_v2     = data_multi_v2[i:(i+iterations)]
+            for clf in classifiers:
+                clf_data_mean_v1    = [x[clf] for x in d_data_mean_v1]
+                clf_data_mean_v2    = [x[clf] for x in d_data_mean_v2]
+                clf_data_similar_v1 = [x[clf] for x in d_data_similar_v1]
+                clf_data_similar_v2 = [x[clf] for x in d_data_similar_v2]
+                clf_data_multi_v1   = [x[clf] for x in d_data_multi_v1]
+                clf_data_multi_v2   = [x[clf] for x in d_data_multi_v2]
+                # process mean_v1 method
+                data_processed = [[], [], [], [], [], []] # [[acc], [bias1], [bias2], [f1 score], [new bias], [real acc]]
+                for cf_matrices in clf_data_mean_v1:
+                    tmp_processed = [[], [], [], [], [], []] # [[acc], [bias1], [bias2], [f1 score], [new bias], [real acc]]
+                    for mm in cf_matrices:
+                        if len(mm) < 1:
+                            continue
+                        cf_m, acc_m = mm[0], mm[1]
+                        try:
+                            x = acc(cf_m)
+                            y = bias1(cf_m)
+                            z = bias2(cf_m)
+                            w = f1score(cf_m)
+                            k = newBias(cf_m)
+                        except Exception as e:
+                            print("Error: {}".format(e))
+                            continue
+                        if (y > 0) and (z > 0) and len(w) == 2:
+                            tmp_processed[0].append(x)
+                            tmp_processed[1].append(y)
+                            tmp_processed[2].append(z)
+                            tmp_processed[3].append(np.mean(w))
+                            tmp_processed[4].append(k)
+                            tmp_processed[5].append(acc_m)
+                    data_processed[0].append(np.mean(tmp_processed[0]))
+                    data_processed[1].append(np.mean(tmp_processed[1]))
+                    data_processed[2].append(np.mean(tmp_processed[2]))
+                    data_processed[3].append(np.mean(tmp_processed[3]))
+                    data_processed[4].append(np.mean(tmp_processed[4]))
+                    data_processed[5].append(np.mean(tmp_processed[5]))
+                plot_data_mean_v1[clf][0].append(np.mean(data_processed[0]))
+                plot_data_mean_v1[clf][1].append(np.mean(data_processed[1]))
+                plot_data_mean_v1[clf][2].append(np.mean(data_processed[2]))
+                plot_data_mean_v1[clf][3].append(np.mean(data_processed[3]))
+                plot_data_mean_v1[clf][4].append(np.mean(data_processed[4]))
+                plot_data_mean_v1[clf][5].append(np.mean(data_processed[5]))
+                # process mean_v2 method
+                data_processed = [[], [], [], [], [], []] # [[acc], [bias1], [bias2], [f1 score], [new bias], [real acc]]
+                for cf_matrices in clf_data_mean_v2:
+                    tmp_processed = [[], [], [], [], [], []] # [[acc], [bias1], [bias2], [f1 score], [new bias], [real acc]]
+                    for mm in cf_matrices:
+                        if len(mm) < 1:
+                            continue
+                        cf_m, acc_m = mm[0], mm[1]
+                        try:
+                            x = acc(cf_m)
+                            y = bias1(cf_m)
+                            z = bias2(cf_m)
+                            w = f1score(cf_m)
+                            k = newBias(cf_m)
+                        except Exception as e:
+                            print("Error: {}".format(e))
+                            continue
+                        if (y > 0) and (z > 0) and len(w) == 2:
+                            tmp_processed[0].append(x)
+                            tmp_processed[1].append(y)
+                            tmp_processed[2].append(z)
+                            tmp_processed[3].append(np.mean(w))
+                            tmp_processed[4].append(k)
+                            tmp_processed[5].append(acc_m)
+                    data_processed[0].append(np.mean(tmp_processed[0]))
+                    data_processed[1].append(np.mean(tmp_processed[1]))
+                    data_processed[2].append(np.mean(tmp_processed[2]))
+                    data_processed[3].append(np.mean(tmp_processed[3]))
+                    data_processed[4].append(np.mean(tmp_processed[4]))
+                    data_processed[5].append(np.mean(tmp_processed[5]))
+                plot_data_mean_v2[clf][0].append(np.mean(data_processed[0]))
+                plot_data_mean_v2[clf][1].append(np.mean(data_processed[1]))
+                plot_data_mean_v2[clf][2].append(np.mean(data_processed[2]))
+                plot_data_mean_v2[clf][3].append(np.mean(data_processed[3]))
+                plot_data_mean_v2[clf][4].append(np.mean(data_processed[4]))
+                plot_data_mean_v2[clf][5].append(np.mean(data_processed[5]))
+                # process similar_v1 method
+                data_processed = [[], [], [], [], [], []] # [[acc], [bias1], [bias2], [f1 score], [new bias], [real acc]]
+                for cf_matrices in clf_data_similar_v1:
+                    tmp_processed = [[], [], [], [], [], []] # [[acc], [bias1], [bias2], [f1 score], [new bias], [real acc]]
+                    for mm in cf_matrices:
+                        if len(mm) < 1:
+                            continue
+                        cf_m, acc_m = mm[0], mm[1]
+                        try:
+                            x = acc(cf_m)
+                            y = bias1(cf_m)
+                            z = bias2(cf_m)
+                            w = f1score(cf_m)
+                            k = newBias(cf_m)
+                        except Exception as e:
+                            print("Error: {}".format(e))
+                            continue
+                        if (y > 0) and (z > 0) and len(w) == 2:
+                            tmp_processed[0].append(x)
+                            tmp_processed[1].append(y)
+                            tmp_processed[2].append(z)
+                            tmp_processed[3].append(np.mean(w))
+                            tmp_processed[4].append(k)
+                            tmp_processed[5].append(acc_m)
+                    data_processed[0].append(np.mean(tmp_processed[0]))
+                    data_processed[1].append(np.mean(tmp_processed[1]))
+                    data_processed[2].append(np.mean(tmp_processed[2]))
+                    data_processed[3].append(np.mean(tmp_processed[3]))
+                    data_processed[4].append(np.mean(tmp_processed[4]))
+                    data_processed[5].append(np.mean(tmp_processed[5]))
+                plot_data_similar_v1[clf][0].append(np.mean(data_processed[0]))
+                plot_data_similar_v1[clf][1].append(np.mean(data_processed[1]))
+                plot_data_similar_v1[clf][2].append(np.mean(data_processed[2]))
+                plot_data_similar_v1[clf][3].append(np.mean(data_processed[3]))
+                plot_data_similar_v1[clf][4].append(np.mean(data_processed[4]))
+                plot_data_similar_v1[clf][5].append(np.mean(data_processed[5]))
+                # process similar_v2 method
+                data_processed = [[], [], [], [], [], []] # [[acc], [bias1], [bias2], [f1 score], [new bias], [real acc]]
+                for cf_matrices in clf_data_similar_v2:
+                    tmp_processed = [[], [], [], [], [], []] # [[acc], [bias1], [bias2], [f1 score], [new bias], [real acc]]
+                    for mm in cf_matrices:
+                        if len(mm) < 1:
+                            continue
+                        cf_m, acc_m = mm[0], mm[1]
+                        try:
+                            x = acc(cf_m)
+                            y = bias1(cf_m)
+                            z = bias2(cf_m)
+                            w = f1score(cf_m)
+                            k = newBias(cf_m)
+                        except Exception as e:
+                            print("Error: {}".format(e))
+                            continue
+                        if (y > 0) and (z > 0) and len(w) == 2:
+                            tmp_processed[0].append(x)
+                            tmp_processed[1].append(y)
+                            tmp_processed[2].append(z)
+                            tmp_processed[3].append(np.mean(w))
+                            tmp_processed[4].append(k)
+                            tmp_processed[5].append(acc_m)
+                    data_processed[0].append(np.mean(tmp_processed[0]))
+                    data_processed[1].append(np.mean(tmp_processed[1]))
+                    data_processed[2].append(np.mean(tmp_processed[2]))
+                    data_processed[3].append(np.mean(tmp_processed[3]))
+                    data_processed[4].append(np.mean(tmp_processed[4]))
+                    data_processed[5].append(np.mean(tmp_processed[5]))
+                plot_data_similar_v2[clf][0].append(np.mean(data_processed[0]))
+                plot_data_similar_v2[clf][1].append(np.mean(data_processed[1]))
+                plot_data_similar_v2[clf][2].append(np.mean(data_processed[2]))
+                plot_data_similar_v2[clf][3].append(np.mean(data_processed[3]))
+                plot_data_similar_v2[clf][4].append(np.mean(data_processed[4]))
+                plot_data_similar_v2[clf][5].append(np.mean(data_processed[5]))
+                # process multi_v1 method
+                data_processed = [[], [], [], [], [], []] # [[acc], [bias1], [bias2], [f1 score], [new bias], [real acc]]
+                for cf_matrices in clf_data_multi_v1:
+                    tmp_processed = [[], [], [], [], [], []] # [[acc], [bias1], [bias2], [f1 score], [new bias], [real acc]]
+                    for mm in cf_matrices:
+                        if len(mm) < 1:
+                            continue
+                        cf_m, acc_m = mm[0], mm[1]
+                        try:
+                            x = acc(cf_m)
+                            y = bias1(cf_m)
+                            z = bias2(cf_m)
+                            w = f1score(cf_m)
+                            k = newBias(cf_m)
+                        except Exception as e:
+                            print("Error: {}".format(e))
+                            continue
+                        if (y > 0) and (z > 0) and len(w) == 2:
+                            tmp_processed[0].append(x)
+                            tmp_processed[1].append(y)
+                            tmp_processed[2].append(z)
+                            tmp_processed[3].append(np.mean(w))
+                            tmp_processed[4].append(k)
+                            tmp_processed[5].append(acc_m)
+                    data_processed[0].append(np.mean(tmp_processed[0]))
+                    data_processed[1].append(np.mean(tmp_processed[1]))
+                    data_processed[2].append(np.mean(tmp_processed[2]))
+                    data_processed[3].append(np.mean(tmp_processed[3]))
+                    data_processed[4].append(np.mean(tmp_processed[4]))
+                    data_processed[5].append(np.mean(tmp_processed[5]))
+                plot_data_multi_v1[clf][0].append(np.mean(data_processed[0]))
+                plot_data_multi_v1[clf][1].append(np.mean(data_processed[1]))
+                plot_data_multi_v1[clf][2].append(np.mean(data_processed[2]))
+                plot_data_multi_v1[clf][3].append(np.mean(data_processed[3]))
+                plot_data_multi_v1[clf][4].append(np.mean(data_processed[4]))
+                plot_data_multi_v1[clf][5].append(np.mean(data_processed[5]))
+                # process multi_v2 method
+                data_processed = [[], [], [], [], [], []] # [[acc], [bias1], [bias2], [f1 score], [new bias], [real acc]]
+                for cf_matrices in clf_data_multi_v2:
+                    tmp_processed = [[], [], [], [], [], []] # [[acc], [bias1], [bias2], [f1 score], [new bias], [real acc]]
+                    for mm in cf_matrices:
+                        if len(mm) < 1:
+                            continue
+                        cf_m, acc_m = mm[0], mm[1]
+                        try:
+                            x = acc(cf_m)
+                            y = bias1(cf_m)
+                            z = bias2(cf_m)
+                            w = f1score(cf_m)
+                            k = newBias(cf_m)
+                        except Exception as e:
+                            print("Error: {}".format(e))
+                            continue
+                        if (y > 0) and (z > 0) and len(w) == 2:
+                            tmp_processed[0].append(x)
+                            tmp_processed[1].append(y)
+                            tmp_processed[2].append(z)
+                            tmp_processed[3].append(np.mean(w))
+                            tmp_processed[4].append(k)
+                            tmp_processed[5].append(acc_m)
+                    data_processed[0].append(np.mean(tmp_processed[0]))
+                    data_processed[1].append(np.mean(tmp_processed[1]))
+                    data_processed[2].append(np.mean(tmp_processed[2]))
+                    data_processed[3].append(np.mean(tmp_processed[3]))
+                    data_processed[4].append(np.mean(tmp_processed[4]))
+                    data_processed[5].append(np.mean(tmp_processed[5]))
+                plot_data_multi_v2[clf][0].append(np.mean(data_processed[0]))
+                plot_data_multi_v2[clf][1].append(np.mean(data_processed[1]))
+                plot_data_multi_v2[clf][2].append(np.mean(data_processed[2]))
+                plot_data_multi_v2[clf][3].append(np.mean(data_processed[3]))
+                plot_data_multi_v2[clf][4].append(np.mean(data_processed[4]))
+                plot_data_multi_v2[clf][5].append(np.mean(data_processed[5]))
+        axes.set_xlabel("Accuracy")
+        axes.set_ylabel("Bias")
+        # each classifier has different color
+        for clf, clf_c in zip(classifiers, plot_colors):
+            # plot for mean_v1 method
+            axes.scatter(plot_data_mean_v1[clf][5], plot_data_mean_v1[clf][4], c=clf_c, s=ratio_dot_size, marker=plot_markers[0], alpha=0.8)
+            # plot for mean_v2 method
+            axes.scatter(plot_data_mean_v2[clf][5], plot_data_mean_v2[clf][4], c=clf_c, s=ratio_dot_size, marker=plot_markers[1], alpha=0.8)
+            # plot for similar_v1 method
+            axes.scatter(plot_data_similar_v1[clf][5], plot_data_similar_v1[clf][4], c=clf_c, s=ratio_dot_size, marker=plot_markers[2], alpha=0.8)
+            # plot for similar_v2 method
+            axes.scatter(plot_data_similar_v2[clf][5], plot_data_similar_v2[clf][4], c=clf_c, s=ratio_dot_size, marker=plot_markers[3], alpha=0.8)
+            # plot for multi_v1 method
+            axes.scatter(plot_data_multi_v1[clf][5], plot_data_multi_v1[clf][4], c=clf_c, s=ratio_dot_size, marker=plot_markers[4], alpha=0.8)
+            # plot for multi_v2 method
+            axes.scatter(plot_data_multi_v2[clf][5], plot_data_multi_v2[clf][4], c=clf_c, s=ratio_dot_size, marker=plot_markers[5], alpha=0.8)
+
+    fig, axes = plt.subplots(2, 3, sharex=True, sharey=True, figsize=(20, 12))
+
+    for i, dataset in enumerate(NAME_DATASETS):
+        print("Pareto Front subplot for {}".format(dataset))
+        folder = os.path.join("condor_outputs", "acc", dataset)
+        if  os.path.exists(os.path.join(folder, "mean_v1.pkl")) and \
+            os.path.exists(os.path.join(folder, "mean_v2.pkl")) and \
+            os.path.exists(os.path.join(folder, "similar_v1.pkl")) and \
+            os.path.exists(os.path.join(folder, "similar_v2.pkl")) and \
+            os.path.exists(os.path.join(folder, "multi_v1.pkl")) and \
+            os.path.exists(os.path.join(folder, "multi_v2.pkl")):
+            data = {}
+            with open(os.path.join(folder, "mean_v1.pkl"), "rb") as inFile:
+                data["mean_v1"] = pickle.load(inFile)
+            with open(os.path.join(folder, "mean_v2.pkl"), "rb") as inFile:
+                data["mean_v2"] = pickle.load(inFile)
+            with open(os.path.join(folder, "similar_v1.pkl"), "rb") as inFile:
+                data["similar_v1"] = pickle.load(inFile)
+            with open(os.path.join(folder, "similar_v2.pkl"), "rb") as inFile:
+                data["similar_v2"] = pickle.load(inFile)
+            with open(os.path.join(folder, "multi_v1.pkl"), "rb") as inFile:
+                data["multi_v1"] = pickle.load(inFile)
+            with open(os.path.join(folder, "multi_v2.pkl"), "rb") as inFile:
+                data["multi_v2"] = pickle.load(inFile)
+            axesId = (i // 3, i % 3)
+            helper_plot(axes[axesId[0], axesId[1]], data)
+            axes[axesId[0], axesId[1]].set_title(dataset.title() + " Dataset")
+        else: raise Exception("Failed to draw pareto front for all, data missing!")
+
+    plot_colors = ["red", "green", "blue", "gold", "darkorange", "grey", "purple"]
+    plot_markers = ["o", "s", "*", "^", "P", "v", "X"]
+    classifiers_realnames = ["KNN", "SVM", "Forest", "LR", "Tree", "MLP"]
+
+    custom_legend = [Line2D([0], [0], markerfacecolor=x, marker="o", label=y, markersize=10) for x,y in zip(plot_colors, classifiers_realnames)]
+    custom_legend.append(Line2D([0], [0], color='w', markersize=10, markerfacecolor="black", marker=plot_markers[0], label="mean"))
+    custom_legend.append(Line2D([0], [0], color='w', markersize=10, markerfacecolor="black", marker=plot_markers[1], label="IFO-mean"))
+    custom_legend.append(Line2D([0], [0], color='w', markersize=10, markerfacecolor="black", marker=plot_markers[2], label="similar"))
+    custom_legend.append(Line2D([0], [0], color='w', markersize=10, markerfacecolor="black", marker=plot_markers[3], label="IFO-similar"))
+    custom_legend.append(Line2D([0], [0], color='w', markersize=10, markerfacecolor="black", marker=plot_markers[4], label="multi"))
+    custom_legend.append(Line2D([0], [0], color='w', markersize=10, markerfacecolor="black", marker=plot_markers[5], label="IFO-multi"))
+    plt.legend(handles=custom_legend, bbox_to_anchor=(1, 0.6))
+    fig.tight_layout()
+    if file_name:
+        plt.savefig(file_name, transparent=False, bbox_inches='tight', pad_inches=0.1)
+    plt.show(block=False)
+    plt.pause(2)
+    plt.close()
+
 def compress_outputs():
     for tt in NAME_TARGETS:
         for dd in NAME_DATASETS:
@@ -849,3 +1176,6 @@ if __name__=="__main__":
         plot_all(os.path.join("condor_outputs", "acc", "bank"), os.path.join("ratio_analysis_plots", "acc", "bank"), "bank")
     if PLOT_BANK_F1:
         plot_all(os.path.join("condor_outputs", "f1", "bank"), os.path.join("ratio_analysis_plots", "f1", "bank"), "bank f1")
+
+    if PLOT_PARETO_FRONTIER_ALL:
+        plot_func_pareto_front_all(os.path.join("ratio_analysis_plots", "acc", "pareto_front_plots.png"))
