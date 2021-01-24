@@ -969,18 +969,20 @@ def plot_MCAR_func(data_name, file_name=None):
         for j in range(len(methods)):
             axes[subID // 4][subID % 4].errorbar(random_ratios+(i-3)*plot_gap,
                 plot_data[classifiers_names[i]][0][methods_names[j]][0],
-                yerr=plot_data[classifiers_names[i]][0][methods_names[j]][1], c=plot_colors[j]
+                yerr=plot_data[classifiers_names[i]][0][methods_names[j]][1], c=plot_colors[j],
+                elinewidth=2.0
             )
             axes[subID // 4][subID % 4].scatter(random_ratios+(i-3)*plot_gap, plot_data[classifiers_names[i]][0][methods_names[j]][0], s=2, c=plot_colors[j])
             axes[subID // 4][subID % 4 + 1].errorbar(random_ratios+(i-3)*plot_gap,
                 plot_data[classifiers_names[i]][1][methods_names[j]][0],
-                yerr=plot_data[classifiers_names[i]][1][methods_names[j]][1], c=plot_colors[j]
+                yerr=plot_data[classifiers_names[i]][1][methods_names[j]][1], c=plot_colors[j],
+                elinewidth=2.0
             )
             axes[subID // 4][subID % 4 + 1].scatter(random_ratios+(i-3)*plot_gap, plot_data[classifiers_names[i]][1][methods_names[j]][0], s=2, c=plot_colors[j])
-        axes[subID // 4][subID % 4].set_xticks(np.arange(0.0, 1.0, 0.05))
-        axes[subID // 4][subID % 4 + 1].set_xticks(np.arange(0.0, 1.0, 0.05))
+        axes[subID // 4][subID % 4].set_xticks(np.arange(0.0, 1.0, 0.1))
+        axes[subID // 4][subID % 4 + 1].set_xticks(np.arange(0.0, 1.0, 0.1))
         subID += 2
-    custom_legend = [Line2D([0], [0], linestyle="-", color=x, label=y, markersize=16) for x,y in zip(plot_colors, methods_names)]
+    custom_legend = [Line2D([0], [0], linestyle="-", color=x, label=y, linewidth=4.0) for x,y in zip(plot_colors, methods_names)]
     fig.legend(handles=custom_legend, bbox_to_anchor=(0.5, -0.05), loc="lower center", ncol=6, fancybox=True, shadow=True)
     fig.tight_layout()
     if file_name:
@@ -1221,7 +1223,7 @@ def plot_all(data_folder, plot_folder, name):
             # plot_func_pareto_front(data, "Pareto Front ({})".format(name), os.path.join(plot_folder, "pareto_front_realacc_scaled.png"), y_scale="log", x_axis="realacc")
 
 if __name__=="__main__":
-    plt.rcParams.update({'font.size': 14})
+    plt.rcParams.update({'font.size': 16})
 
     if not os.path.exists("ratio_analysis_plots"):
         os.makedirs("ratio_analysis_plots")
