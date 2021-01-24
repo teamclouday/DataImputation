@@ -19,12 +19,12 @@ NAME_TARGETS  = ["acc", "f1"]
 
 INCOMPLETE_MODE = True
 
-PLOT_ADULT_ACC          = False
-PLOT_COMPAS_ACC         = False
-PLOT_TITANIC_ACC        = False
-PLOT_GERMAN_ACC         = False
-PLOT_COMMUNITIES_ACC    = False
-PLOT_BANK_ACC           = False
+PLOT_ADULT_ACC          = True
+PLOT_COMPAS_ACC         = True
+PLOT_TITANIC_ACC        = True
+PLOT_GERMAN_ACC         = True
+PLOT_COMMUNITIES_ACC    = True
+PLOT_BANK_ACC           = True
 
 PLOT_ADULT_F1           = False
 PLOT_COMPAS_F1          = False
@@ -46,7 +46,8 @@ PLOT_PARETO_FRONTIER_ACC     = False
 PLOT_PARETO_FRONTIER_F1      = False
 PLOT_PARETO_FRONTIER_REALACC = False
 
-PLOT_PARETO_FRONTIER_ALL    = True
+PLOT_PARETO_FRONTIER_ALL    = False
+PLOT_MCAR_ALL               = True
 
 PLOT_DEBUG_FUNCTION     = False
 
@@ -904,6 +905,91 @@ def plot_func_pareto_front_all(file_name=None):
     plt.pause(2)
     plt.close()
 
+def plot_MCAR_func(data_name, file_name=None):
+    folder = os.path.join("condor_outputs", "acc", data_name)
+    data = {}
+    with open(os.path.join(folder, "mean_v1.pkl"), "rb") as inFile:
+        data["mean_v1"] = pickle.load(inFile)
+    with open(os.path.join(folder, "mean_v2.pkl"), "rb") as inFile:
+        data["mean_v2"] = pickle.load(inFile)
+    with open(os.path.join(folder, "similar_v1.pkl"), "rb") as inFile:
+        data["similar_v1"] = pickle.load(inFile)
+    with open(os.path.join(folder, "similar_v2.pkl"), "rb") as inFile:
+        data["similar_v2"] = pickle.load(inFile)
+    with open(os.path.join(folder, "multi_v1.pkl"), "rb") as inFile:
+        data["multi_v1"] = pickle.load(inFile)
+    with open(os.path.join(folder, "multi_v2.pkl"), "rb") as inFile:
+        data["multi_v2"] = pickle.load(inFile)
+    classifiers = ["KNN", "LinearSVC", "Forest", "LogReg", "Tree", "MLP"]
+    classifiers_names = ["KNN", "SVM", "Forest", "LR", "Tree", "MLP"]
+    methods = ["mean_v1", "mean_v2", "similar_v1", "similar_v2", "multi_v1", "multi_v2"]
+    methods_names = ["mean", "IFO-mean", "similar", "IFO-similar", "multi", "IFO-multi"]
+    plot_colors = ["red", "green", "blue", "gold", "darkorange", "grey", "purple"]
+    plot_data = {}
+    for i in range(len(classifiers)):
+        plot_data[classifiers_names[i]] = [{}, {}] # [bias, accuracy]
+        plot_data_clf = plot_data[classifiers_names[i]]
+        for j in range(len(methods)):
+            plot_data_clf[0][methods_names[j]] = [[], []] # [mean, std]
+            plot_data_clf[1][methods_names[j]] = [[], []]
+            plot_data_clf_method_acc = plot_data_clf[0][methods_names[j]]
+            plot_data_clf_method_bias = plot_data_clf[1][methods_names[j]]
+            iterations = int(len(data[methods[j]]) / len(random_ratios))
+            for k in range(0, len(data[methods[j]]), iterations):
+                k_data = data[methods[j]][k:(k+iterations)]
+                clf_data = [x[classifiers[i]] for x in k_data]
+                data_processed = [[], []] # [[real acc], [new bias]], remove -1, [None] cases
+                for cf_matrices in clf_data:
+                    tmp_data_processed = [[], []] #  [[real acc], [new bias]], remove -1, [None] cases
+                    for mm in cf_matrices:
+                        if len(mm) < 1:
+                            continue
+                        cf_m, acc_m = mm[0], mm[1]
+                        try:
+                            k = newBias(cf_m)
+                        except Exception as e:
+                            print("Error: {}".format(e))
+                            continue
+                        tmp_data_processed[0].append(acc_m)
+                        tmp_data_processed[1].append(k)
+                    data_processed[0].append(np.mean(tmp_data_processed[0]))
+                    data_processed[1].append(np.mean(tmp_data_processed[1]))
+                plot_data_clf_method_acc[0].append(np.mean(data_processed[0]))
+                plot_data_clf_method_acc[1].append(np.std(data_processed[0]))
+                plot_data_clf_method_bias[0].append(np.mean(data_processed[1]))
+                plot_data_clf_method_bias[1].append(np.std(data_processed[1]))
+    plot_gap = 0.002
+    fig, axes = plt.subplots(3, 4, figsize=(30, 15))
+    subID = 0
+    for i in range(len(classifiers)):
+        axes[subID // 4][subID % 4].set_title("Accuracy ({})".format(classifiers_names[i]))
+        axes[subID // 4][subID % 4 + 1].set_title("Bias ({})".format(classifiers_names[i]))
+        axes[subID // 4][subID % 4].tick_params(axis="x", rotation=45)
+        axes[subID // 4][subID % 4 + 1].tick_params(axis="x", rotation=45)
+        for j in range(len(methods)):
+            axes[subID // 4][subID % 4].errorbar(random_ratios+(i-3)*plot_gap,
+                plot_data[classifiers_names[i]][0][methods_names[j]][0],
+                yerr=plot_data[classifiers_names[i]][0][methods_names[j]][1], c=plot_colors[j]
+            )
+            axes[subID // 4][subID % 4].scatter(random_ratios+(i-3)*plot_gap, plot_data[classifiers_names[i]][0][methods_names[j]][0], s=2, c=plot_colors[j])
+            axes[subID // 4][subID % 4 + 1].errorbar(random_ratios+(i-3)*plot_gap,
+                plot_data[classifiers_names[i]][1][methods_names[j]][0],
+                yerr=plot_data[classifiers_names[i]][1][methods_names[j]][1], c=plot_colors[j]
+            )
+            axes[subID // 4][subID % 4 + 1].scatter(random_ratios+(i-3)*plot_gap, plot_data[classifiers_names[i]][1][methods_names[j]][0], s=2, c=plot_colors[j])
+        axes[subID // 4][subID % 4].set_xticks(np.arange(0.0, 1.0, 0.05))
+        axes[subID // 4][subID % 4 + 1].set_xticks(np.arange(0.0, 1.0, 0.05))
+        subID += 2
+    custom_legend = [Line2D([0], [0], linestyle="-", color=x, label=y, markersize=16) for x,y in zip(plot_colors, methods_names)]
+    fig.legend(handles=custom_legend, bbox_to_anchor=(0.5, -0.05), loc="lower center", ncol=6, fancybox=True, shadow=True)
+    fig.tight_layout()
+    if file_name:
+        fig.savefig(file_name, transparent=False, bbox_inches='tight', pad_inches=0.1)
+    plt.show(block=False)
+    plt.pause(2)
+    plt.close()
+
+
 def compress_outputs():
     for tt in NAME_TARGETS:
         for dd in NAME_DATASETS:
@@ -1179,3 +1265,11 @@ if __name__=="__main__":
 
     if PLOT_PARETO_FRONTIER_ALL:
         plot_func_pareto_front_all(os.path.join("ratio_analysis_plots", "acc", "pareto_front_plots.png"))
+
+    if PLOT_MCAR_ALL:
+        if PLOT_ADULT_ACC: plot_MCAR_func("adult", os.path.join("ratio_analysis_plots", "acc", "adult", "adult_MCAR.png"))
+        if PLOT_COMPAS_ACC: plot_MCAR_func("compas", os.path.join("ratio_analysis_plots", "acc", "compas", "compas_MCAR.png"))
+        if PLOT_BANK_ACC: plot_MCAR_func("bank", os.path.join("ratio_analysis_plots", "acc", "bank", "bank_MCAR.png"))
+        if PLOT_TITANIC_ACC: plot_MCAR_func("titanic", os.path.join("ratio_analysis_plots", "acc", "titanic", "titanic_MCAR.png"))
+        if PLOT_COMMUNITIES_ACC: plot_MCAR_func("communities", os.path.join("ratio_analysis_plots", "acc", "communities", "communities_MCAR.png"))
+        if PLOT_GERMAN_ACC: plot_MCAR_func("german", os.path.join("ratio_analysis_plots", "acc", "german", "german_MCAR.png"))
