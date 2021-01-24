@@ -856,7 +856,7 @@ def plot_func_pareto_front_all(file_name=None):
             # plot for multi_v2 method
             axes.scatter(plot_data_multi_v2[clf][5], plot_data_multi_v2[clf][4], c=clf_c, s=ratio_dot_size, marker=plot_markers[5], alpha=0.8)
 
-    fig, axes = plt.subplots(2, 3, sharex=True, sharey=True, figsize=(20, 12))
+    fig, axes = plt.subplots(2, 3, sharex=True, sharey=True, figsize=(18, 12))
 
     for i, dataset in enumerate(NAME_DATASETS):
         print("Pareto Front subplot for {}".format(dataset))
@@ -896,7 +896,7 @@ def plot_func_pareto_front_all(file_name=None):
     custom_legend.append(Line2D([0], [0], color='w', markersize=10, markerfacecolor="black", marker=plot_markers[3], label="IFO-similar"))
     custom_legend.append(Line2D([0], [0], color='w', markersize=10, markerfacecolor="black", marker=plot_markers[4], label="multi"))
     custom_legend.append(Line2D([0], [0], color='w', markersize=10, markerfacecolor="black", marker=plot_markers[5], label="IFO-multi"))
-    plt.legend(handles=custom_legend, bbox_to_anchor=(1, 0.6))
+    fig.legend(handles=custom_legend, bbox_to_anchor=(0.5, -0.05), loc="lower center", ncol=6, fancybox=True, shadow=True)
     fig.tight_layout()
     if file_name:
         plt.savefig(file_name, transparent=False, bbox_inches='tight', pad_inches=0.1)
@@ -1135,7 +1135,7 @@ def plot_all(data_folder, plot_folder, name):
             # plot_func_pareto_front(data, "Pareto Front ({})".format(name), os.path.join(plot_folder, "pareto_front_realacc_scaled.png"), y_scale="log", x_axis="realacc")
 
 if __name__=="__main__":
-    plt.rcParams.update({'font.size': 12})
+    plt.rcParams.update({'font.size': 14})
 
     if not os.path.exists("ratio_analysis_plots"):
         os.makedirs("ratio_analysis_plots")
