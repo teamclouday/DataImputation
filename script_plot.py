@@ -19,12 +19,12 @@ NAME_TARGETS  = ["acc", "f1"]
 
 INCOMPLETE_MODE = True
 
-PLOT_ADULT_ACC          = True
-PLOT_COMPAS_ACC         = True
-PLOT_TITANIC_ACC        = True
-PLOT_GERMAN_ACC         = True
-PLOT_COMMUNITIES_ACC    = True
-PLOT_BANK_ACC           = True
+PLOT_ADULT_ACC          = False
+PLOT_COMPAS_ACC         = False
+PLOT_TITANIC_ACC        = False
+PLOT_GERMAN_ACC         = False
+PLOT_COMMUNITIES_ACC    = False
+PLOT_BANK_ACC           = False
 
 PLOT_ADULT_F1           = False
 PLOT_COMPAS_F1          = False
@@ -47,7 +47,8 @@ PLOT_PARETO_FRONTIER_F1      = False
 PLOT_PARETO_FRONTIER_REALACC = False
 
 PLOT_PARETO_FRONTIER_ALL    = False
-PLOT_MCAR_ALL               = True
+PLOT_MCAR_ALL               = False
+PLOT_LEGENDS                = True
 
 PLOT_DEBUG_FUNCTION     = False
 
@@ -905,7 +906,7 @@ def plot_func_pareto_front_all(file_name=None):
     plt.pause(2)
     plt.close()
 
-def plot_MCAR_func(data_name, file_name=None):
+def plot_MCAR_func(data_name):
     folder = os.path.join("condor_outputs", "acc", data_name)
     data = {}
     with open(os.path.join(folder, "mean_v1.pkl"), "rb") as inFile:
@@ -959,38 +960,146 @@ def plot_MCAR_func(data_name, file_name=None):
                 plot_data_clf_method_bias[0].append(np.mean(data_processed[1]))
                 plot_data_clf_method_bias[1].append(np.std(data_processed[1]))
     plot_gap = 0.002
-    fig, axes = plt.subplots(3, 4, figsize=(30, 15))
-    subID = 0
     for i in range(len(classifiers)):
-        axes[subID // 4][subID % 4].set_title("Accuracy ({})".format(classifiers_names[i]))
-        axes[subID // 4][subID % 4 + 1].set_title("Bias ({})".format(classifiers_names[i]))
-        axes[subID // 4][subID % 4].tick_params(axis="x", rotation=45)
-        axes[subID // 4][subID % 4 + 1].tick_params(axis="x", rotation=45)
-        for j in range(len(methods)):
-            axes[subID // 4][subID % 4].errorbar(random_ratios+(i-3)*plot_gap,
+        plt.figure(figsize=(7, 4))
+        for j in range(0, len(methods), 2):
+            plt.errorbar(
+                random_ratios+(i-3)*plot_gap,
                 plot_data[classifiers_names[i]][0][methods_names[j]][0],
-                yerr=plot_data[classifiers_names[i]][0][methods_names[j]][1], c=plot_colors[j],
+                yerr=plot_data[classifiers_names[i]][0][methods_names[j]][1], c=plot_colors[j // 2],
                 elinewidth=2.0
             )
-            axes[subID // 4][subID % 4].scatter(random_ratios+(i-3)*plot_gap, plot_data[classifiers_names[i]][0][methods_names[j]][0], s=2, c=plot_colors[j])
-            axes[subID // 4][subID % 4 + 1].errorbar(random_ratios+(i-3)*plot_gap,
+            plt.scatter(
+                random_ratios+(i-3)*plot_gap,
+                plot_data[classifiers_names[i]][0][methods_names[j]][0],
+                s=2, c=plot_colors[j // 2]
+            )
+        plt.xticks(np.arange(0.0, 1.0, 0.1), rotation=45)
+        plt.tight_layout()
+        plt.savefig(
+            os.path.join("ratio_analysis_plots", "acc", data_name, "{}_MCAR_{}_original_acc.png".format(data_name, classifiers_names[i])),
+            transparent=False, bbox_inches='tight', pad_inches=0.1
+        )
+        plt.show(block=False)
+        plt.pause(0.5)
+        plt.close()
+
+        plt.figure(figsize=(7, 4))
+        for j in range(0, len(methods), 2):
+            plt.errorbar(
+                random_ratios+(i-3)*plot_gap,
                 plot_data[classifiers_names[i]][1][methods_names[j]][0],
-                yerr=plot_data[classifiers_names[i]][1][methods_names[j]][1], c=plot_colors[j],
+                yerr=plot_data[classifiers_names[i]][1][methods_names[j]][1], c=plot_colors[j // 2],
                 elinewidth=2.0
             )
-            axes[subID // 4][subID % 4 + 1].scatter(random_ratios+(i-3)*plot_gap, plot_data[classifiers_names[i]][1][methods_names[j]][0], s=2, c=plot_colors[j])
-        axes[subID // 4][subID % 4].set_xticks(np.arange(0.0, 1.0, 0.1))
-        axes[subID // 4][subID % 4 + 1].set_xticks(np.arange(0.0, 1.0, 0.1))
-        subID += 2
-    custom_legend = [Line2D([0], [0], linestyle="-", color=x, label=y, linewidth=4.0) for x,y in zip(plot_colors, methods_names)]
-    fig.legend(handles=custom_legend, bbox_to_anchor=(0.5, -0.05), loc="lower center", ncol=6, fancybox=True, shadow=True)
-    fig.tight_layout()
-    if file_name:
-        fig.savefig(file_name, transparent=False, bbox_inches='tight', pad_inches=0.1)
+            plt.scatter(
+                random_ratios+(i-3)*plot_gap,
+                plot_data[classifiers_names[i]][1][methods_names[j]][0],
+                s=2, c=plot_colors[j // 2]
+            )
+        plt.xticks(np.arange(0.0, 1.0, 0.1), rotation=45)
+        plt.tight_layout()
+        plt.savefig(
+            os.path.join("ratio_analysis_plots", "acc", data_name, "{}_MCAR_{}_original_bias.png".format(data_name, classifiers_names[i])),
+            transparent=False, bbox_inches='tight', pad_inches=0.1
+        )
+        plt.show(block=False)
+        plt.pause(0.5)
+        plt.close()
+
+        plt.figure(figsize=(7, 4))
+        for j in range(0, len(methods), 2):
+            plt.errorbar(
+                random_ratios+(i-3)*plot_gap,
+                plot_data[classifiers_names[i]][0][methods_names[j]][0],
+                yerr=plot_data[classifiers_names[i]][0][methods_names[j]][1], c=plot_colors[j // 2],
+                elinewidth=2.0, linestyle="-"
+            )
+            plt.scatter(
+                random_ratios+(i-3)*plot_gap,
+                plot_data[classifiers_names[i]][0][methods_names[j]][0],
+                s=2, c=plot_colors[j // 2]
+            )
+            plt.errorbar(
+                random_ratios+(i-3)*plot_gap,
+                plot_data[classifiers_names[i]][0][methods_names[j+1]][0],
+                yerr=plot_data[classifiers_names[i]][0][methods_names[j+1]][1], c=plot_colors[j // 2],
+                elinewidth=2.0, linestyle="--"
+            )
+            plt.scatter(
+                random_ratios+(i-3)*plot_gap,
+                plot_data[classifiers_names[i]][0][methods_names[j+1]][0],
+                s=2, c=plot_colors[j // 2]
+            )
+        plt.xticks(np.arange(0.0, 1.0, 0.1), rotation=45)
+        plt.tight_layout()
+        plt.savefig(
+            os.path.join("ratio_analysis_plots", "acc", data_name, "{}_MCAR_{}_combined_acc.png".format(data_name, classifiers_names[i])),
+            transparent=False, bbox_inches='tight', pad_inches=0.1
+        )
+        plt.show(block=False)
+        plt.pause(0.5)
+        plt.close()
+
+        plt.figure(figsize=(7, 4))
+        for j in range(0, len(methods), 2):
+            plt.errorbar(
+                random_ratios+(i-3)*plot_gap,
+                plot_data[classifiers_names[i]][1][methods_names[j]][0],
+                yerr=plot_data[classifiers_names[i]][1][methods_names[j]][1], c=plot_colors[j // 2],
+                elinewidth=2.0, linestyle="-"
+            )
+            plt.scatter(
+                random_ratios+(i-3)*plot_gap,
+                plot_data[classifiers_names[i]][1][methods_names[j]][0],
+                s=2, c=plot_colors[j // 2]
+            )
+            plt.errorbar(
+                random_ratios+(i-3)*plot_gap,
+                plot_data[classifiers_names[i]][1][methods_names[j+1]][0],
+                yerr=plot_data[classifiers_names[i]][1][methods_names[j+1]][1], c=plot_colors[j // 2],
+                elinewidth=2.0, linestyle="--"
+            )
+            plt.scatter(
+                random_ratios+(i-3)*plot_gap,
+                plot_data[classifiers_names[i]][1][methods_names[j+1]][0],
+                s=2, c=plot_colors[j // 2]
+            )
+        plt.xticks(np.arange(0.0, 1.0, 0.1), rotation=45)
+        plt.tight_layout()
+        plt.savefig(
+            os.path.join("ratio_analysis_plots", "acc", data_name, "{}_MCAR_{}_combined_bias.png".format(data_name, classifiers_names[i])),
+            transparent=False, bbox_inches='tight', pad_inches=0.1
+        )
+        plt.show(block=False)
+        plt.pause(0.5)
+        plt.close()
+
+def plot_legends(file_path):
+    methods_names = ["mean", "IFO-mean", "similar", "IFO-similar", "multi", "IFO-multi"]
+    plot_colors = ["red", "green", "blue", "gold", "darkorange", "grey", "purple"]
+    plt.figure(figsize=(3, 1))
+    custom_legend = [Line2D([0], [0], linestyle="-", linewidth=4.0, color=x, label=y) for x,y in zip(plot_colors, methods_names[::2])]
+    plt.legend(handles=custom_legend, bbox_to_anchor=(0.5, 0.5), loc="center", ncol=3, fancybox=True, shadow=True)
+    plt.axis("off")
+    plt.tight_layout()
+    plt.savefig(os.path.join(file_path, "legends_original.png"), bbox_inches='tight', pad_inches=0.1)
     plt.show(block=False)
-    plt.pause(2)
+    plt.pause(1)
     plt.close()
 
+    plt.figure(figsize=(3, 1))
+    custom_legend = []
+    for i in range(0, len(methods_names), 2):
+        custom_legend.append(Line2D([0], [0], linestyle="-", linewidth=4.0, color=plot_colors[i // 2], label=methods_names[i]))
+        custom_legend.append(Line2D([0], [0], linestyle="--", linewidth=4.0, color=plot_colors[i // 2], label=methods_names[i+1]))
+    plt.legend(handles=custom_legend, bbox_to_anchor=(0.5, 0.5), loc="center", ncol=3, fancybox=True, shadow=True)
+    plt.axis("off")
+    plt.tight_layout()
+    plt.savefig(os.path.join(file_path, "legends_combined.png"), bbox_inches='tight', pad_inches=0.1)
+    plt.show(block=False)
+    plt.pause(1)
+    plt.close()
 
 def compress_outputs():
     for tt in NAME_TARGETS:
@@ -1269,9 +1378,11 @@ if __name__=="__main__":
         plot_func_pareto_front_all(os.path.join("ratio_analysis_plots", "acc", "pareto_front_plots.png"))
 
     if PLOT_MCAR_ALL:
-        if PLOT_ADULT_ACC: plot_MCAR_func("adult", os.path.join("ratio_analysis_plots", "acc", "adult", "adult_MCAR.png"))
-        if PLOT_COMPAS_ACC: plot_MCAR_func("compas", os.path.join("ratio_analysis_plots", "acc", "compas", "compas_MCAR.png"))
-        if PLOT_BANK_ACC: plot_MCAR_func("bank", os.path.join("ratio_analysis_plots", "acc", "bank", "bank_MCAR.png"))
-        if PLOT_TITANIC_ACC: plot_MCAR_func("titanic", os.path.join("ratio_analysis_plots", "acc", "titanic", "titanic_MCAR.png"))
-        if PLOT_COMMUNITIES_ACC: plot_MCAR_func("communities", os.path.join("ratio_analysis_plots", "acc", "communities", "communities_MCAR.png"))
-        if PLOT_GERMAN_ACC: plot_MCAR_func("german", os.path.join("ratio_analysis_plots", "acc", "german", "german_MCAR.png"))
+        if PLOT_ADULT_ACC: plot_MCAR_func("adult")
+        if PLOT_COMPAS_ACC: plot_MCAR_func("compas")
+        if PLOT_BANK_ACC: plot_MCAR_func("bank")
+        if PLOT_TITANIC_ACC: plot_MCAR_func("titanic")
+        if PLOT_COMMUNITIES_ACC: plot_MCAR_func("communities")
+        if PLOT_GERMAN_ACC: plot_MCAR_func("german")
+
+    if PLOT_LEGENDS: plot_legends(os.path.join("ratio_analysis_plots", "acc"))
