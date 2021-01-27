@@ -19,12 +19,12 @@ NAME_TARGETS  = ["acc", "f1"]
 
 INCOMPLETE_MODE = True
 
-PLOT_ADULT_ACC          = False
-PLOT_COMPAS_ACC         = False
-PLOT_TITANIC_ACC        = False
-PLOT_GERMAN_ACC         = False
-PLOT_COMMUNITIES_ACC    = False
-PLOT_BANK_ACC           = False
+PLOT_ADULT_ACC          = True
+PLOT_COMPAS_ACC         = True
+PLOT_TITANIC_ACC        = True
+PLOT_GERMAN_ACC         = True
+PLOT_COMMUNITIES_ACC    = True
+PLOT_BANK_ACC           = True
 
 PLOT_ADULT_F1           = False
 PLOT_COMPAS_F1          = False
@@ -47,8 +47,8 @@ PLOT_PARETO_FRONTIER_F1      = False
 PLOT_PARETO_FRONTIER_REALACC = False
 
 PLOT_PARETO_FRONTIER_ALL    = False
-PLOT_MCAR_ALL               = False
-PLOT_LEGENDS                = True
+PLOT_MCAR_ALL               = True
+PLOT_LEGENDS                = False
 
 PLOT_DEBUG_FUNCTION     = False
 
@@ -967,7 +967,7 @@ def plot_MCAR_func(data_name):
                 random_ratios+(i-3)*plot_gap,
                 plot_data[classifiers_names[i]][0][methods_names[j]][0],
                 yerr=plot_data[classifiers_names[i]][0][methods_names[j]][1], c=plot_colors[j // 2],
-                elinewidth=2.0
+                elinewidth=1.0
             )
             plt.scatter(
                 random_ratios+(i-3)*plot_gap,
@@ -990,7 +990,7 @@ def plot_MCAR_func(data_name):
                 random_ratios+(i-3)*plot_gap,
                 plot_data[classifiers_names[i]][1][methods_names[j]][0],
                 yerr=plot_data[classifiers_names[i]][1][methods_names[j]][1], c=plot_colors[j // 2],
-                elinewidth=2.0
+                elinewidth=1.0
             )
             plt.scatter(
                 random_ratios+(i-3)*plot_gap,
@@ -1013,7 +1013,7 @@ def plot_MCAR_func(data_name):
                 random_ratios+(i-3)*plot_gap,
                 plot_data[classifiers_names[i]][0][methods_names[j]][0],
                 yerr=plot_data[classifiers_names[i]][0][methods_names[j]][1], c=plot_colors[j // 2],
-                elinewidth=2.0, linestyle="-"
+                elinewidth=1.0, linestyle="-"
             )
             plt.scatter(
                 random_ratios+(i-3)*plot_gap,
@@ -1024,7 +1024,7 @@ def plot_MCAR_func(data_name):
                 random_ratios+(i-3)*plot_gap,
                 plot_data[classifiers_names[i]][0][methods_names[j+1]][0],
                 yerr=plot_data[classifiers_names[i]][0][methods_names[j+1]][1], c=plot_colors[j // 2],
-                elinewidth=2.0, linestyle="--"
+                elinewidth=1.0, linestyle="--", linewidth=4.0
             )
             plt.scatter(
                 random_ratios+(i-3)*plot_gap,
@@ -1047,7 +1047,7 @@ def plot_MCAR_func(data_name):
                 random_ratios+(i-3)*plot_gap,
                 plot_data[classifiers_names[i]][1][methods_names[j]][0],
                 yerr=plot_data[classifiers_names[i]][1][methods_names[j]][1], c=plot_colors[j // 2],
-                elinewidth=2.0, linestyle="-"
+                elinewidth=1.0, linestyle="-"
             )
             plt.scatter(
                 random_ratios+(i-3)*plot_gap,
@@ -1058,7 +1058,7 @@ def plot_MCAR_func(data_name):
                 random_ratios+(i-3)*plot_gap,
                 plot_data[classifiers_names[i]][1][methods_names[j+1]][0],
                 yerr=plot_data[classifiers_names[i]][1][methods_names[j+1]][1], c=plot_colors[j // 2],
-                elinewidth=2.0, linestyle="--"
+                elinewidth=1.0, linestyle="--", linewidth=4.0
             )
             plt.scatter(
                 random_ratios+(i-3)*plot_gap,
@@ -1332,7 +1332,7 @@ def plot_all(data_folder, plot_folder, name):
             # plot_func_pareto_front(data, "Pareto Front ({})".format(name), os.path.join(plot_folder, "pareto_front_realacc_scaled.png"), y_scale="log", x_axis="realacc")
 
 if __name__=="__main__":
-    plt.rcParams.update({'font.size': 16})
+    plt.rcParams.update({'font.size': 18})
 
     if not os.path.exists("ratio_analysis_plots"):
         os.makedirs("ratio_analysis_plots")
