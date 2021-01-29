@@ -1,4 +1,1 @@
-1. In paper, edit introduction section and final discussion section.
-2. Find out why German Credit dataset is flat (compute the correlations)
-3. Make URL anonymous
-4. How is credit risk determined in German Credit dataset?
+1. add labels to figures axis
