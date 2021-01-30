@@ -975,6 +975,8 @@ def plot_MCAR_func(data_name):
                 s=2, c=plot_colors[j // 2]
             )
         plt.xticks(np.arange(0.0, 1.0, 0.1), rotation=45)
+        plt.xlabel("Missing Percentage")
+        plt.ylabel("Accuracy")
         plt.tight_layout()
         plt.savefig(
             os.path.join("ratio_analysis_plots", "acc", data_name, "{}_MCAR_{}_original_acc.png".format(data_name, classifiers_names[i])),
@@ -998,6 +1000,8 @@ def plot_MCAR_func(data_name):
                 s=2, c=plot_colors[j // 2]
             )
         plt.xticks(np.arange(0.0, 1.0, 0.1), rotation=45)
+        plt.xlabel("Missing Percentage")
+        plt.ylabel("Bias")
         plt.tight_layout()
         plt.savefig(
             os.path.join("ratio_analysis_plots", "acc", data_name, "{}_MCAR_{}_original_bias.png".format(data_name, classifiers_names[i])),
@@ -1032,6 +1036,8 @@ def plot_MCAR_func(data_name):
                 s=2, c=plot_colors[j // 2]
             )
         plt.xticks(np.arange(0.0, 1.0, 0.1), rotation=45)
+        plt.xlabel("Missing Percentage")
+        plt.ylabel("Accuracy")
         plt.tight_layout()
         plt.savefig(
             os.path.join("ratio_analysis_plots", "acc", data_name, "{}_MCAR_{}_combined_acc.png".format(data_name, classifiers_names[i])),
@@ -1066,6 +1072,8 @@ def plot_MCAR_func(data_name):
                 s=2, c=plot_colors[j // 2]
             )
         plt.xticks(np.arange(0.0, 1.0, 0.1), rotation=45)
+        plt.xlabel("Missing Percentage")
+        plt.ylabel("Bias")
         plt.tight_layout()
         plt.savefig(
             os.path.join("ratio_analysis_plots", "acc", data_name, "{}_MCAR_{}_combined_bias.png".format(data_name, classifiers_names[i])),
