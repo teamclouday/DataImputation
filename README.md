@@ -10,11 +10,11 @@ This repo is created to research on different methods of data imputation techniq
 1. The methods of generating missing data entries  
    * Missing Completely At Random  
    * Missing At Random  
-   * Missing Not At Random  
+   * Not Missing At Random  
 2. The methods of guessing a missing data entry  
    * Mean Imputation  
-   * Similar Imputation (KNN)  
-   * Multiple Imputation  
+   * Similar Imputation (KNNImputer)  
+   * Multiple Imputation (IterativeImputer)  
 3. Different machine learning algorithms  
    * Logisitic Regression  
    * Multi-Layer Perceptron  
@@ -40,6 +40,60 @@ This repo is created to research on different methods of data imputation techniq
 
 ------
 
+### Output Folders
+
+* `ratio_analysis_plots`  
+  plots for MCAR experiments  
+* `other_analysis_plots`  
+  plots for MAR and NMAR experiments  
+* `dataset_analysis_plots`  
+  plots for Feature Selection experiments
+* `nouse`  
+  outdated experimental data
+
+------
+
+### Scripts  
+
+* `utils/*.py`  
+  main body of experiment setup (dataset loading, imputation methods, missingness induction functions)  
+* `main.py`  
+  download the required datasets to local folder  
+* `script_prepare.py`  
+  parameter search on classifiers for each dataset  
+* `script_single_task.py`  
+  multi-process MCAR experiment script  
+* `script_single_task_ext.py`  
+  multi-process MAR and NMAR experiment script  
+* `script_plot.py`  
+  generate MCAR related plots from experimental outputs  
+* `script_plot_ext.py`  
+  generate MAR and NMAR related plots from experimental outputs  
+* `script_dataset_analysis.py`  
+  generate Feature Selection experimental plots  
+
+#### Note  
+Due to the multiprocessing nature of Python3, scripts involving multiprocessing cannot be run on Windows.  
+
+------
+
+### Notebooks  
+
+* `research notes.ipynb`  
+  literature search and notes of AI fairness papers  
+* `notebooks/*.ipynb`  
+  analysis of outputs (MCAR, MAR, NMAR experiments) and initial work for Feature Selection experiments  
+* `AIF360_Related/*.ipynb`  
+  experiments of our methods in combination with preprocessing methods provided by IBM AIF360 package  
+
+------
+
+### Future Work  
+
+Instead of inducing MCAR missingness on whole data, induce on selected features by Feature Selection. Then apply imputation to see a better bias reduction.  
+
+------
+
 ### References  
 1. [IBM AIF360](https://github.com/Trusted-AI/AIF360)  
 2. [Missing-data imputation](http://www.stat.columbia.edu/~gelman/arm/missing.pdf)  
@@ -47,9 +101,4 @@ This repo is created to research on different methods of data imputation techniq
 4. [COMPAS Recidivism Risk Score Data and Analysis](https://www.propublica.org/datastore/dataset/compas-recidivism-risk-score-data-and-analysis)  
 5. [Responsibily](https://docs.responsibly.ai/index.html)  
 6. [Fairness Measures](http://www.fairness-measures.org/)  
-7. More in `research notes.ipynb`  
-
-------
-
-### Note  
-Due to the multiprocessing nature of Python3, scripts involving multiprocessing cannot be run on Windows.  
+7. More in `research notes.ipynb` 
