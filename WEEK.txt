@@ -1,0 +1,6 @@
+For each value in the test set, we want to know:
+1. If we used imputation to fill in this value (instead of knowing the true value), how would that affect the prediction?
+2. How would it affect the fairness overall?
+
+For each value in the training set, we want to know:
+1. If we replaced a particular value with an imputed value, how would that affect the accuracy and fairness of the model as a whole?
