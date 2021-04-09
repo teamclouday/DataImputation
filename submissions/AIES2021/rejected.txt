@@ -1,0 +1,103 @@
+SUBMISSION: 124
+TITLE: On the Effects of Missing Data Imputation on Classification Fairness
+
+
+----------------------- REVIEW 1 ---------------------
+SUBMISSION: 124
+TITLE: On the Effects of Missing Data Imputation on Classification Fairness
+AUTHORS: Sida Zhu, Sucheta Soundarajan and Jonathan Kropko
+
+----------- Overall evaluation -----------
+SCORE: -2 (reject)
+----- TEXT:
+Summary: The paper studies the effects of various missing value imputation methods on fairness of standard machine learning algorithms. The experiments randomly introduce missing values in six common datasets and then report how three imputation methods (mean, similar and multiple imputation) compare in terms of fairness when the imputed dataset is fed to machine learning algorithms. There is also a proposal for a new imputation method (impute from opposite) that gives better results in terms of fairness.
+
+Quality: This is a work in progress and technical quality needs to be improved with more experiments and theory.
+
+Clarity: Acceptable
+
+Originality: Limited
+
+Significance: Not Significant
+
+Relevance: Moderately Relevant
+
+Additional Comments:
+
+1) The work is in very early stages and not ready for publication: a) there are only synthetic experiments and it is not clear why real experiments (using datasets with real missing values) can't be done. b) Can the authors at least give some examples of real datasets that have missing values, and also have fairness concerns? c) Even for synthetic experiments, the authors only consider MCAR missing values. d) The algorithms tested are only the standard ML algorithms, not fair ML algorithms. e) The proposed "impute from opposite" method has not been motivated and analysed theoretically.
+
+2) Missing values in datasets is ofcourse a general phenomenon and data imputation is often used by data scientists as a pre-processing step. So, it is somewhat interesting to see how imputation methods affect the fairness of the models that are trained on imputed data (for e.g. whether they increase unfairness of the trained models or perhaps they do the balancing act and "debias" the data to some extent). But I am not sure if this comes out properly in the paper. The motivation is kind of lame.
+
+Quoting the authors below:
+
+"Because real datasets often have missing values, it is of interest to study missing data imputation in the context of fairness."
+
+If my understanding of the motivation is correct, then the novelty over Martinez-Plumed et al is very limited.
+
+3) Given this unclear motivation, I wonder if the authors actually wanted to study the problem of *missing data* in context of fairness and not of *missing values*. I may be wrong but if this is true, then the authors may want to consider that the kind of missingness that is of particular concern in fairness literature is systematic omission of labels or systematic censoring of features causing covariate shift and blind spots. To the best of my knowledge, missing value imputation methods are not applicable in those settings, and we need completely different techniques to deal with that kind of missingness. Please see the following papers for more details:
+
+a) Lakkaraju, Himabindu, et al. "The selective labels problem: Evaluating algorithmic predictions in the presence of unobservables." Proceedings of the 23rd ACM SIGKDD International Conference on Knowledge Discovery and Data Mining. 2017.
+
+b) Kallus, Nathan, and Angela Zhou. "Residual unfairness in fair machine learning from prejudiced data." International Conference on Machine Learning. PMLR, 2018.
+
+c) Lakkaraju, Himabindu, et al. "Identifying unknown unknowns in the open world: Representations and policies for guided exploration." Proceedings of the AAAI Conference on Artificial Intelligence. Vol. 31. No. 1. 2017.
+
+d) Goel, Naman, et al. "The Importance of Modeling Data Missingness in Algorithmic Fairness: A Causal Perspective." arXiv preprint arXiv:2012.11448 (2020).
+
+
+4) Minor Comment:
+
+"The primary focus of this paper is on MCAR missingness, which is the simplest model, making no assumptions about relationships or dependencies between features."
+
+MCAR actually makes the strongest assumptions (the assumption about independence). The expression "making no assumptions" is generally used for most general settings, not the most restrictive settings.
+
+
+
+----------------------- REVIEW 2 ---------------------
+SUBMISSION: 124
+TITLE: On the Effects of Missing Data Imputation on Classification Fairness
+AUTHORS: Sida Zhu, Sucheta Soundarajan and Jonathan Kropko
+
+----------- Overall evaluation -----------
+SCORE: 2 (accept)
+----- TEXT:
+In this paper, the authors investigate the implications of missing data for algorithmic fairness. They test 6 algorithms, on 6 data sets, over 10 levels of missingness and 3 algorithms for imputing missing data. They find that multiple imputation generally shows the least bias with minimal impacts on accuracy with plausible proportions of missing data. They also trial a new form of missing data imputation called Impute From Opposite that performs well in their tests.
+
+I wasn't sure how to evaluate this paper, as I found the bias measure somewhat odd. Bias = |FPRA − FPRB| + |FNRA − FNRB|. But if performance is less accurate for group A than group B by virtue of both a higher false positive rate and a higher false negative rate then it seems as if the measure could indicate bias where none exists??
+
+If my concern about this measure is justified then that is quite problematic for the results. Assuming, however, that I am mistaken, I thought the rest of the paper was well structured and interesting. Missing data is a fact of life in big data analysis and so the authors correctly maintain that understanding the impact on fairness is an important issue to explore. There are, of course, many other imputation methods that could be explored and as the authors note systematic missingness will need to be considered as that is also a fact of life. But I thought this was a good introductory exploration.
+
+Typo:
+
+"A full description of our metric is provided in Section ." - section missing.
+
+
+
+----------------------- REVIEW 3 ---------------------
+SUBMISSION: 124
+TITLE: On the Effects of Missing Data Imputation on Classification Fairness
+AUTHORS: Sida Zhu, Sucheta Soundarajan and Jonathan Kropko
+
+----------- Overall evaluation -----------
+SCORE: 2 (accept)
+----- TEXT:
+Summary:
+This paper studies the effect of missing data imputation techniques on accuracy and bias. It also proposes an interesting novel data imputation technique, named Impute from Opposite, which uses only opposite protected attribute data to predict the missing data values, having a positive effect in reducing bias and maintaining classification accuracy.
+
+Quality:
+The submission is technically sound. The authors do a good job at summarising the missing data techniques and achieve a comprehensive evaluation over multiple datasets and algorithms in a clear, concise yet complete manner.
+
+The experimental section is closely related to the expected analysis and proposed IFO method. However, I would have liked to see experiments with the MAR and NMAR methods, even though the authors acknowledge that these are going to be part of future work, I don't fully understand why these can't be considered now since simulations are easy and already aligned with the current code they've written.
+
+The submission is also missing to quantify and compare the accuracy, but not over classification, but the accuracy in recovering the original data. Since the missing data is known, it could be possible to evaluate the error in data recovery - at least in simulation.
+
+Clarity:
+The paper is very well written, clear and concise.
+
+Originality:
+According to the relevant literature, this work is novel and provides new insights and methodology for assessing missing data imputation methods and bias/accuracy of classifiers.
+
+Significance:
+The results are certainly important to practitioners and researchers, that usually consider data imputation as a pre-processing technique, commonly oversighted. This work highlights the impacts in can have on relevant decisions and classifier accuracy.
+
+Relevance:  Relevant to AIES.

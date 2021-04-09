@@ -1,0 +1,37 @@
+SUBMISSION: 25
+TITLE: The Effects of Missing Data Imputation on Bias in Classification
+
+
+----------------------- REVIEW 1 ---------------------
+SUBMISSION: 25
+TITLE: The Effects of Missing Data Imputation on Bias in Classification
+AUTHORS: Sida Zhu and Sucheta Soundarajan
+
+----------- Overall evaluation -----------
+SCORE: -1 (Reject (needs more development to be usefully discussed))
+----- TEXT:
+The paper deals with exploring the effects of data imputation on classification bias. Three commonly used data imputation methods are evaluated with seven popular machine learning algorithms. The paper highlights that large reduction in classification bias can be achieved with only a small sacrifice in accuracy with imputation techniques.
+
+Despite being an interesting paper and focusing on an issue that is relevant in applied machine learning broadly, the paper falls short on several accounts. First, the writing could certainly be improved. For example, scikit is missing a citation and a description, the algorithms lack a comprehensive introduction and overall, symbols like 'FPR_AA' should be defined first and then used, and the overall writing could be more cohesive. My primary technical issue with the paper is that for the broader community to draw lessons from the paper, multiple datasets must be used to draw these inferences. Also, SMOTE is only one among many data balancing techniques in imbalanced classification problems. There is a need to look at other methods too, and also evaluate how these imputation techniques work without SMOTE. The experiment section needs to clearly mention how many rows and columns were removed before using the ProPublica dataset, if there are any characteristics of that define!
+ d such rows, whether removing such rows introduced any bias (or removed any) from the original dataset, what feature values were removed by the authors to create the incomplete datasets, was SMOTE used before creating the incomplete data or after it. I think the paper addresses an important issue, and I would encourage the authors to submit a more complete manuscript to a future edition of AISG.
+
+
+
+----------------------- REVIEW 2 ---------------------
+SUBMISSION: 25
+TITLE: The Effects of Missing Data Imputation on Bias in Classification
+AUTHORS: Sida Zhu and Sucheta Soundarajan
+
+----------- Overall evaluation -----------
+SCORE: -1 (Reject (needs more development to be usefully discussed))
+----- TEXT:
+The paper discusses the effect on bias by various methods of data imputation. In particular the dataset under discussion is ProPublica COMPAS dataset. The author uses 3 well known imputation techniques.
+
+Reasons for rejection:
+1. The author uses a single metric to measure bias. The author doesn't justify the rationale behind the metric. They should use other well known metrics as well for completeness.
+
+2. The dataset under consideration initially has no missing value (the paper says that all rows with missing values are removed). It would be more interesting to know the effect of imputation on raw dataset rather to showcase the power of imputation on real world data to improve fairness (and accuracy) rather than artificially remove features randomly and then impute on it.
+
+3. The authors need to consider more datasets and compare against other methods.
+
+4. The author needs to provide confidence scores for bias values (or atleast variance). While for some classifiers (like Random Forest, Random Trees) there seems to be significant difference in scores, for others the values look very close. Thus, a significance test, at least, would be greatly beneficial.
