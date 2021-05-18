@@ -7,3 +7,4 @@ condor_outputs/*
 nouse/*
 *.sub
 *.sh
+submissions/*
