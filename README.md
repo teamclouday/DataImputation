@@ -88,13 +88,6 @@ Due to the multiprocessing nature of Python3, scripts involving multiprocessing 
 
 ------
 
-### Submissions
-
-Historical submitted papers based on this research are collected in `submissions` folder  
-Both submissions are rejected with reason included  
-
-------
-
 ### Future Work  
 
 Instead of inducing MCAR missingness on whole data, induce on selected features by Feature Selection. Then apply imputation to see a better bias reduction.  
